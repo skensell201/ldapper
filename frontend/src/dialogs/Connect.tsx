@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../store";
 import * as api from "../../wailsjs/go/app/App";
 import "./Dialog.css";
@@ -23,7 +23,10 @@ export function Connect() {
   const disconnect = useStore((s) => s.disconnect);
   const loadProfiles = useStore((s) => s.loadProfiles);
 
-  const saved = profiles[0];
+  // Which saved connection is being edited. Empty means a new one.
+  const [selected, setSelected] = useState(profiles[0]?.id ?? "");
+  const saved = profiles.find((p) => p.id === selected);
+
   const [name, setName] = useState(saved?.name ?? "My directory");
   const [host, setHost] = useState(saved?.host ?? "");
   const [port, setPort] = useState(String(saved?.port ?? 636));
@@ -34,9 +37,40 @@ export function Connect() {
   const [remember, setRemember] = useState(false);
   const [busy, setBusy] = useState(false);
 
+  // Saved connections may arrive after this dialog mounts, and the fields are
+  // initialised once. Without this, opening the dialog a moment too early
+  // showed factory defaults over a connection that was already saved — with
+  // nothing on screen to say so.
+  useEffect(() => {
+    if (selected || profiles.length === 0) return;
+    load(profiles[0]);
+  }, [profiles, selected]);
+
+  function load(p: (typeof profiles)[number]) {
+    setSelected(p.id);
+    setName(p.name);
+    setHost(p.host);
+    setPort(String(p.port));
+    setEncryption(p.encryption || "ldaps");
+    setBindMethod(p.bindMethod || "ntlm");
+    setUsername(p.username ?? "");
+    setPassword("");
+  }
+
+  function blank() {
+    setSelected("");
+    setName("My directory");
+    setHost("");
+    setPort("636");
+    setEncryption("ldaps");
+    setBindMethod("ntlm");
+    setUsername("");
+    setPassword("");
+  }
+
   // The profile ID is derived rather than asked for. Nobody wants to invent a
   // key, and host:port is already unique per server.
-  const id = saved?.id ?? `${host}:${port}`;
+  const id = selected || `${host}:${port}`;
 
   const submit = async () => {
     setBusy(true);
@@ -79,6 +113,30 @@ export function Connect() {
         </p>
 
         {error && <div className="error">{error}</div>}
+
+        {profiles.length > 0 && (
+          <div>
+            <span className="lbl">Saved connections</span>
+            <div className="saved-list">
+              {profiles.map((p) => (
+                <button
+                  key={p.id}
+                  className={selected === p.id ? "saved on" : "saved"}
+                  onClick={() => load(p)}
+                >
+                  <i className={p.connected ? "led live" : "led"} />
+                  {p.name || p.host}
+                  <span className="where">
+                    {p.host}:{p.port}
+                  </span>
+                </button>
+              ))}
+              <button className={selected === "" ? "saved on" : "saved"} onClick={blank}>
+                + New
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="form">
           <div>

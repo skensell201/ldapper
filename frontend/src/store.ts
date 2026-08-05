@@ -114,7 +114,13 @@ export const useStore = create<State>((set, get) => ({
   check: null,
 
   loadProfiles: async () => {
-    set({ profiles: await api.ListProfiles() });
+    try {
+      set({ profiles: await api.ListProfiles() });
+    } catch (e) {
+      // Swallowing this left the connection dialog showing factory defaults
+      // with no hint that anything had gone wrong.
+      set({ error: `The saved connections could not be read: ${String(e)}` });
+    }
   },
 
   openConnect: () => set({ dialog: "connect", error: "" }),
