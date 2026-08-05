@@ -29,6 +29,10 @@ type App struct {
 
 	mu    sync.RWMutex
 	conns map[string]*liveConn
+	// searches holds the cancel function of the one search running on each
+	// connection. Two searches writing into one result table is a race with
+	// no useful outcome, so starting one cancels whatever came before.
+	searches map[string]context.CancelFunc
 }
 
 // New loads the stores. It is called before the window exists, so it must not
@@ -52,7 +56,12 @@ func New() (*App, error) {
 		return nil, fmt.Errorf("app: cannot load the saved connections: %w", err)
 	}
 
-	return &App{filters: f, profiles: p, conns: map[string]*liveConn{}}, nil
+	return &App{
+		filters:  f,
+		profiles: p,
+		conns:    map[string]*liveConn{},
+		searches: map[string]context.CancelFunc{},
+	}, nil
 }
 
 // Startup receives the Wails context, which is what event emission needs.
@@ -62,8 +71,20 @@ func (a *App) Startup(ctx context.Context) { a.ctx = ctx }
 // socket open past the window closing.
 func (a *App) Shutdown(context.Context) {
 	a.mu.Lock()
-	defer a.mu.Unlock()
+	ids := make([]string, 0, len(a.conns))
+	for id := range a.conns {
+		ids = append(ids, id)
+	}
+	a.mu.Unlock()
 
+	// Stop the searches first: one left running would go on reading from a
+	// connection that is about to close underneath it.
+	for _, id := range ids {
+		a.stopSearch(id)
+	}
+
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	for id, c := range a.conns {
 		if c.cancel != nil {
 			c.cancel()
@@ -94,6 +115,10 @@ func (a *App) setLive(id string, c *liveConn) {
 }
 
 func (a *App) dropLive(id string) {
+	// A search outliving its connection would keep reading from a closed
+	// socket, so it goes first.
+	a.stopSearch(id)
+
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -101,4 +126,28 @@ func (a *App) dropLive(id string) {
 		c.cancel()
 	}
 	delete(a.conns, id)
+}
+
+func (a *App) setSearchCancel(id string, cancel context.CancelFunc) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.searches[id] = cancel
+}
+
+// stopSearch cancels the search running on a connection, if there is one.
+func (a *App) stopSearch(id string) {
+	a.mu.Lock()
+	cancel := a.searches[id]
+	delete(a.searches, id)
+	a.mu.Unlock()
+
+	if cancel != nil {
+		cancel()
+	}
+}
+
+func (a *App) clearSearchCancel(id string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	delete(a.searches, id)
 }

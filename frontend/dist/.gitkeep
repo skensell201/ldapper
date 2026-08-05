@@ -1,4 +1,0 @@
-This directory is where `wails build` puts the compiled frontend, and main.go
-embeds it. The placeholder exists so that `go build`, `go vet` and `go test`
-work on a checkout that has never run a frontend build — the Go packages do
-not depend on the interface, and CI should not need Node to test them.

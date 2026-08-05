@@ -1,4 +1,7 @@
 .window { display: grid; grid-template-rows: 44px 1fr 34px; height: 100%; background: var(--plum); }
+/* Search and the filter library add a toolbar row between the chrome and the
+   panes; browsing has no toolbar and gives the space back to the tree. */
+.window.with-toolbar { grid-template-rows: 44px auto 1fr 34px; }
 
 .utility { display: flex; align-items: center; gap: 14px; padding: 0 18px 0 82px; }
 .wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
@@ -13,6 +16,7 @@
 .led { width: 6px; height: 6px; border-radius: 50%; background: var(--iris); flex: none; }
 .led.live { background: var(--white); }
 .chev { color: var(--iris); font-size: 9px; }
+.modes { margin-left: 6px; }
 .util { font-size: 13px; color: var(--fog); }
 .util:hover { color: var(--white); }
 .spacer { margin-left: auto; }
@@ -34,6 +38,12 @@
   overflow: hidden; white-space: nowrap;
 }
 .statusbar .live { color: var(--mist); }
+.statusbar .failed { color: var(--coral); overflow: hidden; text-overflow: ellipsis; }
 
 .empty { display: grid; place-items: center; height: 100%; color: var(--iris); font-family: var(--mono); font-size: 11px; }
 .error { margin: 10px 18px; padding: 10px 14px; border-radius: var(--r-input); background: rgba(255, 74, 54, 0.12); color: var(--coral); font-size: 12px; }
+
+/* Shared by the toolbar, the mode switch and both dialogs. */
+.segs { display: flex; gap: 4px; padding: 4px; background: var(--well); border-radius: var(--r-pill); }
+.seg { flex: 1; text-align: center; padding: 6px 0; border-radius: var(--r-pill); font-size: 12px; color: var(--fog); }
+.seg.on { background: var(--raise); color: var(--white); }
