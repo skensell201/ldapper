@@ -1,0 +1,17 @@
+version: "2"
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+  settings:
+    staticcheck:
+      checks:
+        - all
+        # session.Conn embeds *ldap.Conn, and calls through it are written
+        # out in full — c.Conn.Bind, not c.Bind. That spells out where the
+        # behaviour comes from, and it keeps a future Bind method of our own
+        # from silently turning into a recursive call.
+        - -QF1008
