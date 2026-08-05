@@ -1,0 +1,24 @@
+# A directory worth exploring by hand, kept apart from the integration
+# fixture so the two never fight over a port or a dataset.
+services:
+  openldap:
+    image: bitnamilegacy/openldap:2.6
+    container_name: ldapper-dev-directory
+    ports:
+      - "4389:1389"
+    environment:
+      LDAP_ROOT: dc=example,dc=com
+      LDAP_ADMIN_USERNAME: admin
+      LDAP_ADMIN_PASSWORD: adminpassword
+      LDAP_SKIP_DEFAULT_TREE: "yes"
+      LDAP_CUSTOM_LDIF_DIR: /ldifs
+      # The default limit would cut every large search at 500 results, which
+      # is exactly the behaviour being explored here.
+      LDAP_CONFIG_ADMIN_ENABLED: "yes"
+    volumes:
+      - ./seed.ldif:/ldifs/seed.ldif:ro
+    healthcheck:
+      test: ["CMD", "ldapsearch", "-x", "-H", "ldap://localhost:1389", "-b", "dc=example,dc=com", "-D", "cn=admin,dc=example,dc=com", "-w", "adminpassword", "-s", "base"]
+      interval: 3s
+      timeout: 5s
+      retries: 40

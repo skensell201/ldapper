@@ -10,6 +10,7 @@ import (
 	"errors"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -27,7 +28,7 @@ const (
 	peopleDN = "ou=people,dc=example,dc=com"
 
 	// seededPeople is how many inetOrgPerson entries seed.ldif creates.
-	seededPeople = 122
+	seededPeople = 123
 )
 
 // port is where docker-compose.yml publishes the server. Override it with
@@ -329,5 +330,42 @@ func TestBindWithAnEmptyPasswordIsRefusedLocally(t *testing.T) {
 	// after which the directory looks empty. It must never leave the process.
 	if err := conn.BindSimple(adminDN, ""); err == nil {
 		t.Fatal("BindSimple() with an empty password succeeded")
+	}
+}
+
+// A comma inside a name is legal and awkward: the server returns it escaped,
+// as either \, or \2C, and showing either form to a person is showing them
+// the wire format instead of the name.
+func TestEscapedCommaReachesTheInterfaceUnescaped(t *testing.T) {
+	a, id := facade(t)
+
+	page := a.Children(id, peopleDN, 200, "")
+	if page.Error != "" {
+		t.Fatalf("Children() = %q", page.Error)
+	}
+
+	var found bool
+	for _, n := range page.Nodes {
+		if !strings.Contains(n.DN, "Volkova") || !strings.Contains(n.DN, "\\") {
+			continue
+		}
+		found = true
+
+		if n.Label != "Volkova, Anna" {
+			t.Errorf("Label = %q, want the comma shown as a comma", n.Label)
+		}
+		// The DN is an identifier and goes back to the server as it arrived.
+		if !strings.Contains(n.DN, "\\") {
+			t.Errorf("DN = %q, want the escape kept", n.DN)
+		}
+
+		// And it has to be usable: reading the entry by that DN must work.
+		if got := a.Entry(id, n.DN); got.Error != "" {
+			t.Errorf("Entry() on the escaped DN = %q", got.Error)
+		}
+	}
+
+	if !found {
+		t.Fatal("the entry with a comma in its name is not in the fixture")
 	}
 }

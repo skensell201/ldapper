@@ -31,9 +31,14 @@ func (c *csvWriter) Write(dn string, attrs map[string][]string) error {
 	row := make([]string, 0, len(c.columns)+1)
 	row = append(row, dn)
 	for _, name := range c.columns {
-		// A multi-valued attribute becomes one field. Semicolon-space keeps
-		// it readable in a spreadsheet without colliding with the separator.
-		row = append(row, strings.Join(attrs[name], "; "))
+		// A multi-valued attribute becomes one field, its values separated by
+		// newlines. A spreadsheet shows those as line breaks inside the cell,
+		// and encoding/csv quotes the field automatically.
+		//
+		// The obvious alternative, "; ", is ambiguous: a single value that
+		// happens to contain a semicolon reads exactly like several values,
+		// and an export nobody can read back is not an export.
+		row = append(row, strings.Join(attrs[name], "\n"))
 	}
 	return c.w.Write(row)
 }

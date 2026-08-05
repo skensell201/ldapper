@@ -40,13 +40,6 @@ func TestNodeLabelKeepsAnUnusualRDN(t *testing.T) {
 	}
 }
 
-func TestNodeLabelKeepsAnEscapedComma(t *testing.T) {
-	got := nodeFrom(browse.Entry{RDN: `CN=Volkova\, Anna`})
-	if got.Label != `Volkova\, Anna` {
-		t.Errorf("Label = %q, want everything after the first equals sign", got.Label)
-	}
-}
-
 // An unknown child count reaches the interface as -1, not 0: the tree draws a
 // different affordance for "no children" than for "we do not know yet".
 func TestNodeCarriesAnUnknownChildCount(t *testing.T) {
@@ -124,5 +117,45 @@ func TestJSONNamesAreLowerCamelCase(t *testing.T) {
 		if !strings.Contains(string(data), want) {
 			t.Errorf("Node marshals to %s, want a %s field", data, want)
 		}
+	}
+}
+
+// A directory returns a comma inside a name as \, or \2C depending on the
+// server. Either one shown to a person is the wire format, not the name.
+func TestNodeLabelUnescapes(t *testing.T) {
+	tests := []struct {
+		name string
+		rdn  string
+		want string
+	}{
+		{"hex escape", `CN=Volkova\2C Anna`, "Volkova, Anna"},
+		{"character escape", `CN=Volkova\, Anna`, "Volkova, Anna"},
+		{"escaped backslash", `CN=back\\slash`, `back\slash`},
+		{"escaped plus", `CN=one\+two`, "one+two"},
+		{"lower-case hex", `CN=a\2cb`, "a,b"},
+		{"nothing to undo", "CN=Anna Volkova", "Anna Volkova"},
+		{"a trailing backslash is left alone", `CN=odd\`, `odd\`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := nodeFrom(browse.Entry{RDN: tt.rdn}).Label; got != tt.want {
+				t.Errorf("Label = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+// The DN itself is never unescaped: it is an identifier, and it goes back to
+// the server exactly as it arrived.
+func TestNodeKeepsTheDNEscaped(t *testing.T) {
+	const dn = `CN=Volkova\2C Anna,OU=Users,DC=example,DC=com`
+	got := nodeFrom(browse.Entry{DN: dn, RDN: `CN=Volkova\2C Anna`})
+
+	if got.DN != dn {
+		t.Errorf("DN = %q, want it untouched", got.DN)
+	}
+	if got.RDN != `CN=Volkova\2C Anna` {
+		t.Errorf("RDN = %q, want the escaped form kept for copying", got.RDN)
 	}
 }

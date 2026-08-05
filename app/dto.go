@@ -6,6 +6,7 @@ package app
 
 import (
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/skensell201/ldapper/internal/browse"
@@ -87,13 +88,48 @@ func nodeFrom(e browse.Entry) Node {
 	}
 }
 
-// labelOf strips the attribute name from an RDN: CN=Anna Volkova becomes
-// Anna Volkova. An RDN with no equals sign is left alone.
+// labelOf strips the attribute name from an RDN and undoes RFC 4514 escaping:
+// CN=Volkova\2C Anna becomes Volkova, Anna. An RDN with no equals sign is
+// left alone.
+//
+// The unescaping matters more than it looks. A directory returns a comma
+// inside a name as either \, or \2C depending on the server, and showing
+// either one to a person is showing them the wire format instead of the name.
 func labelOf(rdn string) string {
 	if i := strings.IndexByte(rdn, '='); i >= 0 {
-		return rdn[i+1:]
+		rdn = rdn[i+1:]
 	}
-	return rdn
+	return unescapeDN(rdn)
+}
+
+// unescapeDN resolves the two escape forms RFC 4514 allows: a backslash
+// before a special character, and a backslash before two hex digits.
+func unescapeDN(s string) string {
+	if !strings.ContainsRune(s, '\\') {
+		return s
+	}
+
+	var b strings.Builder
+	b.Grow(len(s))
+
+	for i := 0; i < len(s); i++ {
+		if s[i] != '\\' || i+1 >= len(s) {
+			b.WriteByte(s[i])
+			continue
+		}
+		// \XX, a hex pair.
+		if i+2 < len(s) {
+			if v, err := strconv.ParseUint(s[i+1:i+3], 16, 8); err == nil {
+				b.WriteByte(byte(v))
+				i += 2
+				continue
+			}
+		}
+		// \c, the character itself.
+		b.WriteByte(s[i+1])
+		i++
+	}
+	return b.String()
 }
 
 // rowsFrom turns a search result into the attribute table, sorted by name.
