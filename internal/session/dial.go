@@ -166,7 +166,9 @@ func Dial(ctx context.Context, cfg Config) (*Conn, error) {
 
 	if cfg.Encryption == EncryptionStartTLS {
 		if err := conn.StartTLS(cfg.tlsConfig()); err != nil {
-			conn.Close()
+			// The handshake already failed; whatever Close reports on the
+			// way out cannot tell the caller anything more useful.
+			_ = conn.Close()
 			return nil, err
 		}
 	}
@@ -177,7 +179,7 @@ func Dial(ctx context.Context, cfg Config) (*Conn, error) {
 	// connection itself; per-request cancellation comes from SearchAsync.
 	go func() {
 		<-ctx.Done()
-		conn.Close()
+		_ = conn.Close()
 	}()
 
 	return &Conn{Conn: conn}, nil
