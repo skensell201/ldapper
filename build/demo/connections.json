@@ -1,1 +1,11 @@
-[{"id":"demo","name":"Example Corporation","host":"localhost","port":4389,"encryption":"none","bindMethod":"anonymous","rememberPassword":false}]
+[
+  {
+    "id": "demo",
+    "name": "Example Corporation",
+    "host": "localhost",
+    "port": 4389,
+    "encryption": "none",
+    "bindMethod": "anonymous",
+    "rememberPassword": false
+  }
+]
