@@ -1,0 +1,1066 @@
+<title>Ldapper — визуальный мокап v1</title>
+
+<style>
+  :root {
+    color-scheme: dark;
+
+    --void:      #000000;
+    --obsidian:  #0e0f11;
+    --carbon:    #141617;
+    --graphite:  #1d2023;
+
+    --violet:    #b6abff;
+    --wire:      #eef35f;
+    --teal:      #00cbaa;
+    --amber:     #f0b357;
+    --rust:      #ff7a6b;
+
+    --paper:     #f2f3f4;
+    --cloud:     #c9cdd1;
+    --fog:       #8b9196;
+    --steel:     #5a6167;
+    --ash:       #33383c;
+
+    --hair:      inset 0 0 0 .5px rgba(255,255,255,.10);
+    --hair-soft: inset 0 0 0 .5px rgba(255,255,255,.06);
+
+    --sans: "Helvetica Neue", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+    --r-card: 12px;
+    --r-input: 8px;
+    --r-pill: 50px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  /* ---------- page chrome ---------- */
+
+  .masthead { display: flex; flex-direction: column; gap: 20px; }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: -0.018em;
+    line-height: 1.08;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .lede {
+    max-width: 62ch;
+    color: var(--cloud);
+    margin: 0;
+  }
+
+  .note {
+    max-width: 68ch;
+    color: var(--fog);
+    font-size: 13.5px;
+    margin: 0;
+  }
+
+  .note code, .lede code { font-family: var(--mono); color: var(--cloud); font-size: .92em; }
+
+  /* ---------- screen sections ---------- */
+
+  .screen { display: flex; flex-direction: column; gap: 16px; }
+
+  .screen-head { display: flex; flex-direction: column; gap: 6px; }
+
+  .screen-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--steel);
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: -0.012em;
+    margin: 0;
+  }
+
+  .frame { overflow-x: auto; padding-bottom: 4px; }
+
+  /* ---------- the app window ---------- */
+
+  .app {
+    min-width: 1080px;
+    background: var(--obsidian);
+    border-radius: var(--r-card);
+    box-shadow: var(--hair);
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.45;
+    position: relative;
+  }
+
+  .utility {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    height: 38px;
+    background: var(--void);
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.10);
+  }
+
+  .traffic { display: flex; gap: 7px; margin-right: 4px; }
+  .traffic i { width: 10px; height: 10px; border-radius: 50%; background: var(--graphite); display: block; }
+
+  .wordmark {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--paper);
+  }
+  .wordmark em { font-style: normal; color: var(--violet); }
+
+  .conn-pick {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 24px;
+    padding: 0 12px;
+    border-radius: var(--r-pill);
+    background: var(--carbon);
+    box-shadow: var(--hair);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cloud);
+  }
+
+  .led { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex: none; }
+  .led.warn { background: var(--amber); }
+
+  .utility .spacer { margin-left: auto; }
+
+  .util-link {
+    font-size: 11.5px;
+    color: var(--fog);
+    letter-spacing: .02em;
+  }
+  .util-link.accent { color: var(--violet); }
+
+  /* toolbar */
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--obsidian);
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.06);
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 32px;
+    padding: 0 12px;
+    background: var(--carbon);
+    border-radius: var(--r-input);
+    box-shadow: var(--hair);
+    color: var(--cloud);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    white-space: nowrap;
+  }
+  .field.grow { flex: 1; min-width: 0; }
+  .field .ph { color: var(--steel); }
+  .field .caret {
+    display: inline-block;
+    width: 1px;
+    height: 13px;
+    background: var(--violet);
+    vertical-align: -2px;
+  }
+
+  .select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 12px;
+    background: var(--carbon);
+    border-radius: var(--r-input);
+    box-shadow: var(--hair);
+    font-size: 11.5px;
+    color: var(--cloud);
+    white-space: nowrap;
+  }
+  .select .chev { color: var(--steel); font-size: 9px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 16px;
+    border-radius: var(--r-pill);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .01em;
+    white-space: nowrap;
+  }
+  .btn.ghost { background: transparent; box-shadow: var(--hair); color: var(--cloud); }
+  .btn.quiet { background: var(--carbon); box-shadow: var(--hair); color: var(--cloud); }
+  .btn.cta {
+    background: var(--wire);
+    color: #16180a;
+    box-shadow: inset 0 2.5px 0 -2px rgba(255,255,255,.35);
+  }
+
+  /* workspace */
+
+  .workspace {
+    display: grid;
+    grid-template-columns: 316px 1fr;
+    min-height: 468px;
+  }
+
+  .pane-tree {
+    background: var(--obsidian);
+    box-shadow: inset -.5px 0 0 rgba(255,255,255,.06);
+    padding: 8px 0;
+    overflow: hidden;
+  }
+
+  .pane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px 10px;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--steel);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 26px;
+    padding-right: 12px;
+    padding-left: calc(12px + var(--d, 0) * 15px);
+    color: var(--cloud);
+    white-space: nowrap;
+  }
+  .row .chev {
+    width: 10px;
+    flex: none;
+    color: var(--steel);
+    font-size: 8px;
+    text-align: center;
+  }
+  .row svg { width: 14px; height: 14px; flex: none; color: var(--steel); }
+  .row .label { overflow: hidden; text-overflow: ellipsis; }
+  .row .count { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--ash); }
+
+  .row.sel {
+    background: var(--graphite);
+    color: var(--paper);
+    box-shadow: var(--hair);
+  }
+  .row.sel svg { color: var(--violet); }
+  .row.dim { color: var(--steel); }
+  .row.dim svg { color: var(--ash); }
+
+  .tree-more {
+    padding: 8px 12px 4px calc(12px + 3 * 15px);
+    font-size: 11px;
+    color: var(--steel);
+    font-family: var(--mono);
+  }
+
+  /* detail pane */
+
+  .pane-detail { background: var(--obsidian); display: flex; flex-direction: column; min-width: 0; }
+
+  .detail-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px 14px;
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.06);
+  }
+  .detail-head .avatar {
+    width: 34px; height: 34px; flex: none;
+    border-radius: var(--r-input);
+    background: var(--carbon);
+    box-shadow: var(--hair);
+    display: grid; place-items: center;
+    color: var(--violet);
+  }
+  .detail-head .avatar svg { width: 17px; height: 17px; }
+  .detail-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .detail-title .cn { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .detail-title .dn {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fog);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .detail-head .acts { margin-left: auto; display: flex; gap: 8px; flex: none; }
+
+  .tabs {
+    display: flex;
+    gap: 22px;
+    padding: 0 20px;
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.06);
+  }
+  .tab {
+    padding: 10px 0;
+    font-size: 12px;
+    color: var(--steel);
+    box-shadow: inset 0 -1px 0 transparent;
+  }
+  .tab.on { color: var(--paper); box-shadow: inset 0 -1px 0 var(--violet); }
+  .tab .n { font-family: var(--mono); font-size: 10.5px; color: var(--ash); margin-left: 6px; }
+
+  /* attribute table */
+
+  .attrs { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .attrs th {
+    text-align: left;
+    font-weight: 400;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--steel);
+    padding: 12px 20px 8px;
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.06);
+  }
+  .attrs td {
+    padding: 8px 20px;
+    vertical-align: top;
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.04);
+  }
+  .attrs td.k { font-family: var(--mono); color: var(--cloud); width: 210px; white-space: nowrap; }
+  .attrs td.v { color: var(--paper); }
+  .attrs td.s { font-family: var(--mono); color: var(--steel); font-size: 10.5px; width: 132px; white-space: nowrap; }
+  .attrs tr.multi td.k::after { content: " ×4"; color: var(--ash); }
+
+  .raw { font-family: var(--mono); color: var(--fog); font-size: 11.5px; word-break: break-all; }
+  .val { font-family: var(--mono); font-size: 11.5px; color: var(--paper); word-break: break-all; }
+
+  .decoded {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    padding: 1px 9px;
+    border-radius: var(--r-pill);
+    background: rgba(0,203,170,.10);
+    box-shadow: inset 0 0 0 .5px rgba(0,203,170,.32);
+    color: var(--teal);
+    font-size: 11px;
+    font-family: var(--mono);
+  }
+  .decoded + .decoded { margin-left: 6px; }
+
+  .vlist { display: flex; flex-direction: column; gap: 3px; }
+  .vlist .more { color: var(--steel); font-size: 11px; font-family: var(--mono); }
+
+  /* status bar */
+
+  .statusbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 28px;
+    padding: 0 16px;
+    background: var(--void);
+    box-shadow: inset 0 .5px 0 rgba(255,255,255,.08);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--steel);
+  }
+  .statusbar .ok { color: var(--teal); }
+  .statusbar .spacer { margin-left: auto; }
+
+  /* ---------- search screen ---------- */
+
+  .results { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .results th {
+    text-align: left;
+    font-weight: 400;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--steel);
+    padding: 12px 20px 8px;
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.06);
+  }
+  .results td {
+    padding: 7px 20px;
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.04);
+    white-space: nowrap;
+    color: var(--cloud);
+  }
+  .results td.dn { font-family: var(--mono); font-size: 11px; color: var(--fog); }
+  .results td.sam { font-family: var(--mono); font-size: 11.5px; color: var(--paper); }
+  .results tr.hit td { background: var(--graphite); color: var(--paper); }
+  .results mark { background: rgba(182,171,255,.18); color: var(--violet); border-radius: 3px; padding: 0 2px; }
+
+  .stream {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fog);
+    box-shadow: inset 0 -.5px 0 rgba(255,255,255,.06);
+  }
+  .bar { flex: 1; height: 2px; background: var(--graphite); border-radius: 2px; overflow: hidden; }
+  .bar i { display: block; width: 38%; height: 100%; background: var(--violet); }
+  .stream .n { color: var(--paper); }
+
+  /* ---------- dialogs ---------- */
+
+  .stage {
+    position: relative;
+    min-width: 1080px;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    box-shadow: var(--hair);
+    background: var(--obsidian);
+  }
+  .stage .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.66);
+  }
+  .stage .modal-wrap {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+
+  .modal {
+    width: 452px;
+    background: var(--obsidian);
+    border-radius: var(--r-card);
+    box-shadow: var(--hair);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .modal h3 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 300;
+    letter-spacing: -0.012em;
+  }
+  .modal p.sub { margin: -10px 0 0; font-size: 12px; color: var(--fog); }
+
+  .form { display: flex; flex-direction: column; gap: 12px; }
+  .lbl { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--steel); margin-bottom: 5px; display: block; }
+  .cols { display: grid; grid-template-columns: 1fr 92px; gap: 10px; }
+  .segs { display: flex; gap: 4px; padding: 3px; background: var(--carbon); border-radius: var(--r-input); box-shadow: var(--hair); }
+  .seg {
+    flex: 1;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    font-size: 11.5px;
+    color: var(--fog);
+  }
+  .seg.on { background: var(--graphite); color: var(--paper); box-shadow: var(--hair); }
+
+  .check { display: flex; align-items: center; gap: 9px; font-size: 12px; color: var(--cloud); }
+  .box {
+    width: 15px; height: 15px; border-radius: 4px; flex: none;
+    background: var(--violet);
+    display: grid; place-items: center;
+    color: #12101f; font-size: 10px; font-weight: 600;
+  }
+
+  .modal-acts { display: flex; align-items: center; gap: 10px; }
+  .modal-acts .spacer { margin-left: auto; }
+
+  .cert {
+    background: var(--carbon);
+    border-radius: var(--r-input);
+    box-shadow: inset 0 0 0 .5px rgba(240,179,87,.30);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cert-head { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--amber); }
+  .cert dl { margin: 0; display: grid; grid-template-columns: 92px 1fr; gap: 5px 12px; font-size: 11px; }
+  .cert dt { color: var(--steel); font-family: var(--mono); }
+  .cert dd { margin: 0; color: var(--cloud); font-family: var(--mono); word-break: break-all; }
+  .cert dd.fp { color: var(--paper); }
+
+  /* ---------- tokens ---------- */
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 10px;
+  }
+  .sw {
+    background: var(--obsidian);
+    border-radius: var(--r-input);
+    box-shadow: var(--hair);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .chip { height: 40px; border-radius: 6px; box-shadow: var(--hair-soft); }
+  .sw b { font-size: 11.5px; font-weight: 500; }
+  .sw span { font-family: var(--mono); font-size: 10.5px; color: var(--steel); }
+  .sw small { font-size: 10.5px; color: var(--fog); line-height: 1.4; }
+
+  /* ---------- annotations ---------- */
+
+  .callouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .callout {
+    background: var(--obsidian);
+    border-radius: var(--r-input);
+    box-shadow: var(--hair);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .callout b { font-size: 12px; font-weight: 500; color: var(--paper); }
+  .callout span { font-size: 12px; color: var(--fog); line-height: 1.5; }
+  .callout code { font-family: var(--mono); font-size: 11px; color: var(--cloud); }
+
+  hr { border: 0; height: .5px; background: rgba(255,255,255,.10); margin: 0; }
+
+  @media (max-width: 760px) {
+    .page { padding: 40px 16px 80px; gap: 56px; }
+    h1 { font-size: 36px; }
+  }
+</style>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-domain" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="8" cy="8" r="5.8"/><path d="M2.2 8h11.6M8 2.2c2.4 2.7 2.4 9.1 0 11.6M8 2.2C5.6 4.9 5.6 11.3 8 13.8"/>
+  </symbol>
+  <symbol id="i-ou" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M2.2 12.8V4.2h3.9l1.3 1.7h6.4v6.9z"/>
+  </symbol>
+  <symbol id="i-box" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <rect x="2.4" y="3.6" width="11.2" height="8.8" rx="1.6"/><path d="M2.4 6.6h11.2"/>
+  </symbol>
+  <symbol id="i-user" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="8" cy="5.4" r="2.6"/><path d="M2.8 13.6c0-2.9 2.3-4.4 5.2-4.4s5.2 1.5 5.2 4.4"/>
+  </symbol>
+  <symbol id="i-group" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="6.1" cy="5.6" r="2.3"/><path d="M1.6 13.4c0-2.6 2-4 4.5-4s4.5 1.4 4.5 4"/><path d="M10.6 3.6a2.3 2.3 0 0 1 0 4.4M11.6 9.7c1.7.4 2.8 1.6 2.8 3.7"/>
+  </symbol>
+  <symbol id="i-search" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="7.1" cy="7.1" r="4.3"/><path d="M10.3 10.3 13.6 13.6"/>
+  </symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <rect x="3.2" y="7" width="9.6" height="6.4" rx="1.6"/><path d="M5.6 7V5.2a2.4 2.4 0 0 1 4.8 0V7"/>
+  </symbol>
+  <symbol id="i-warn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M8 2.4 14.4 13.4H1.6z"/><path d="M8 6.6v3.2M8 11.6v.5"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Ldapper · визуальный мокап v1</p>
+    <h1>Обозреватель каталога, собранный вокруг тёмной приборной панели</h1>
+    <p class="lede">Четыре экрана, покрывающие весь путь v1: подключиться, обойти дерево, прочитать объект, найти нужное. Данные вымышленные, но правдоподобные — домен <code>corp.example.com</code> на Windows Server AD.</p>
+    <p class="note">Гарнитуры на макете — системный гротеск и системный моноширинный как заместители TT&nbsp;Hoves и Basis&nbsp;Grotesque&nbsp;Mono из оригинального стиля: лицензионные шрифты подключим при вёрстке приложения. Интерфейс подписан по-английски — атрибуты и классы LDAP всё равно непереводимы, а аудитория живёт в англоязычной консоли. Скажи, если хочешь русский.</p>
+  </header>
+
+  <hr>
+
+  <!-- ============ 1. BROWSE ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">01 — основной режим</p>
+      <h2>Дерево и атрибуты</h2>
+      <p class="note">Слева виртуализированное дерево каталога, справа — объект целиком. Сырое значение атрибута всегда на месте, а рядом бирюзовая плашка с расшифровкой: SID, GUID, FILETIME и битовые флаги перестают быть шестнадцатеричным мусором.</p>
+    </div>
+
+    <div class="frame">
+      <div class="app">
+
+        <div class="utility">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <span class="wordmark">Ldapper<em>.</em></span>
+          <span class="conn-pick"><i class="led"></i> dc01.corp.example.com · CORP\a.kensel <span style="color:var(--steel)">▾</span></span>
+          <span class="spacer"></span>
+          <span class="util-link accent">Connections</span>
+          <span class="util-link">Settings</span>
+        </div>
+
+        <div class="toolbar">
+          <span class="field grow">
+            <svg style="width:13px;height:13px;color:var(--steel)"><use href="#i-search"/></svg>
+            <span class="ph">(&amp;(objectClass=user)(sAMAccountName=a.*))</span>
+          </span>
+          <span class="select">Subtree <span class="chev">▾</span></span>
+          <span class="select">Base: OU=Corp <span class="chev">▾</span></span>
+          <span class="btn quiet">Search</span>
+          <span class="btn ghost">Export</span>
+        </div>
+
+        <div class="workspace">
+
+          <aside class="pane-tree">
+            <div class="pane-head"><span>Directory</span><span style="font-family:var(--mono);text-transform:none;letter-spacing:0">4 128</span></div>
+
+            <div class="row" style="--d:0"><span class="chev">▾</span><svg><use href="#i-domain"/></svg><span class="label">DC=corp,DC=example,DC=com</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=Builtin</span><span class="count">24</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=Computers</span><span class="count">312</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-ou"/></svg><span class="label">OU=Domain Controllers</span><span class="count">3</span></div>
+            <div class="row" style="--d:1"><span class="chev">▾</span><svg><use href="#i-ou"/></svg><span class="label">OU=Corp</span><span class="count">3 641</span></div>
+            <div class="row" style="--d:2"><span class="chev">▸</span><svg><use href="#i-ou"/></svg><span class="label">OU=Groups</span><span class="count">186</span></div>
+            <div class="row" style="--d:2"><span class="chev">▸</span><svg><use href="#i-ou"/></svg><span class="label">OU=Service Accounts</span><span class="count">41</span></div>
+            <div class="row" style="--d:2"><span class="chev">▾</span><svg><use href="#i-ou"/></svg><span class="label">OU=Users</span><span class="count">3 414</span></div>
+            <div class="row" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Alexey Sorokin</span></div>
+            <div class="row sel" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Anna Volkova</span></div>
+            <div class="row" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Boris Ivanov</span></div>
+            <div class="row" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Daria Orlova</span></div>
+            <div class="row dim" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Egor Titov</span></div>
+            <div class="tree-more">+ 3 409 more · loading page 2 of 4</div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=System</span><span class="count">96</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=Users</span><span class="count">52</span></div>
+          </aside>
+
+          <main class="pane-detail">
+
+            <div class="detail-head">
+              <span class="avatar"><svg><use href="#i-user"/></svg></span>
+              <span class="detail-title">
+                <span class="cn">Anna Volkova</span>
+                <span class="dn">CN=Anna Volkova,OU=Users,OU=Corp,DC=corp,DC=example,DC=com</span>
+              </span>
+              <span class="acts">
+                <span class="btn ghost">Copy DN</span>
+                <span class="btn ghost">Export LDIF</span>
+              </span>
+            </div>
+
+            <div class="tabs">
+              <span class="tab on">Attributes<span class="n">38</span></span>
+              <span class="tab">Member of<span class="n">7</span></span>
+              <span class="tab">Security</span>
+              <span class="tab">Raw LDIF</span>
+            </div>
+
+            <table class="attrs">
+              <thead>
+                <tr><th>Attribute</th><th>Value</th><th>Syntax</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="k">sAMAccountName</td>
+                  <td class="v"><span class="val">a.volkova</span></td>
+                  <td class="s">DirectoryString</td>
+                </tr>
+                <tr>
+                  <td class="k">userPrincipalName</td>
+                  <td class="v"><span class="val">a.volkova@corp.example.com</span></td>
+                  <td class="s">DirectoryString</td>
+                </tr>
+                <tr class="multi">
+                  <td class="k">objectClass</td>
+                  <td class="v"><span class="vlist">
+                    <span class="val">top</span>
+                    <span class="val">person</span>
+                    <span class="val">organizationalPerson</span>
+                    <span class="val">user</span>
+                  </span></td>
+                  <td class="s">OID</td>
+                </tr>
+                <tr>
+                  <td class="k">objectSid</td>
+                  <td class="v">
+                    <span class="raw">AQUAAAAAAAUVAAAAx3XZ2LxTOM8UAe8BUAQAAA==</span><br>
+                    <span class="decoded">S-1-5-21-3638186439-3476304828-32309524-1104</span>
+                  </td>
+                  <td class="s">OctetString</td>
+                </tr>
+                <tr>
+                  <td class="k">objectGUID</td>
+                  <td class="v">
+                    <span class="raw">DJvxoy5NGk+ciAt+XSpB9g==</span><br>
+                    <span class="decoded">a3f19b0c-4d2e-4f1a-9c88-0b7e5d2a41f6</span>
+                  </td>
+                  <td class="s">OctetString</td>
+                </tr>
+                <tr>
+                  <td class="k">userAccountControl</td>
+                  <td class="v">
+                    <span class="raw">66048</span><br>
+                    <span class="decoded">NORMAL_ACCOUNT</span><span class="decoded">DONT_EXPIRE_PASSWORD</span>
+                  </td>
+                  <td class="s">Integer</td>
+                </tr>
+                <tr>
+                  <td class="k">pwdLastSet</td>
+                  <td class="v">
+                    <span class="raw">133894094610000000</span><br>
+                    <span class="decoded">2025-04-18 00:24:21 UTC</span>
+                  </td>
+                  <td class="s">LargeInteger</td>
+                </tr>
+                <tr>
+                  <td class="k">accountExpires</td>
+                  <td class="v">
+                    <span class="raw">9223372036854775807</span><br>
+                    <span class="decoded">never expires</span>
+                  </td>
+                  <td class="s">LargeInteger</td>
+                </tr>
+                <tr>
+                  <td class="k">memberOf</td>
+                  <td class="v"><span class="vlist">
+                    <span class="val">CN=VPN Users,OU=Groups,OU=Corp,DC=corp,DC=example,DC=com</span>
+                    <span class="val">CN=Finance,OU=Groups,OU=Corp,DC=corp,DC=example,DC=com</span>
+                    <span class="more">+ 5 more</span>
+                  </span></td>
+                  <td class="s">DN</td>
+                </tr>
+                <tr>
+                  <td class="k">whenCreated</td>
+                  <td class="v">
+                    <span class="raw">20230914081233.0Z</span><br>
+                    <span class="decoded">2023-09-14 08:12:33 UTC</span>
+                  </td>
+                  <td class="s">GeneralizedTime</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </main>
+        </div>
+
+        <div class="statusbar">
+          <span><i class="led" style="display:inline-block;vertical-align:0"></i> <span class="ok">Connected</span></span>
+          <span>LDAPS :636 · TLS 1.3</span>
+          <span>bind: NTLM</span>
+          <span>page size 1000</span>
+          <span class="spacer"></span>
+          <span>38 attributes · 12 ms</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><b>Расшифровка вместо байтов</b><span>Бирюзовая плашка под сырым значением — это слой <code>internal/decode</code>. Только он знает про специфику AD, остальной код работает с обычным LDAP.</span></div>
+      <div class="callout"><b>Страницы видно</b><span>Строка <code>loading page 2 of 4</code> честно показывает, что AD отдаёт по 1000 записей за раз. Никаких зависших спиннеров на большом OU.</span></div>
+      <div class="callout"><b>Ни одной жёлтой кнопки</b><span>Шартрез приберегаем для единственного действия — подключения. В режиме чтения все кнопки контурные, а взгляд не дёргается.</span></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============ 2. SEARCH ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">02 — поиск</p>
+      <h2>Результаты приходят потоком</h2>
+      <p class="note">Фильтр вводится как есть — сисадмин уже умеет писать LDAP-фильтры и не хочет собирать их мышью. Бэкенд стримит совпадения событиями, таблица наполняется на ходу, счётчик и полоска показывают, что обход ещё идёт.</p>
+    </div>
+
+    <div class="frame">
+      <div class="app">
+
+        <div class="utility">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <span class="wordmark">Ldapper<em>.</em></span>
+          <span class="conn-pick"><i class="led"></i> dc01.corp.example.com · CORP\a.kensel <span style="color:var(--steel)">▾</span></span>
+          <span class="spacer"></span>
+          <span class="util-link accent">Connections</span>
+          <span class="util-link">Settings</span>
+        </div>
+
+        <div class="toolbar">
+          <span class="field grow">
+            <svg style="width:13px;height:13px;color:var(--violet)"><use href="#i-search"/></svg>
+            <span style="color:var(--paper)">(&amp;(objectClass=user)(memberOf=CN=VPN Users,OU=Groups,OU=Corp,DC=corp,DC=example,DC=com))</span><span class="caret"></span>
+          </span>
+          <span class="select">Subtree <span class="chev">▾</span></span>
+          <span class="select">Base: DC=corp <span class="chev">▾</span></span>
+          <span class="btn quiet">Stop</span>
+          <span class="btn ghost">Export CSV</span>
+        </div>
+
+        <div class="workspace" style="grid-template-columns: 316px 1fr">
+
+          <aside class="pane-tree">
+            <div class="pane-head"><span>Saved filters</span><span style="text-transform:none;letter-spacing:0;font-family:var(--mono)">6</span></div>
+            <div class="row sel" style="--d:0"><span class="chev"></span><svg><use href="#i-search"/></svg><span class="label">VPN users</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-search"/></svg><span class="label">Disabled accounts</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-search"/></svg><span class="label">Password never expires</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-search"/></svg><span class="label">Stale &gt; 90 days</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-search"/></svg><span class="label">Empty groups</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-search"/></svg><span class="label">Service accounts with SPN</span></div>
+            <div class="pane-head" style="padding-top:22px"><span>History</span></div>
+            <div class="row dim" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">(sAMAccountName=a.*)</span></div>
+            <div class="row dim" style="--d:0"><span class="chev"></span><svg><use href="#i-group"/></svg><span class="label">(objectClass=group)</span></div>
+          </aside>
+
+          <main class="pane-detail">
+            <div class="stream">
+              <span>Streaming results — <span class="n">1 248</span> matched of ~3 641 scanned</span>
+              <span class="bar"><i></i></span>
+              <span>4.1 s</span>
+            </div>
+
+            <table class="results">
+              <thead>
+                <tr><th>Name</th><th>sAMAccountName</th><th>Class</th><th>Distinguished name</th></tr>
+              </thead>
+              <tbody>
+                <tr class="hit"><td>Anna Volkova</td><td class="sam">a.volkova</td><td>user</td><td class="dn">CN=Anna Volkova,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Alexey Sorokin</td><td class="sam">a.sorokin</td><td>user</td><td class="dn">CN=Alexey Sorokin,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Boris Ivanov</td><td class="sam">b.ivanov</td><td>user</td><td class="dn">CN=Boris Ivanov,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Daria Orlova</td><td class="sam">d.orlova</td><td>user</td><td class="dn">CN=Daria Orlova,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Egor Titov</td><td class="sam">e.titov</td><td>user</td><td class="dn">CN=Egor Titov,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>svc-backup</td><td class="sam">svc-backup</td><td>user</td><td class="dn">CN=svc-backup,OU=Service Accounts,OU=Corp,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Irina Belova</td><td class="sam">i.belova</td><td>user</td><td class="dn">CN=Irina Belova,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Kirill Zaytsev</td><td class="sam">k.zaytsev</td><td>user</td><td class="dn">CN=Kirill Zaytsev,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Marina Rud</td><td class="sam">m.rud</td><td>user</td><td class="dn">CN=Marina Rud,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Nikita Frolov</td><td class="sam">n.frolov</td><td>user</td><td class="dn">CN=Nikita Frolov,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+              </tbody>
+            </table>
+          </main>
+        </div>
+
+        <div class="statusbar">
+          <span><i class="led" style="display:inline-block;vertical-align:0"></i> <span class="ok">Searching</span></span>
+          <span>scope: subtree</span>
+          <span>paged 1000</span>
+          <span class="spacer"></span>
+          <span>click a row to reveal it in the tree</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><b>Фильтр — это текст</b><span>Поле принимает сырой RFC 4515. Конструктор мышью появится позже и будет писать в то же самое поле, а не подменять его.</span></div>
+      <div class="callout"><b>Сохранённые фильтры слева</b><span>Панель дерева переиспользуется под библиотеку фильтров — окно не перестраивается, глазу не нужно заново искать опору.</span></div>
+      <div class="callout"><b>Фиолетовый = совпадение</b><span>Единственная роль <code>#b6abff</code> внутри рабочей области — подсветка того, что нашлось. Больше он нигде не мельтешит.</span></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============ 3. CONNECT ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">03 — подключение</p>
+      <h2>Единственная жёлтая кнопка во всём приложении</h2>
+      <p class="note">Хост, шифрование, способ входа. NTLM позволяет войти как <code>CORP\a.kensel</code>, не выясняя полный DN — именно так админ и думает о своей учётке. Пароль по галочке уезжает в хранилище ключей ОС, а не в JSON рядом с профилем.</p>
+    </div>
+
+    <div class="frame">
+      <div class="stage" style="min-height:520px">
+        <div class="app" style="min-width:auto">
+          <div class="utility">
+            <div class="traffic"><i></i><i></i><i></i></div>
+            <span class="wordmark">Ldapper<em>.</em></span>
+            <span class="conn-pick"><i class="led warn"></i> not connected <span style="color:var(--steel)">▾</span></span>
+            <span class="spacer"></span>
+            <span class="util-link accent">Connections</span>
+            <span class="util-link">Settings</span>
+          </div>
+          <div class="workspace" style="grid-template-columns:316px 1fr;min-height:440px">
+            <aside class="pane-tree"></aside>
+            <main class="pane-detail"></main>
+          </div>
+          <div class="statusbar"><span>idle</span></div>
+        </div>
+
+        <div class="scrim"></div>
+        <div class="modal-wrap">
+          <div class="modal">
+            <h3>New connection</h3>
+            <p class="sub">Saved locally. Credentials go to the Windows Credential Manager.</p>
+
+            <div class="form">
+              <div class="cols">
+                <div>
+                  <span class="lbl">Host</span>
+                  <span class="field" style="width:100%">dc01.corp.example.com</span>
+                </div>
+                <div>
+                  <span class="lbl">Port</span>
+                  <span class="field" style="width:100%">636</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">Encryption</span>
+                <div class="segs">
+                  <span class="seg on">LDAPS</span>
+                  <span class="seg">StartTLS</span>
+                  <span class="seg">None</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">Authentication</span>
+                <div class="segs">
+                  <span class="seg on">NTLM</span>
+                  <span class="seg">Simple bind</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">User</span>
+                <span class="field" style="width:100%">CORP\a.kensel</span>
+              </div>
+
+              <div>
+                <span class="lbl">Password</span>
+                <span class="field" style="width:100%">
+                  <svg style="width:12px;height:12px;color:var(--steel)"><use href="#i-lock"/></svg>
+                  <span style="letter-spacing:.18em">••••••••••••</span>
+                </span>
+              </div>
+
+              <label class="check"><span class="box">✓</span> Remember password in Credential Manager</label>
+            </div>
+
+            <div class="modal-acts">
+              <span class="btn ghost">Test</span>
+              <span class="spacer"></span>
+              <span class="btn ghost">Cancel</span>
+              <span class="btn cta">Connect</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============ 4. CERT ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">04 — недоверенный сертификат</p>
+      <h2>Ошибку TLS никто не проглатывает</h2>
+      <p class="note">В доменах с собственным центром сертификации это первый экран, который увидит админ. Показываем отпечаток, издателя и срок, называем причину прямо и предлагаем ровно два выхода. Решение записывается в профиль подключения — не глобально.</p>
+    </div>
+
+    <div class="frame">
+      <div class="stage" style="min-height:470px">
+        <div class="app" style="min-width:auto">
+          <div class="utility">
+            <div class="traffic"><i></i><i></i><i></i></div>
+            <span class="wordmark">Ldapper<em>.</em></span>
+            <span class="conn-pick"><i class="led warn"></i> dc01.corp.example.com · connecting <span style="color:var(--steel)">▾</span></span>
+            <span class="spacer"></span>
+            <span class="util-link accent">Connections</span>
+            <span class="util-link">Settings</span>
+          </div>
+          <div class="workspace" style="grid-template-columns:316px 1fr;min-height:390px">
+            <aside class="pane-tree"></aside>
+            <main class="pane-detail"></main>
+          </div>
+          <div class="statusbar"><span>TLS handshake halted</span></div>
+        </div>
+
+        <div class="scrim"></div>
+        <div class="modal-wrap">
+          <div class="modal" style="width:492px">
+            <h3>This server's certificate isn't trusted</h3>
+            <p class="sub">dc01.corp.example.com signed its certificate with an authority your machine doesn't know. That is normal for an internal CA — and it also looks exactly like an interception.</p>
+
+            <div class="cert">
+              <div class="cert-head"><svg style="width:14px;height:14px"><use href="#i-warn"/></svg> Verify the fingerprint before you continue</div>
+              <dl>
+                <dt>SHA-256</dt><dd class="fp">4B:9C:1E:07:AA:63:F2:80:D5:11:6E:38:C4:7A:90:2F:BB:15:D8:E9:33:07:5C:A1:64:22:B0:7E:19:CD:4F:88</dd>
+                <dt>Subject</dt><dd>CN=dc01.corp.example.com</dd>
+                <dt>Issuer</dt><dd>CN=CORP-ROOT-CA, DC=corp, DC=example, DC=com</dd>
+                <dt>Valid until</dt><dd>2027-02-11</dd>
+              </dl>
+            </div>
+
+            <label class="check"><span class="box">✓</span> Trust this certificate for dc01.corp.example.com</label>
+
+            <div class="modal-acts">
+              <span class="spacer"></span>
+              <span class="btn ghost">Cancel</span>
+              <span class="btn cta">Continue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============ TOKENS ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">05 — палитра</p>
+      <h2>Токены, на которых всё держится</h2>
+      <p class="note">Взяты из системы Twingate по твоей ссылке. Теней нет вообще: глубина набирается тональностью поверхностей и волосяной внутренней подсветкой <code>inset 0 0 0 .5px rgba(255,255,255,.1)</code>.</p>
+    </div>
+
+    <div class="swatches">
+      <div class="sw"><span class="chip" style="background:#000000"></span><b>Void</b><span>#000000</span><small>Холст окна, верхняя строка, статус-бар</small></div>
+      <div class="sw"><span class="chip" style="background:#0e0f11"></span><b>Obsidian</b><span>#0e0f11</span><small>Панели и рабочая область</small></div>
+      <div class="sw"><span class="chip" style="background:#141617"></span><b>Carbon</b><span>#141617</span><small>Поля ввода, вторичные кнопки</small></div>
+      <div class="sw"><span class="chip" style="background:#1d2023"></span><b>Graphite</b><span>#1d2023</span><small>Выделенная строка, приподнятые элементы</small></div>
+      <div class="sw"><span class="chip" style="background:#b6abff"></span><b>Signal Violet</b><span>#b6abff</span><small>Совпадения поиска и верхняя утилитарная строка</small></div>
+      <div class="sw"><span class="chip" style="background:#eef35f"></span><b>Live Wire</b><span>#eef35f</span><small>Одна залитая кнопка на экран — и только она</small></div>
+      <div class="sw"><span class="chip" style="background:#00cbaa"></span><b>Circuit Teal</b><span>#00cbaa</span><small>Расшифрованные значения, индикатор связи</small></div>
+      <div class="sw"><span class="chip" style="background:#f0b357"></span><b>Amber</b><span>#f0b357</span><small>Предупреждения: сертификат, обрыв связи</small></div>
+      <div class="sw"><span class="chip" style="background:#f2f3f4"></span><b>Paper</b><span>#f2f3f4</span><small>Основной текст</small></div>
+      <div class="sw"><span class="chip" style="background:#8b9196"></span><b>Fog</b><span>#8b9196</span><small>Сырые значения, вторичный текст</small></div>
+      <div class="sw"><span class="chip" style="background:#5a6167"></span><b>Steel</b><span>#5a6167</span><small>Заголовки колонок, иконки в покое</small></div>
+      <div class="sw"><span class="chip" style="background:#33383c"></span><b>Ash</b><span>#33383c</span><small>Счётчики, самый тихий уровень</small></div>
+    </div>
+  </section>
+
+</div>

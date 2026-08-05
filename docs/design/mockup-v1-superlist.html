@@ -1,0 +1,1209 @@
+<title>Ldapper — мокап v1, вариант Б (Superlist)</title>
+
+<style>
+  :root {
+    color-scheme: dark;
+
+    --canvas:  #181824;
+    --plum:    #26253b;
+    --well:    #1f1e30;
+    --deep:    #131320;
+    --raise:   #2f2e47;
+
+    --coral:   #ff4a36;
+    --iris:    #535676;
+
+    --white:   #ffffff;
+    --mist:    #a3a3a7;
+    --ash:     #8e8da0;
+    --fog:     #696f81;
+    --whisper: rgba(247,247,255,.09);
+    --whisper-soft: rgba(247,247,255,.05);
+
+    --sans: "Inter Tight", Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+    --r-card: 20px;
+    --r-pill: 100px;
+    --r-input: 8px;
+
+    --sh-md: rgba(0,0,0,.34) 0 18px 42px -12px, rgba(0,0,0,.22) 0 6px 14px -6px;
+    --sh-sm: rgba(0,0,0,.24) 0 4px 12px -4px;
+    --sh-modal: rgba(0,0,0,.5) 0 28px 70px -18px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.32px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  /* ---------- page chrome ---------- */
+
+  .masthead { display: flex; flex-direction: column; gap: 20px; }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 60px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 em { font-style: normal; color: var(--iris); }
+
+  .lede { max-width: 62ch; color: var(--ash); margin: 0; font-size: 18px; letter-spacing: -0.36px; }
+  .note { max-width: 68ch; color: var(--fog); font-size: 14px; letter-spacing: -0.28px; line-height: 1.5; margin: 0; }
+  .note code, .lede code { font-family: var(--mono); color: var(--ash); font-size: .9em; letter-spacing: 0; }
+
+  .backlink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    padding: 8px 18px;
+    border-radius: var(--r-pill);
+    background: var(--plum);
+    box-shadow: var(--sh-sm);
+    color: var(--mist);
+    font-size: 14px;
+    text-decoration: none;
+    letter-spacing: -0.28px;
+  }
+  .backlink:hover { color: var(--white); }
+  .backlink:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+  /* ---------- sections ---------- */
+
+  .screen { display: flex; flex-direction: column; gap: 18px; }
+  .screen-head { display: flex; flex-direction: column; gap: 8px; }
+
+  .screen-num { font-family: var(--mono); font-size: 12px; color: var(--iris); letter-spacing: .08em; margin: 0; }
+
+  h2 { font-size: 30px; font-weight: 600; letter-spacing: -0.6px; line-height: 1.1; margin: 0; }
+
+  .frame { overflow-x: auto; padding: 6px 6px 12px; }
+
+  /* ---------- app window ---------- */
+
+  .app {
+    min-width: 1080px;
+    background: var(--plum);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-md);
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.4;
+    letter-spacing: -0.26px;
+  }
+
+  .utility {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 18px;
+    height: 44px;
+    background: var(--plum);
+  }
+
+  .traffic { display: flex; gap: 7px; margin-right: 4px; }
+  .traffic i { width: 10px; height: 10px; border-radius: 50%; background: var(--raise); display: block; }
+
+  .wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; color: var(--white); }
+
+  .conn-pick {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 28px;
+    padding: 0 14px;
+    border-radius: var(--r-pill);
+    background: var(--well);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0;
+    color: var(--ash);
+  }
+
+  .led { width: 6px; height: 6px; border-radius: 50%; background: var(--mist); flex: none; }
+  .led.live { background: var(--white); }
+  .led.warn { background: var(--coral); }
+
+  .utility .spacer { margin-left: auto; }
+  .util-link { font-size: 13px; color: var(--fog); }
+  .util-link.on { color: var(--white); }
+
+  /* toolbar */
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 18px 14px;
+    background: var(--plum);
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 14px;
+    background: var(--well);
+    border-radius: var(--r-input);
+    color: var(--ash);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .field.grow { flex: 1; min-width: 0; }
+  .field .ph { color: var(--iris); }
+  .field .caret { display: inline-block; width: 1.5px; height: 14px; background: var(--coral); vertical-align: -2px; }
+
+  .select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 16px;
+    background: var(--well);
+    border-radius: var(--r-pill);
+    font-size: 12px;
+    color: var(--ash);
+    white-space: nowrap;
+  }
+  .select .chev { color: var(--iris); font-size: 9px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 20px;
+    border-radius: var(--r-pill);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: -0.25px;
+    white-space: nowrap;
+  }
+  .btn.quiet { background: var(--well); color: var(--ash); }
+  .btn.plain { background: transparent; color: var(--fog); }
+  .btn.light { background: var(--white); color: var(--canvas); font-weight: 600; }
+  .btn.cta {
+    background: var(--coral);
+    color: var(--white);
+    font-weight: 600;
+    box-shadow: rgba(255,74,54,.28) 0 6px 18px -6px;
+  }
+
+  /* workspace */
+
+  .workspace { display: grid; grid-template-columns: 320px 1fr; min-height: 470px; padding: 0 10px 10px; gap: 10px; }
+
+  .pane {
+    background: var(--well);
+    border-radius: 16px;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .pane-tree { padding: 10px 0; }
+
+  .pane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 18px 12px;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--iris);
+  }
+  .pane-head .n { font-family: var(--mono); text-transform: none; letter-spacing: 0; color: var(--fog); }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    margin: 0 8px;
+    padding-right: 10px;
+    padding-left: calc(10px + var(--d, 0) * 15px);
+    border-radius: var(--r-input);
+    color: var(--ash);
+    white-space: nowrap;
+  }
+  .row .chev { width: 10px; flex: none; color: var(--iris); font-size: 8px; text-align: center; }
+  .row svg { width: 14px; height: 14px; flex: none; color: var(--iris); }
+  .row .label { overflow: hidden; text-overflow: ellipsis; }
+  .row .count { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); }
+
+  .row.sel { background: var(--coral); color: var(--white); font-weight: 500; }
+  .row.sel svg, .row.sel .chev, .row.sel .count { color: rgba(255,255,255,.78); }
+  .row.dim { color: var(--iris); }
+
+  /* filter library bits */
+
+  .row .dot {
+    width: 5px; height: 5px; border-radius: 50%; flex: none;
+    background: var(--coral);
+    margin-left: auto;
+  }
+  .row.sel .dot { background: rgba(255,255,255,.85); }
+  .row .dot + .tag { margin-left: 8px; }
+  .row .tag { margin-left: auto; }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .04em;
+    padding: 1px 7px;
+    border-radius: var(--r-pill);
+    background: var(--raise);
+    color: var(--ash);
+    flex: none;
+  }
+  .row.sel .tag { background: rgba(255,255,255,.2); color: var(--white); }
+  .row.off { color: var(--iris); }
+  .row.off svg { color: #3b3a55; }
+  .row.off .tag { background: transparent; color: #3b3a55; box-shadow: inset 0 0 0 1px #33324a; }
+
+  .editor { display: flex; flex-direction: column; gap: 16px; padding: 22px; }
+  .editor-head { display: flex; align-items: center; gap: 12px; }
+  .editor-head .cn { font-size: 17px; font-weight: 600; letter-spacing: -0.34px; color: var(--white); }
+  .editor-head .acts { margin-left: auto; display: flex; gap: 8px; }
+  .editor-head .btn { height: 30px; padding: 0 16px; font-size: 12px; }
+
+  .edited-note {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--ash);
+  }
+  .edited-note i { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); display: block; }
+
+  .code {
+    background: var(--canvas);
+    border-radius: var(--r-input);
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 1.65;
+    color: var(--white);
+    word-break: break-all;
+  }
+  .code .op { color: var(--iris); }
+  .code .attr { color: var(--mist); }
+  .code .oid { color: var(--ash); }
+  .code .var { background: var(--raise); border-radius: 5px; padding: 1px 6px; color: var(--white); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .valid {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 12px; color: var(--ash);
+    font-family: var(--mono); letter-spacing: 0;
+  }
+  .valid i {
+    width: 15px; height: 15px; border-radius: 50%;
+    background: var(--raise); color: var(--white);
+    display: grid; place-items: center; font-size: 9px;
+    font-family: var(--sans);
+  }
+
+  .cols-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+  .col-chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0;
+    padding: 4px 11px; border-radius: var(--r-pill);
+    background: var(--raise); color: var(--white);
+  }
+  .col-chip.add { background: transparent; color: var(--iris); box-shadow: inset 0 0 0 1px #33324a; }
+
+  .tree-more {
+    margin: 6px 8px 2px;
+    padding: 4px 10px 4px calc(10px + 3 * 15px);
+    font-size: 11px;
+    letter-spacing: 0;
+    color: var(--iris);
+    font-family: var(--mono);
+  }
+
+  /* detail */
+
+  .pane-detail { display: flex; flex-direction: column; background: var(--well); }
+
+  .detail-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 22px 16px; }
+  .detail-head .avatar {
+    width: 38px; height: 38px; flex: none;
+    border-radius: 12px;
+    background: var(--raise);
+    display: grid; place-items: center;
+    color: var(--mist);
+  }
+  .detail-head .avatar svg { width: 18px; height: 18px; }
+  .detail-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .detail-title .cn { font-size: 17px; font-weight: 600; letter-spacing: -0.34px; color: var(--white); }
+  .detail-title .dn {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--fog);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .detail-head .acts { margin-left: auto; display: flex; gap: 8px; flex: none; }
+  .detail-head .btn { height: 30px; padding: 0 16px; font-size: 12px; }
+
+  .tabs { display: flex; gap: 8px; padding: 0 22px 14px; }
+  .tab {
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+    font-size: 12px;
+    color: var(--fog);
+  }
+  .tab.on { background: var(--raise); color: var(--white); }
+  .tab .n { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); margin-left: 6px; }
+  .tab.on .n { color: var(--mist); }
+
+  /* attributes */
+
+  .attrs { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .attrs th {
+    text-align: left;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--iris);
+    padding: 10px 22px 8px;
+    box-shadow: inset 0 -1px 0 var(--whisper);
+  }
+  .attrs td { padding: 9px 22px; vertical-align: top; box-shadow: inset 0 -1px 0 var(--whisper-soft); }
+  .attrs td.k { font-family: var(--mono); letter-spacing: 0; color: var(--mist); width: 208px; white-space: nowrap; }
+  .attrs td.s { font-family: var(--mono); letter-spacing: 0; color: var(--iris); font-size: 10.5px; width: 130px; white-space: nowrap; }
+  .attrs tr.multi td.k::after { content: " ×4"; color: var(--iris); }
+
+  .raw { font-family: var(--mono); letter-spacing: 0; color: var(--fog); font-size: 11.5px; word-break: break-all; }
+  .val { font-family: var(--mono); letter-spacing: 0; font-size: 11.5px; color: var(--white); word-break: break-all; }
+
+  .decoded {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    padding: 2px 11px;
+    border-radius: var(--r-pill);
+    background: var(--raise);
+    color: var(--white);
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0;
+  }
+  .decoded + .decoded { margin-left: 6px; }
+
+  .vlist { display: flex; flex-direction: column; gap: 3px; }
+  .vlist .more { color: var(--iris); font-size: 11px; font-family: var(--mono); letter-spacing: 0; }
+
+  /* status bar */
+
+  .statusbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 34px;
+    padding: 0 22px;
+    background: var(--deep);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0;
+    color: var(--iris);
+  }
+  .statusbar .live { color: var(--mist); }
+  .statusbar .spacer { margin-left: auto; }
+
+  /* results */
+
+  .results { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .results th {
+    text-align: left; font-weight: 400; font-size: 11px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--iris);
+    padding: 10px 22px 8px; box-shadow: inset 0 -1px 0 var(--whisper);
+  }
+  .results td { padding: 8px 22px; box-shadow: inset 0 -1px 0 var(--whisper-soft); white-space: nowrap; color: var(--ash); }
+  .results td.dn { font-family: var(--mono); letter-spacing: 0; font-size: 11px; color: var(--fog); }
+  .results td.sam { font-family: var(--mono); letter-spacing: 0; font-size: 11.5px; color: var(--white); }
+  .results tr.hit td { background: var(--coral); color: var(--white); box-shadow: none; }
+  .results tr.hit td.dn, .results tr.hit td.sam { color: var(--white); }
+  .results tr.hit mark { background: rgba(255,255,255,.24); color: var(--white); }
+  .results mark { background: var(--raise); color: var(--white); border-radius: 4px; padding: 1px 4px; }
+
+  .stream {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 22px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--fog);
+  }
+  .bar { flex: 1; height: 3px; background: var(--raise); border-radius: var(--r-pill); overflow: hidden; }
+  .bar i { display: block; width: 38%; height: 100%; background: var(--mist); border-radius: var(--r-pill); }
+  .stream .n { color: var(--white); }
+
+  /* stage + modal */
+
+  .stage {
+    position: relative;
+    min-width: 1080px;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    box-shadow: var(--sh-md);
+    background: var(--plum);
+  }
+  .stage .scrim { position: absolute; inset: 0; background: rgba(19,19,32,.72); }
+  .stage .modal-wrap { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; }
+
+  .modal {
+    width: 460px;
+    background: var(--plum);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-modal);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .modal h3 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.48px; line-height: 1.15; }
+  .modal p.sub { margin: -12px 0 0; font-size: 13px; color: var(--fog); line-height: 1.45; }
+
+  .form { display: flex; flex-direction: column; gap: 14px; }
+  .lbl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--iris); margin-bottom: 6px; display: block; }
+  .cols { display: grid; grid-template-columns: 1fr 96px; gap: 10px; }
+
+  .segs { display: flex; gap: 4px; padding: 4px; background: var(--well); border-radius: var(--r-pill); }
+  .seg { flex: 1; text-align: center; padding: 6px 0; border-radius: var(--r-pill); font-size: 12px; color: var(--fog); }
+  .seg.on { background: var(--raise); color: var(--white); }
+
+  .check { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--ash); }
+  .box { width: 16px; height: 16px; border-radius: 5px; flex: none; background: var(--raise); display: grid; place-items: center; color: var(--white); font-size: 10px; font-weight: 600; }
+
+  .modal-acts { display: flex; align-items: center; gap: 10px; }
+  .modal-acts .spacer { margin-left: auto; }
+
+  .cert {
+    background: var(--well);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cert-head { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 500; color: var(--coral); }
+  .cert dl { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 12px; font-size: 11px; }
+  .cert dt { color: var(--iris); font-family: var(--mono); letter-spacing: 0; }
+  .cert dd { margin: 0; color: var(--ash); font-family: var(--mono); letter-spacing: 0; word-break: break-all; }
+  .cert dd.fp { color: var(--white); }
+
+  /* swatches + callouts */
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 12px; }
+  .sw {
+    background: var(--plum);
+    border-radius: 16px;
+    box-shadow: var(--sh-sm);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chip { height: 44px; border-radius: 10px; }
+  .sw b { font-size: 12.5px; font-weight: 600; letter-spacing: -0.25px; }
+  .sw span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); }
+  .sw small { font-size: 11px; color: var(--fog); line-height: 1.45; }
+
+  .callouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .callout {
+    background: var(--plum);
+    border-radius: 16px;
+    box-shadow: var(--sh-sm);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .callout b { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: -0.26px; }
+  .callout span { font-size: 12.5px; color: var(--fog); line-height: 1.5; }
+  .callout code { font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--ash); }
+
+  .verdict {
+    background: var(--plum);
+    border-radius: var(--r-card);
+    box-shadow: var(--sh-sm);
+    padding: 26px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .verdict h2 { font-size: 24px; }
+  .verdict ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .verdict li { color: var(--fog); font-size: 14px; line-height: 1.5; letter-spacing: -0.28px; }
+  .verdict li b { color: var(--white); font-weight: 600; }
+
+  @media (max-width: 760px) {
+    .page { padding: 40px 16px 80px; gap: 56px; }
+    h1 { font-size: 38px; }
+  }
+</style>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-domain" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="8" cy="8" r="5.8"/><path d="M2.2 8h11.6M8 2.2c2.4 2.7 2.4 9.1 0 11.6M8 2.2C5.6 4.9 5.6 11.3 8 13.8"/>
+  </symbol>
+  <symbol id="i-ou" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M2.2 12.8V4.2h3.9l1.3 1.7h6.4v6.9z"/>
+  </symbol>
+  <symbol id="i-box" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <rect x="2.4" y="3.6" width="11.2" height="8.8" rx="1.6"/><path d="M2.4 6.6h11.2"/>
+  </symbol>
+  <symbol id="i-user" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="8" cy="5.4" r="2.6"/><path d="M2.8 13.6c0-2.9 2.3-4.4 5.2-4.4s5.2 1.5 5.2 4.4"/>
+  </symbol>
+  <symbol id="i-group" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="6.1" cy="5.6" r="2.3"/><path d="M1.6 13.4c0-2.6 2-4 4.5-4s4.5 1.4 4.5 4"/><path d="M10.6 3.6a2.3 2.3 0 0 1 0 4.4M11.6 9.7c1.7.4 2.8 1.6 2.8 3.7"/>
+  </symbol>
+  <symbol id="i-search" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+    <circle cx="7.1" cy="7.1" r="4.3"/><path d="M10.3 10.3 13.6 13.6"/>
+  </symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <rect x="3.2" y="7" width="9.6" height="6.4" rx="1.6"/><path d="M5.6 7V5.2a2.4 2.4 0 0 1 4.8 0V7"/>
+  </symbol>
+  <symbol id="i-warn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M8 2.4 14.4 13.4H1.6z"/><path d="M8 6.6v3.2M8 11.6v.5"/>
+  </symbol>
+  <symbol id="i-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.5 3.5 4.5 8l5 4.5"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Ldapper · вариант Б</p>
+    <h1>Тот же инструмент, <em>другая температура</em></h1>
+    <p class="lede">Четыре экрана из первого мокапа, пересобранные по системе Superlist: тёплый баклажановый холст вместо чистого чёрного, сливовые карточки со скруглением 20 пикселей, настоящие мягкие тени и ровно один акцент — коралл.</p>
+    <a class="backlink" href="https://claude.ai/code/artifact/3173e371-db88-468f-b768-7537303f2100"><svg style="width:14px;height:14px"><use href="#i-arrow"/></svg> Вариант А — Twingate</a>
+    <p class="note">Бихроматика здесь заявлена как нерушимое правило: аубержин и коралл, никаких третьих цветов. Это не косметика, а архитектурное ограничение — из-за него расшифровки значений, подсветка совпадений и предупреждение о сертификате пришлось решать формой и поверхностью, а не оттенком. Что именно изменилось — в подписях под экранами.</p>
+  </header>
+
+  <!-- ============ 1. BROWSE ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">01 — основной режим</p>
+      <h2>Дерево и атрибуты</h2>
+      <p class="note">Панели стали плавающими карточками внутри окна, а не областями, разделёнными волосяной линией. Расшифровки под сырыми значениями потеряли бирюзовый и держатся на приподнятой поверхности <code>#2f2e47</code> с белым текстом — читаются, но не кричат. Коралл в этом экране один: выделенная строка дерева.</p>
+    </div>
+
+    <div class="frame">
+      <div class="app">
+
+        <div class="utility">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <span class="wordmark">Ldapper</span>
+          <span class="conn-pick"><i class="led live"></i> dc01.corp.example.com · CORP\a.kensel <span style="color:var(--iris)">▾</span></span>
+          <span class="spacer"></span>
+          <span class="util-link on">Connections</span>
+          <span class="util-link">Settings</span>
+        </div>
+
+        <div class="toolbar">
+          <span class="field grow">
+            <svg style="width:13px;height:13px;color:var(--iris)"><use href="#i-search"/></svg>
+            <span class="ph">(&amp;(objectClass=user)(sAMAccountName=a.*))</span>
+          </span>
+          <span class="select">Subtree <span class="chev">▾</span></span>
+          <span class="select">Base: OU=Corp <span class="chev">▾</span></span>
+          <span class="btn quiet">Search</span>
+          <span class="btn plain">Export</span>
+        </div>
+
+        <div class="workspace">
+
+          <aside class="pane pane-tree">
+            <div class="pane-head"><span>Directory</span><span class="n">4 128</span></div>
+
+            <div class="row" style="--d:0"><span class="chev">▾</span><svg><use href="#i-domain"/></svg><span class="label">DC=corp,DC=example,DC=com</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=Builtin</span><span class="count">24</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=Computers</span><span class="count">312</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-ou"/></svg><span class="label">OU=Domain Controllers</span><span class="count">3</span></div>
+            <div class="row" style="--d:1"><span class="chev">▾</span><svg><use href="#i-ou"/></svg><span class="label">OU=Corp</span><span class="count">3 641</span></div>
+            <div class="row" style="--d:2"><span class="chev">▸</span><svg><use href="#i-ou"/></svg><span class="label">OU=Groups</span><span class="count">186</span></div>
+            <div class="row" style="--d:2"><span class="chev">▸</span><svg><use href="#i-ou"/></svg><span class="label">OU=Service Accounts</span><span class="count">41</span></div>
+            <div class="row" style="--d:2"><span class="chev">▾</span><svg><use href="#i-ou"/></svg><span class="label">OU=Users</span><span class="count">3 414</span></div>
+            <div class="row" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Alexey Sorokin</span></div>
+            <div class="row sel" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Anna Volkova</span></div>
+            <div class="row" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Boris Ivanov</span></div>
+            <div class="row" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Daria Orlova</span></div>
+            <div class="row dim" style="--d:3"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">CN=Egor Titov</span></div>
+            <div class="tree-more">+ 3 409 more · loading page 2 of 4</div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=System</span><span class="count">96</span></div>
+            <div class="row" style="--d:1"><span class="chev">▸</span><svg><use href="#i-box"/></svg><span class="label">CN=Users</span><span class="count">52</span></div>
+          </aside>
+
+          <main class="pane pane-detail">
+
+            <div class="detail-head">
+              <span class="avatar"><svg><use href="#i-user"/></svg></span>
+              <span class="detail-title">
+                <span class="cn">Anna Volkova</span>
+                <span class="dn">CN=Anna Volkova,OU=Users,OU=Corp,DC=corp,DC=example,DC=com</span>
+              </span>
+              <span class="acts">
+                <span class="btn plain">Copy DN</span>
+                <span class="btn quiet">Export LDIF</span>
+              </span>
+            </div>
+
+            <div class="tabs">
+              <span class="tab on">Attributes<span class="n">38</span></span>
+              <span class="tab">Member of<span class="n">7</span></span>
+              <span class="tab">Security</span>
+              <span class="tab">Raw LDIF</span>
+            </div>
+
+            <table class="attrs">
+              <thead>
+                <tr><th>Attribute</th><th>Value</th><th>Syntax</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="k">sAMAccountName</td>
+                  <td><span class="val">a.volkova</span></td>
+                  <td class="s">DirectoryString</td>
+                </tr>
+                <tr>
+                  <td class="k">userPrincipalName</td>
+                  <td><span class="val">a.volkova@corp.example.com</span></td>
+                  <td class="s">DirectoryString</td>
+                </tr>
+                <tr class="multi">
+                  <td class="k">objectClass</td>
+                  <td><span class="vlist">
+                    <span class="val">top</span>
+                    <span class="val">person</span>
+                    <span class="val">organizationalPerson</span>
+                    <span class="val">user</span>
+                  </span></td>
+                  <td class="s">OID</td>
+                </tr>
+                <tr>
+                  <td class="k">objectSid</td>
+                  <td>
+                    <span class="raw">AQUAAAAAAAUVAAAAx3XZ2LxTOM8UAe8BUAQAAA==</span><br>
+                    <span class="decoded">S-1-5-21-3638186439-3476304828-32309524-1104</span>
+                  </td>
+                  <td class="s">OctetString</td>
+                </tr>
+                <tr>
+                  <td class="k">objectGUID</td>
+                  <td>
+                    <span class="raw">DJvxoy5NGk+ciAt+XSpB9g==</span><br>
+                    <span class="decoded">a3f19b0c-4d2e-4f1a-9c88-0b7e5d2a41f6</span>
+                  </td>
+                  <td class="s">OctetString</td>
+                </tr>
+                <tr>
+                  <td class="k">userAccountControl</td>
+                  <td>
+                    <span class="raw">66048</span><br>
+                    <span class="decoded">NORMAL_ACCOUNT</span><span class="decoded">DONT_EXPIRE_PASSWORD</span>
+                  </td>
+                  <td class="s">Integer</td>
+                </tr>
+                <tr>
+                  <td class="k">pwdLastSet</td>
+                  <td>
+                    <span class="raw">133894094610000000</span><br>
+                    <span class="decoded">2025-04-18 00:24:21 UTC</span>
+                  </td>
+                  <td class="s">LargeInteger</td>
+                </tr>
+                <tr>
+                  <td class="k">accountExpires</td>
+                  <td>
+                    <span class="raw">9223372036854775807</span><br>
+                    <span class="decoded">never expires</span>
+                  </td>
+                  <td class="s">LargeInteger</td>
+                </tr>
+                <tr>
+                  <td class="k">memberOf</td>
+                  <td><span class="vlist">
+                    <span class="val">CN=VPN Users,OU=Groups,OU=Corp,DC=corp,DC=example,DC=com</span>
+                    <span class="val">CN=Finance,OU=Groups,OU=Corp,DC=corp,DC=example,DC=com</span>
+                    <span class="more">+ 5 more</span>
+                  </span></td>
+                  <td class="s">DN</td>
+                </tr>
+                <tr>
+                  <td class="k">whenCreated</td>
+                  <td>
+                    <span class="raw">20230914081233.0Z</span><br>
+                    <span class="decoded">2023-09-14 08:12:33 UTC</span>
+                  </td>
+                  <td class="s">GeneralizedTime</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </main>
+        </div>
+
+        <div class="statusbar">
+          <span class="live">Connected</span>
+          <span>LDAPS :636 · TLS 1.3</span>
+          <span>bind: NTLM</span>
+          <span>page size 1000</span>
+          <span class="spacer"></span>
+          <span>38 attributes · 12 ms</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><b>Расшифровки без цвета</b><span>Плашка стала поверхностью, а не оттенком. Плюс: работает на любом фоне и не спорит с кораллом. Минус: связь «сырое → расшифрованное» читается на полсекунды дольше, чем с бирюзовым.</span></div>
+      <div class="callout"><b>Панели плавают</b><span>Правило «никаких видимых границ между карточкой и холстом» превращает три панели в три отдельных плитки со скруглением 16px. Воздуха больше, плотность информации ниже.</span></div>
+      <div class="callout"><b>Выделение — сплошной коралл</b><span>Строка не подсвечивается фоном на тон светлее, а заливается целиком. Найти взглядом, где ты находишься, проще, чем в варианте А.</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 2. SEARCH ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">02 — поиск</p>
+      <h2>Результаты приходят потоком</h2>
+      <p class="note">Здесь бихроматика бьёт сильнее всего. В варианте А совпадения подсвечивались фиолетовым в каждой строке; тут коралл разрешён на одном элементе, поэтому он достаётся активной строке, а подсветка фрагментов уходит на приподнятую поверхность. Полоса прогресса тоже перестала быть цветной.</p>
+    </div>
+
+    <div class="frame">
+      <div class="app">
+
+        <div class="utility">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <span class="wordmark">Ldapper</span>
+          <span class="conn-pick"><i class="led live"></i> dc01.corp.example.com · CORP\a.kensel <span style="color:var(--iris)">▾</span></span>
+          <span class="spacer"></span>
+          <span class="util-link on">Connections</span>
+          <span class="util-link">Settings</span>
+        </div>
+
+        <div class="toolbar">
+          <span class="field grow">
+            <svg style="width:13px;height:13px;color:var(--mist)"><use href="#i-search"/></svg>
+            <span style="color:var(--white)">(&amp;(objectClass=user)(memberOf=CN=VPN Users,OU=Groups,OU=Corp,DC=corp,DC=example,DC=com))</span><span class="caret"></span>
+          </span>
+          <span class="select">Subtree <span class="chev">▾</span></span>
+          <span class="select">Base: DC=corp <span class="chev">▾</span></span>
+          <span class="btn quiet">Stop</span>
+          <span class="btn plain">Export CSV</span>
+        </div>
+
+        <div class="workspace">
+
+          <aside class="pane pane-tree">
+            <div class="pane-head"><span>Filters</span><span class="n">18</span></div>
+            <div class="row sel" style="--d:0"><span class="chev"></span><svg><use href="#i-group"/></svg><span class="label">VPN group members</span><span class="tag">mine</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Disabled accounts</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Locked out right now</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Password never expires</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Stale users · 90 days</span><span class="dot" title="изменён"></span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-box"/></svg><span class="label">Stale computers · 60 days</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Privileged accounts</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-group"/></svg><span class="label">Empty groups</span><span class="tag">LDAP</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-ou"/></svg><span class="label">All organizational units</span><span class="tag">LDAP</span></div>
+            <div class="row off" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">POSIX accounts</span><span class="tag">LDAP</span></div>
+            <div class="tree-more" style="padding-left:18px">+ 8 more · 3 hidden for this server</div>
+          </aside>
+
+          <main class="pane pane-detail">
+            <div class="stream">
+              <span>Streaming results — <span class="n">1 248</span> matched of ~3 641 scanned</span>
+              <span class="bar"><i></i></span>
+              <span>4.1 s</span>
+            </div>
+
+            <table class="results">
+              <thead>
+                <tr><th>Name</th><th>sAMAccountName</th><th>Class</th><th>Distinguished name</th></tr>
+              </thead>
+              <tbody>
+                <tr class="hit"><td>Anna Volkova</td><td class="sam">a.volkova</td><td>user</td><td class="dn">CN=Anna Volkova,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Alexey Sorokin</td><td class="sam">a.sorokin</td><td>user</td><td class="dn">CN=Alexey Sorokin,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Boris Ivanov</td><td class="sam">b.ivanov</td><td>user</td><td class="dn">CN=Boris Ivanov,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Daria Orlova</td><td class="sam">d.orlova</td><td>user</td><td class="dn">CN=Daria Orlova,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Egor Titov</td><td class="sam">e.titov</td><td>user</td><td class="dn">CN=Egor Titov,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>svc-backup</td><td class="sam">svc-backup</td><td>user</td><td class="dn">CN=svc-backup,OU=Service Accounts,OU=Corp,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Irina Belova</td><td class="sam">i.belova</td><td>user</td><td class="dn">CN=Irina Belova,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Kirill Zaytsev</td><td class="sam">k.zaytsev</td><td>user</td><td class="dn">CN=Kirill Zaytsev,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Marina Rud</td><td class="sam">m.rud</td><td>user</td><td class="dn">CN=Marina Rud,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+                <tr><td>Nikita Frolov</td><td class="sam">n.frolov</td><td>user</td><td class="dn">CN=Nikita Frolov,<mark>OU=Users,OU=Corp</mark>,DC=corp,DC=example,DC=com</td></tr>
+              </tbody>
+            </table>
+          </main>
+        </div>
+
+        <div class="statusbar">
+          <span class="live">Searching</span>
+          <span>scope: subtree</span>
+          <span>paged 1000</span>
+          <span class="spacer"></span>
+          <span>click a row to reveal it in the tree</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><b>Совпадения без цвета</b><span>Фрагменты DN подсвечены поверхностью <code>#2f2e47</code>. Спокойнее, но при беглом просмотре десяти строк глаз цепляется хуже, чем за фиолетовый в варианте А.</span></div>
+      <div class="callout"><b>Активная строка кричит</b><span>Зато то, на чём стоит курсор, невозможно потерять — сплошная коралловая полоса через всю таблицу.</span></div>
+      <div class="callout"><b>Прогресс стал серым</b><span>Полоска потока не имеет права на коралл, пока он занят строкой. Индикация держится на движении, а не на цвете.</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 3. FILTER LIBRARY ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">03 — библиотека фильтров</p>
+      <h2>Восемнадцать заводских фильтров, и каждый можно переписать</h2>
+      <p class="note">Метка справа от имени говорит о диалекте: <code>AD</code> — использует правила сравнения Active Directory, <code>LDAP</code> — работает где угодно, <code>mine</code> — твой собственный. Ldapper читает RootDSE при подключении и приглушает то, что этот сервер не переварит: на скриншоте <em>POSIX accounts</em> погашен, потому что подключение идёт к контроллеру домена.</p>
+      <p class="note">Коралловая точка у <em>Stale users · 90 days</em> означает, что заводской фильтр правили. Кнопка <em>Reset</em> возвращает исходник, и точка гаснет.</p>
+    </div>
+
+    <div class="frame">
+      <div class="app">
+
+        <div class="utility">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <span class="wordmark">Ldapper</span>
+          <span class="conn-pick"><i class="led live"></i> dc01.corp.example.com · CORP\a.kensel <span style="color:var(--iris)">▾</span></span>
+          <span class="spacer"></span>
+          <span class="util-link on">Connections</span>
+          <span class="util-link">Settings</span>
+        </div>
+
+        <div class="toolbar">
+          <span class="field grow">
+            <svg style="width:13px;height:13px;color:var(--iris)"><use href="#i-search"/></svg>
+            <span class="ph">Filter library — search by name or attribute</span>
+          </span>
+          <span class="btn quiet">New filter</span>
+          <span class="btn plain">Restore all defaults</span>
+        </div>
+
+        <div class="workspace" style="min-height:520px">
+
+          <aside class="pane pane-tree">
+            <div class="pane-head"><span>Built-in · Active Directory</span><span class="n">12</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Disabled accounts</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Locked out right now</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Password never expires</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Must change at next logon</span><span class="tag">AD</span></div>
+            <div class="row sel" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Stale users · 90 days</span><span class="dot"></span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-box"/></svg><span class="label">Stale computers · 60 days</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Privileged accounts</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Accounts with an SPN</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">Kerberos pre-auth disabled</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-box"/></svg><span class="label">Unconstrained delegation</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-box"/></svg><span class="label">Domain controllers</span><span class="tag">AD</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-box"/></svg><span class="label">Group policy objects</span><span class="tag">AD</span></div>
+
+            <div class="pane-head" style="padding-top:22px"><span>Built-in · any directory</span><span class="n">6</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">All people</span><span class="tag">LDAP</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-group"/></svg><span class="label">All groups</span><span class="tag">LDAP</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-ou"/></svg><span class="label">All organizational units</span><span class="tag">LDAP</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-group"/></svg><span class="label">Empty groups</span><span class="tag">LDAP</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">People without email</span><span class="tag">LDAP</span></div>
+            <div class="row off" style="--d:0"><span class="chev"></span><svg><use href="#i-user"/></svg><span class="label">POSIX accounts</span><span class="tag">LDAP</span></div>
+
+            <div class="pane-head" style="padding-top:22px"><span>Mine</span><span class="n">1</span></div>
+            <div class="row" style="--d:0"><span class="chev"></span><svg><use href="#i-group"/></svg><span class="label">VPN group members</span><span class="tag">mine</span></div>
+          </aside>
+
+          <main class="pane pane-detail">
+            <div class="editor">
+
+              <div class="editor-head">
+                <span class="cn">Stale users · 90 days</span>
+                <span class="edited-note"><i></i> edited</span>
+                <span class="acts">
+                  <span class="btn plain">Duplicate</span>
+                  <span class="btn plain">Reset</span>
+                  <span class="btn quiet">Run</span>
+                </span>
+              </div>
+
+              <div>
+                <span class="lbl">LDAP filter</span>
+                <div class="code">(<span class="op">&amp;</span>(<span class="attr">objectCategory</span>=person)(<span class="attr">objectClass</span>=user)(<span class="op">!</span>(<span class="attr">userAccountControl</span><span class="oid">:1.2.840.113556.1.4.803:</span>=2))(<span class="attr">lastLogonTimestamp</span>&lt;=<span class="var">{{now-90d:filetime}}</span>))</div>
+              </div>
+
+              <div class="valid">
+                <i>✓</i> valid RFC 4515 · 4 conditions · {{now-90d:filetime}} → 133758734610000000
+              </div>
+
+              <div class="grid2">
+                <div>
+                  <span class="lbl">Scope</span>
+                  <div class="segs">
+                    <span class="seg">Base</span>
+                    <span class="seg">One level</span>
+                    <span class="seg on">Subtree</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="lbl">Search base</span>
+                  <span class="field" style="width:100%">OU=Corp,DC=corp,DC=example,DC=com</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">Result columns</span>
+                <div class="cols-pick">
+                  <span class="col-chip">cn</span>
+                  <span class="col-chip">sAMAccountName</span>
+                  <span class="col-chip">lastLogonTimestamp</span>
+                  <span class="col-chip">whenCreated</span>
+                  <span class="col-chip">distinguishedName</span>
+                  <span class="col-chip add">+ add attribute</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">Description</span>
+                <span class="field" style="width:100%;height:auto;padding:10px 14px;white-space:normal;font-family:var(--sans);font-size:12.5px;letter-spacing:-0.25px;line-height:1.45">Enabled accounts that haven't authenticated in 90 days. Disabled ones are excluded — they're already covered by their own filter.</span>
+              </div>
+
+              <div class="modal-acts" style="padding-top:2px">
+                <span class="btn plain">Delete</span>
+                <span class="spacer"></span>
+                <span class="btn plain">Discard</span>
+                <span class="btn cta">Save</span>
+              </div>
+
+            </div>
+          </main>
+        </div>
+
+        <div class="statusbar">
+          <span class="live">18 filters</span>
+          <span>1 edited · 1 custom</span>
+          <span>3 hidden — not supported by this server</span>
+          <span class="spacer"></span>
+          <span>~/Library/Application Support/Ldapper/filters.json</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="callouts">
+      <div class="callout"><b>Подстановки времени</b><span>Половина полезных фильтров привязана к дате. <code>{{now-90d:filetime}}</code> разворачивается в 18-значный FILETIME для AD, <code>:generalized</code> — в <code>YYYYMMDDHHMMSSZ</code> для остальных. Под полем сразу видно, во что превратится.</span></div>
+      <div class="callout"><b>Диалект решает видимость</b><span>Фильтры с правилом <code>1.2.840.113556.1.4.803</code> живут только в AD. Ldapper не даёт запустить их на OpenLDAP и молча получить пустой результат — он их гасит и говорит почему.</span></div>
+      <div class="callout"><b>Заводские не пропадают</b><span>Правки лежат отдельным файлом поверх встроенного набора. <em>Reset</em> убирает правку одного фильтра, <em>Restore all defaults</em> — все сразу, включая удалённые.</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 4. CONNECT ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">04 — подключение</p>
+      <h2>Коралл на своём законном месте</h2>
+      <p class="note">Единственный экран, где акцент работает ровно так, как задумано системой: одна кнопка, тёплое свечение под ней, всё остальное молчит. Скругление 100px, вес 600, белый текст на коралле.</p>
+    </div>
+
+    <div class="frame">
+      <div class="stage" style="min-height:520px">
+        <div class="app" style="min-width:auto;box-shadow:none;border-radius:0">
+          <div class="utility">
+            <div class="traffic"><i></i><i></i><i></i></div>
+            <span class="wordmark">Ldapper</span>
+            <span class="conn-pick"><i class="led"></i> not connected <span style="color:var(--iris)">▾</span></span>
+            <span class="spacer"></span>
+            <span class="util-link on">Connections</span>
+            <span class="util-link">Settings</span>
+          </div>
+          <div class="workspace" style="min-height:430px">
+            <aside class="pane pane-tree"></aside>
+            <main class="pane pane-detail"></main>
+          </div>
+          <div class="statusbar"><span>idle</span></div>
+        </div>
+
+        <div class="scrim"></div>
+        <div class="modal-wrap">
+          <div class="modal">
+            <h3>New connection</h3>
+            <p class="sub">Saved locally. Credentials go to the Windows Credential Manager.</p>
+
+            <div class="form">
+              <div class="cols">
+                <div>
+                  <span class="lbl">Host</span>
+                  <span class="field" style="width:100%">dc01.corp.example.com</span>
+                </div>
+                <div>
+                  <span class="lbl">Port</span>
+                  <span class="field" style="width:100%">636</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">Encryption</span>
+                <div class="segs">
+                  <span class="seg on">LDAPS</span>
+                  <span class="seg">StartTLS</span>
+                  <span class="seg">None</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">Authentication</span>
+                <div class="segs">
+                  <span class="seg on">NTLM</span>
+                  <span class="seg">Simple bind</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="lbl">User</span>
+                <span class="field" style="width:100%">CORP\a.kensel</span>
+              </div>
+
+              <div>
+                <span class="lbl">Password</span>
+                <span class="field" style="width:100%">
+                  <svg style="width:12px;height:12px;color:var(--iris)"><use href="#i-lock"/></svg>
+                  <span style="letter-spacing:.18em">••••••••••••</span>
+                </span>
+              </div>
+
+              <label class="check"><span class="box">✓</span> Remember password in Credential Manager</label>
+            </div>
+
+            <div class="modal-acts">
+              <span class="btn plain">Test</span>
+              <span class="spacer"></span>
+              <span class="btn plain">Cancel</span>
+              <span class="btn cta">Connect</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. CERT ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">05 — недоверенный сертификат</p>
+      <h2>Тревога и действие поменялись ролями</h2>
+      <p class="note">В варианте А предупреждение было янтарным, а кнопка — шартрезовой: разные роли, разные цвета. Здесь третьего цвета нет, поэтому коралл достаётся предупреждению, а подтверждающая кнопка становится белой. Побочный эффект оказался полезным: продолжить вопреки предупреждению больше не выглядит как рекомендованное действие.</p>
+    </div>
+
+    <div class="frame">
+      <div class="stage" style="min-height:470px">
+        <div class="app" style="min-width:auto;box-shadow:none;border-radius:0">
+          <div class="utility">
+            <div class="traffic"><i></i><i></i><i></i></div>
+            <span class="wordmark">Ldapper</span>
+            <span class="conn-pick"><i class="led warn"></i> dc01.corp.example.com · connecting <span style="color:var(--iris)">▾</span></span>
+            <span class="spacer"></span>
+            <span class="util-link on">Connections</span>
+            <span class="util-link">Settings</span>
+          </div>
+          <div class="workspace" style="min-height:380px">
+            <aside class="pane pane-tree"></aside>
+            <main class="pane pane-detail"></main>
+          </div>
+          <div class="statusbar"><span>TLS handshake halted</span></div>
+        </div>
+
+        <div class="scrim"></div>
+        <div class="modal-wrap">
+          <div class="modal" style="width:500px">
+            <h3>This server's certificate isn't trusted</h3>
+            <p class="sub">dc01.corp.example.com signed its certificate with an authority your machine doesn't know. That is normal for an internal CA — and it also looks exactly like an interception.</p>
+
+            <div class="cert">
+              <div class="cert-head"><svg style="width:15px;height:15px"><use href="#i-warn"/></svg> Verify the fingerprint before you continue</div>
+              <dl>
+                <dt>SHA-256</dt><dd class="fp">4B:9C:1E:07:AA:63:F2:80:D5:11:6E:38:C4:7A:90:2F:BB:15:D8:E9:33:07:5C:A1:64:22:B0:7E:19:CD:4F:88</dd>
+                <dt>Subject</dt><dd>CN=dc01.corp.example.com</dd>
+                <dt>Issuer</dt><dd>CN=CORP-ROOT-CA, DC=corp, DC=example, DC=com</dd>
+                <dt>Valid until</dt><dd>2027-02-11</dd>
+              </dl>
+            </div>
+
+            <label class="check"><span class="box">✓</span> Trust this certificate for dc01.corp.example.com</label>
+
+            <div class="modal-acts">
+              <span class="spacer"></span>
+              <span class="btn plain">Cancel</span>
+              <span class="btn light">Continue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOKENS ============ -->
+  <section class="screen">
+    <div class="screen-head">
+      <p class="screen-num">06 — палитра</p>
+      <h2>Девять значений вместо двенадцати</h2>
+      <p class="note">Система намеренно беднее: два цвета и стопка нейтралей. Глубина набирается слоями поверхностей <code>#181824 → #1f1e30 → #26253b → #2f2e47</code> и мягкими тенями.</p>
+    </div>
+
+    <div class="swatches">
+      <div class="sw"><span class="chip" style="background:#181824"></span><b>Aubergine Canvas</b><span>#181824</span><small>Холст страницы и вложенные колодцы</small></div>
+      <div class="sw"><span class="chip" style="background:#1f1e30"></span><b>Well</b><span>#1f1e30</span><small>Панели, поля ввода, вторичные кнопки</small></div>
+      <div class="sw"><span class="chip" style="background:#26253b"></span><b>Elevated Plum</b><span>#26253b</span><small>Корпус окна, карточки, модальные</small></div>
+      <div class="sw"><span class="chip" style="background:#2f2e47"></span><b>Raise</b><span>#2f2e47</span><small>Расшифровки, активная вкладка, подсветка</small></div>
+      <div class="sw"><span class="chip" style="background:#ff4a36"></span><b>Coral Ember</b><span>#ff4a36</span><small>Один элемент на экран: действие, выделение или тревога</small></div>
+      <div class="sw"><span class="chip" style="background:#535676"></span><b>Iris Accent</b><span>#535676</span><small>Иконки в покое, счётчики, заголовки колонок</small></div>
+      <div class="sw"><span class="chip" style="background:#ffffff"></span><b>Pure White</b><span>#ffffff</span><small>Заголовки и значения атрибутов</small></div>
+      <div class="sw"><span class="chip" style="background:#8e8da0"></span><b>Ash Text</b><span>#8e8da0</span><small>Основной текст интерфейса</small></div>
+      <div class="sw"><span class="chip" style="background:#696f81"></span><b>Fog Text</b><span>#696f81</span><small>Сырые значения, подписи</small></div>
+    </div>
+  </section>
+
+  <!-- ============ VERDICT ============ -->
+  <section class="screen">
+    <div class="verdict">
+      <h2>Чем варианты реально отличаются</h2>
+      <ul>
+        <li><b>Плотность.</b> Twingate жмётся: волосяные линии вместо промежутков, панели встык, больше строк в экране. Superlist дышит: плавающие плитки, скругления 16–20px, воздух между всем. Для инструмента, где смотрят на тысячи строк, плотность обычно важнее.</li>
+        <li><b>Число ролей у цвета.</b> В А четыре акцента разводят смыслы: шартрез — действие, фиолетовый — совпадение, бирюзовый — расшифровка, янтарь — тревога. В Б один коралл делит все эти роли по очереди, и различать их приходится формой.</li>
+        <li><b>Температура.</b> Чистый чёрный читается как консоль и приборная панель. Баклажан читается как приложение для работы — теплее, спокойнее, дальше от «утилиты сисадмина».</li>
+        <li><b>Кому это ближе.</b> А — прямая линия от AD Explorer и всех тех инструментов, где сидят по восемь часов. Б — то, что скорее поставят из любопытства и покажут коллеге.</li>
+      </ul>
+      <p class="note" style="max-width:none">Есть и третий путь: взять плотность и цветовые роли из А, а тёплую подложку и скругления из Б. Скажи, если собрать такой гибрид — сделаю третий мокап.</p>
+    </div>
+  </section>
+
+</div>

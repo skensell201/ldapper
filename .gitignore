@@ -1,0 +1,19 @@
+# Go
+/build/bin/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Wails
+/frontend/dist/
+/frontend/wailsjs/
+
+# Node
+node_modules/
+
+# Local
+.env
+.DS_Store
