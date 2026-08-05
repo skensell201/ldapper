@@ -1,0 +1,3 @@
+Vite copies everything in public/ into dist/ on every build, so this file
+recreates dist/.gitkeep each time. main.go embeds dist, and without at least
+one file in it a fresh checkout cannot compile — which is how CI failed twice.
