@@ -1,43 +1,50 @@
-Three bugs found by pointing Ldapper at a directory built to be awkward rather
-than tidy. All three are the kind that only show up against real data.
+The interface is now tested, not just built — and there is a single command
+that opens Ldapper against a real directory with nothing to fill in.
 
-## Fixed
+## The window has tests now
 
-- **A comma inside a name was shown as its escape sequence.** `Volkova, Anna`
-  came back from the server as `Volkova\2C Anna` — or `Volkova\, Anna`,
-  depending on the server — and the tree showed it that way. Names are now
-  unescaped for display while the distinguished name keeps its escapes, which
-  is what makes it usable as an identifier.
-- **CSV could not be read back reliably.** Multiple values were joined with
-  `"; "`, so a single value that happened to contain a semicolon looked
-  identical to several values. Values are now separated by newlines inside the
-  quoted field, which a spreadsheet shows as line breaks and a CSV reader
-  parses back exactly.
-- **The built-in "empty groups" filter never matched anything.** It looked only
-  at `group` and `groupOfNames`, and both require a member by schema — a
-  genuinely empty group is almost always a `posixGroup`. The filter now covers
-  that case, and `uniqueMember` besides.
+Twenty-four of them, rendering every pane with the shapes the Go side actually
+produces. This closes the gap that mattered most: until now the panes were
+verified by reading them, and the one time that was not enough, the
+application opened to an empty rectangle.
 
-## Also in this release
+They cover what would break silently — a pane crashing on real data, a
+decoded value not reaching the screen, a search batch arriving from Go and not
+appearing, a truncated search reported as "found nothing", a filter the server
+cannot answer being hidden instead of greyed.
 
-`dev/directory/` — a generator and a compose file for a directory worth
-exploring: 2594 entries, groups of 3 to 500 members, POSIX accounts, 60
-computers, and the awkward cases that found the bugs above. A comma inside a
-name, Cyrillic in every field, semicolons inside a value, a 900-character
-value, and an entry missing an attribute the table has a column for.
+## Connect without an account
+
+Plenty of directories allow reading without credentials, and Ldapper had no
+way to ask. **Anonymous** joins NTLM and simple bind in the connection dialog,
+and the credential fields step aside when it is chosen.
+
+## The connection dialog lists your connections
+
+It had no way to pick among saved connections at all: it silently edited the
+first one and read its values once, so opening it a moment early showed
+factory defaults over a connection that was already there — with nothing on
+screen to explain it. There is now a list of saved connections with a **+ New**
+beside them.
+
+## One command to see it
 
 ```bash
-docker compose -f dev/directory/docker-compose.yml up -d --wait
+make demo
 ```
 
-Then connect to `localhost:4389` as `cn=admin,dc=example,dc=com` with the
-password `adminpassword`.
+A directory of 2594 entries in Docker, a connection saved for it, and the
+application open and pointed at it. Press Connect. `make demo-down` when done.
+
+## Also fixed
+
+- A binding that returns nothing — the Go side failing in a way it could not
+  report — left the window silently empty. It now says the directory did not
+  answer.
+- Errors while loading saved connections were swallowed, producing the same
+  unexplained empty form.
 
 ## Verified
 
-311 unit tests and 37 integration tests, the latter now including an entry
-whose name contains a comma — checked all the way from the server to the label
-the interface would draw. Everything above was also confirmed by hand against
-the development directory: 2508 people paged in three round trips, a
-500-member group exported in full, a 900-character value surviving LDIF, and
-Cyrillic base64-encoded correctly.
+313 Go tests, 24 frontend tests, 37 integration tests against OpenLDAP. The
+Windows build compiles and links in CI but still has not been run by hand.

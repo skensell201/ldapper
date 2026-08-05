@@ -57,6 +57,8 @@ func (a *App) Connect(profileID, password string) ConnectResult {
 	}
 
 	switch p.BindMethod {
+	case profiles.BindAnonymous:
+		err = conn.BindAnonymous()
 	case profiles.BindNTLM:
 		domain, account := session.SplitAccount(p.Username)
 		if domain == "" {

@@ -19,6 +19,10 @@ type BindMethod string
 const (
 	BindSimple BindMethod = "simple"
 	BindNTLM   BindMethod = "ntlm"
+	// BindAnonymous connects without credentials. Plenty of directories
+	// allow reading that way, and refusing to offer it means telling somebody
+	// to invent an account they do not need.
+	BindAnonymous BindMethod = "anonymous"
 )
 
 // Profile is one saved connection.

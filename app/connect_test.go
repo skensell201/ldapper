@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/skensell201/ldapper/internal/profiles"
 	"github.com/skensell201/ldapper/internal/session"
 )
 
@@ -92,4 +93,29 @@ func TestDisconnectIsSafeWhenNothingIsOpen(t *testing.T) {
 	t.Setenv("LDAPPER_CONFIG_DIR", t.TempDir())
 	a, _ := New()
 	a.Disconnect("nobody") // must not panic
+}
+
+// Plenty of directories allow reading without credentials, and refusing to
+// offer that means telling somebody to invent an account they do not need.
+func TestConnectAnonymouslyNeedsNoCredentials(t *testing.T) {
+	t.Setenv("LDAPPER_CONFIG_DIR", t.TempDir())
+	a, _ := New()
+
+	if msg := a.SaveProfile(ProfileInput{
+		ID: "anon", Name: "Anonymous", Host: "127.0.0.1", Port: 1,
+		Encryption: "none", BindMethod: "anonymous",
+	}); msg != "" {
+		t.Fatalf("SaveProfile() = %q, want a profile with no username accepted", msg)
+	}
+
+	got, ok := a.profileStore().Get("anon")
+	if !ok {
+		t.Fatal("the profile was not saved")
+	}
+	if got.BindMethod != profiles.BindAnonymous {
+		t.Errorf("BindMethod = %q, want anonymous", got.BindMethod)
+	}
+	if got.Username != "" {
+		t.Errorf("Username = %q, want it left empty", got.Username)
+	}
 }

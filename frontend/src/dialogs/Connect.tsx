@@ -12,6 +12,7 @@ const ENCRYPTIONS = [
 const BINDS = [
   { value: "ntlm", label: "NTLM" },
   { value: "simple", label: "Simple bind" },
+  { value: "anonymous", label: "Anonymous" },
 ];
 
 export function Connect() {
@@ -203,36 +204,45 @@ export function Connect() {
             </div>
           </div>
 
-          <div>
-            <span className="lbl">User</span>
-            <input
-              className="field"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder={bindMethod === "ntlm" ? "CORP\\a.kensel" : "cn=admin,dc=example,dc=com"}
-              aria-label="User"
-            />
-          </div>
+          {bindMethod === "anonymous" ? (
+            <p className="sub">
+              Connecting without credentials. Most directories allow reading a
+              part of the tree this way, and will simply show less.
+            </p>
+          ) : (
+            <>
+              <div>
+                <span className="lbl">User</span>
+                <input
+                  className="field"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder={bindMethod === "ntlm" ? "CORP\\a.kensel" : "cn=admin,dc=example,dc=com"}
+                  aria-label="User"
+                />
+              </div>
 
-          <div>
-            <span className="lbl">Password</span>
-            <input
-              className="field"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              aria-label="Password"
-            />
-          </div>
+              <div>
+                <span className="lbl">Password</span>
+                <input
+                  className="field"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  aria-label="Password"
+                />
+              </div>
 
-          <label className="check">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
-            />
-            Remember the password in this system&apos;s keychain
-          </label>
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                Remember the password in this system&apos;s keychain
+              </label>
+            </>
+          )}
         </div>
 
         <div className="acts">

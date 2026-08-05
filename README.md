@@ -62,10 +62,25 @@ Source of truth is `assets/icon.svg`. Regenerate the raster sizes from it rather
 rsvg-convert -w 1024 -h 1024 assets/icon.svg -o build/appicon.png
 ```
 
+## Try it in one command
+
+```bash
+make demo
+```
+
+That starts a directory worth exploring in Docker, saves a connection for it,
+and opens Ldapper already pointed at it. The connection binds anonymously, so
+there is nothing to type — press Connect. `make demo-down` puts it away.
+
+Worth looking at once it is open: expand `ou=people` (2500 accounts, loaded a
+page at a time), find `cn=Volkova, Anna` and check the comma is a comma, and
+switch to Filters, where the Active Directory ones should be greyed out and
+the POSIX ones available.
+
 ## Tests
 
 ```bash
-make test         # unit tests, race detector on
+make test         # frontend tests, then Go unit tests with the race detector
 make lint         # go vet and golangci-lint
 make integration  # starts OpenLDAP in Docker, runs against it, tears it down
 ```

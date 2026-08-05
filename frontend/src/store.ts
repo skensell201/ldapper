@@ -227,6 +227,17 @@ export const useStore = create<State>((set, get) => ({
 
     const result = await api.Children(connection.profileId, dn, PAGE_SIZE, entry.cookie);
 
+    // A binding that returns nothing means the Go side failed in a way it
+    // could not report. Saying so beats a blank pane and a console nobody
+    // is looking at.
+    if (!result) {
+      set((s) => ({
+        error: "The directory did not answer. The connection may have dropped.",
+        nodes: { ...s.nodes, [dn]: { ...s.nodes[dn], loading: false } },
+      }));
+      return;
+    }
+
     if (result.error) {
       set((s) => ({
         error: result.error,
@@ -277,6 +288,11 @@ export const useStore = create<State>((set, get) => ({
     const result = await api.Entry(connection.profileId, dn);
     // Ignore a result that arrived after the user clicked somewhere else.
     if (get().selected !== dn) return;
+
+    if (!result) {
+      set({ detailError: "The directory did not answer. The connection may have dropped." });
+      return;
+    }
 
     if (result.error) {
       set({ detailError: result.error });
