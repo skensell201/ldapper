@@ -1,6 +1,16 @@
 import { create } from "zustand";
 import * as api from "../wailsjs/go/app/App";
+import { EventsOn } from "../wailsjs/runtime/runtime";
 import { app } from "../wailsjs/go/models";
+import {
+  EVENT_SEARCH_BATCH,
+  EVENT_SEARCH_DONE,
+  type SearchBatch,
+  type SearchDone,
+  type SearchRow,
+} from "./events";
+
+export type Mode = "browse" | "search" | "library";
 
 /** A node plus what the tree knows about it: how deep it sits, whether it is
  *  open, and how much of it has been loaded. */
@@ -42,6 +52,35 @@ interface State {
   toggle: (dn: string) => Promise<void>;
   loadMore: (dn: string) => Promise<void>;
   select: (dn: string) => Promise<void>;
+
+  mode: Mode;
+  filterText: string;
+  scope: string;
+  searching: boolean;
+  results: SearchRow[];
+  columns: string[];
+  matched: number;
+  searchNote: string;
+
+  library: app.FilterSummary[];
+  editing: app.FilterSummary | null;
+  check: app.FilterCheck | null;
+
+  setMode: (m: Mode) => void;
+  setFilterText: (s: string) => void;
+  setScope: (s: string) => void;
+  runSearch: () => Promise<void>;
+  stopSearch: () => Promise<void>;
+  exportResults: () => Promise<void>;
+
+  loadLibrary: () => Promise<void>;
+  editFilter: (f: app.FilterSummary | null) => void;
+  checkFilter: (s: string) => Promise<void>;
+  saveFilter: (f: app.FilterInput) => Promise<void>;
+  resetFilter: (id: string) => Promise<void>;
+  deleteFilter: (id: string) => Promise<void>;
+  restoreFilters: () => Promise<void>;
+  useFilter: (f: app.FilterSummary) => void;
 }
 
 /** PAGE_SIZE is deliberately smaller than Active Directory's own 1000: the
@@ -61,6 +100,18 @@ export const useStore = create<State>((set, get) => ({
   pendingProfileID: null,
   error: "",
   ...emptyTree(),
+
+  mode: "browse",
+  filterText: "(objectClass=*)",
+  scope: "subtree",
+  searching: false,
+  results: [],
+  columns: [],
+  matched: 0,
+  searchNote: "",
+  library: [],
+  editing: null,
+  check: null,
 
   loadProfiles: async () => {
     set({ profiles: await api.ListProfiles() });
@@ -227,7 +278,142 @@ export const useStore = create<State>((set, get) => ({
     }
     set({ detail: result.detail });
   },
+
+  setMode: (mode) => {
+    set({ mode });
+    if (mode === "library") void get().loadLibrary();
+  },
+  setFilterText: (filterText) => set({ filterText }),
+  setScope: (scope) => set({ scope }),
+
+  runSearch: async () => {
+    const { connection, filterText, scope } = get();
+    if (!connection) return;
+
+    // Clear before starting: results from the previous search appended to the
+    // new ones would be indistinguishable.
+    set({ results: [], matched: 0, searching: true, searchNote: "searching…", error: "" });
+
+    const started = await api.StartSearch({
+      profileId: connection.profileId,
+      filter: filterText,
+      scope,
+      base: "",
+      columns: [],
+    } as app.SearchInput);
+
+    if (!started.started) {
+      set({ searching: false, searchNote: "", error: started.error });
+      return;
+    }
+    set({ columns: started.columns ?? [] });
+  },
+
+  stopSearch: async () => {
+    const id = get().connection?.profileId;
+    if (id) await api.StopSearch(id);
+  },
+
+  exportResults: async () => {
+    const { connection, filterText, scope } = get();
+    if (!connection) return;
+
+    const path = await api.ChooseExportPath("results.ldif");
+    if (!path) return; // cancelled
+
+    const msg = await api.ExportSearch({
+      profileId: connection.profileId,
+      path,
+      filter: filterText,
+      scope,
+      base: "",
+      columns: [],
+    } as app.ExportInput);
+
+    set(msg ? { error: msg } : { searchNote: `exported to ${path}` });
+  },
+
+  loadLibrary: async () => {
+    const id = get().connection?.profileId ?? "";
+    set({ library: await api.ListFilters(id) });
+  },
+
+  editFilter: (editing) => set({ editing, check: null }),
+
+  checkFilter: async (filter) => {
+    const id = get().connection?.profileId ?? "";
+    set({ check: await api.ValidateFilter(id, filter) });
+  },
+
+  saveFilter: async (f) => {
+    const msg = await api.SaveFilter(f);
+    if (msg) {
+      set({ error: msg });
+      return;
+    }
+    set({ error: "", editing: null });
+    await get().loadLibrary();
+  },
+
+  resetFilter: async (id) => {
+    const msg = await api.ResetFilter(id);
+    if (msg) {
+      set({ error: msg });
+      return;
+    }
+    set({ editing: null });
+    await get().loadLibrary();
+  },
+
+  deleteFilter: async (id) => {
+    const msg = await api.DeleteFilter(id);
+    if (msg) {
+      set({ error: msg });
+      return;
+    }
+    set({ editing: null });
+    await get().loadLibrary();
+  },
+
+  restoreFilters: async () => {
+    const msg = await api.RestoreDefaultFilters();
+    if (msg) {
+      set({ error: msg });
+      return;
+    }
+    set({ editing: null });
+    await get().loadLibrary();
+  },
+
+  useFilter: (f) => {
+    set({ mode: "search", filterText: f.filter, scope: f.scope || "subtree" });
+    void get().runSearch();
+  },
 }));
+
+// Results arrive as events. Subscribing once at module load is what keeps a
+// forty-thousand-row search from being one frozen call.
+EventsOn(EVENT_SEARCH_BATCH, (batch: SearchBatch) => {
+  useStore.setState((s) => ({
+    results: [...s.results, ...(batch.rows ?? [])],
+    matched: batch.matched,
+  }));
+});
+
+EventsOn(EVENT_SEARCH_DONE, (done: SearchDone) => {
+  useStore.setState({
+    searching: false,
+    matched: done.matched,
+    columns: done.columns ?? [],
+    searchNote: done.error
+      ? done.error
+      : done.cancelled
+        ? `stopped after ${done.matched}`
+        : done.truncated
+          ? done.reason
+          : `${done.matched} matched in ${done.elapsed} ms`,
+  });
+});
 
 /** visibleRows flattens the tree into exactly the rows on screen, in order.
  *

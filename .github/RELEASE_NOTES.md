@@ -1,45 +1,52 @@
-The first release. Ldapper opens, connects to a directory, walks its tree and
-reads an object's attributes. It is strictly read-only.
+Search, the filter library and export. With these, everything the v1 design
+called for is in place: read, search, filter, export. Still strictly
+read-only.
 
-## What works
+## New in this release
 
-- **Connections** over LDAPS, StartTLS or plain LDAP, with a simple bind or an
-  NTLM bind — so you can sign in as `CORP\a.kensel` without knowing your own
-  distinguished name. Passwords go to the system keychain, never to the
-  settings file.
-- **Untrusted certificates** stop the connection and show you the SHA-256
-  fingerprint, subject, issuer and expiry. Trusting one applies to that server
-  alone. The button that continues past the warning is deliberately not the
-  accent colour.
-- **The tree**, loaded a page at a time and virtualised, so an organizational
-  unit holding tens of thousands of accounts opens rather than freezes. When
-  there is more to fetch, the row says which page comes next instead of
-  spinning.
-- **Attributes** shown as the server stores them, with the meaning underneath:
-  `objectSid` as `S-1-5-21-…`, `objectGUID` as a readable UUID, Windows
-  FILETIME values as dates, and `userAccountControl` as the flags it packs.
-- **18 built-in filters** for Active Directory and for plain LDAP, each marked
-  with whether the server you are connected to can actually answer it. The
-  library is in this build; the screen that runs filters is not yet.
+- **Search** streams as it runs. Results appear while the server is still
+  walking the tree rather than after it finishes, and Stop halts a search
+  partway and says how far it got. A filter is compiled locally first, so a
+  malformed one never reaches the server — where the answer would be a
+  protocol error that says nothing about which part was wrong.
+- **The filter library** with its editor. All 18 built-in filters are
+  editable, a changed one is marked, and Reset returns it to the version
+  Ldapper ships. Deleting a built-in makes it stay deleted across updates.
+  Filters the connected server cannot answer are greyed with the reason,
+  never hidden — a greyed row tells you something, a missing one does not.
+- **Substitutions resolve as you type.** `{{now-90d:filetime}}` shows the
+  18-digit Windows FILETIME it becomes before you run anything.
+- **Export to LDIF and CSV**, written straight to the file you choose. A
+  subtree export never passes through the interface, which is exactly the case
+  that would run out of memory if it did.
 
-## What is not here yet
+## Carried over from v0.1.0
 
-Search, the filter library screen, and export to LDIF or CSV — all three are
-built and tested in the engine, and are waiting on their interface. Writing to
-the directory, snapshots and diffs, and Kerberos are not in v1 at all.
+Connections over LDAPS, StartTLS or plain LDAP with a simple or NTLM bind;
+passwords in the system keychain; untrusted certificates shown with their
+fingerprint before you decide; a paged, virtualised tree; and attributes
+decoded underneath their raw values.
+
+## What is still not here
+
+Writing to the directory, snapshots and diffs, and Kerberos — none of them are
+in v1 by design. Reconnecting automatically after a dropped connection is
+deferred: the event bridge it needs exists now, but there is no way yet to
+produce a dropped connection on purpose to test against.
 
 ## Installing
 
-**macOS** — unzip and drag `Ldapper.app` to Applications. The build is not
-notarised yet, so the first launch needs right-click → Open.
+**macOS** — unzip and drag `Ldapper.app` to Applications. Not notarised, so
+the first launch needs right-click → Open.
 
-**Windows** — unzip and run `Ldapper.exe`. It needs the WebView2 runtime,
-which Windows 11 and current Windows 10 already have. There is no installer in
-this release.
+**Windows** — unzip and run `Ldapper.exe`. Needs the WebView2 runtime, which
+current Windows 10 and 11 already carry. No installer yet.
 
-## Reporting something
+## What is verified, and what is not
 
-The engine is covered by 272 unit tests and 27 integration tests against a
-real OpenLDAP server, but no test suite has met your directory. If Ldapper
-misreads an attribute or refuses a server it should accept, an issue with the
-attribute name and its raw value is exactly what is useful.
+301 unit tests and 36 integration tests against a real OpenLDAP server, the
+latter driving the same facade the window calls: connect, page through a
+branch, read an entry, validate and expand a filter, export to both formats.
+The window itself has been run and its chrome checked by eye on macOS. The
+Windows build compiles and links in CI but has not been run by hand — if it
+misbehaves there, that is the report most worth having.

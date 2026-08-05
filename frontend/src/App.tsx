@@ -1,15 +1,27 @@
 import { useEffect } from "react";
 import { Tree } from "./panes/Tree";
 import { Detail } from "./panes/Detail";
+import { Results } from "./panes/Results";
+import { Library } from "./panes/Library";
+import { Toolbar } from "./Toolbar";
 import { Connect } from "./dialogs/Connect";
 import { Certificate } from "./dialogs/Certificate";
-import { useStore } from "./store";
+import { useStore, type Mode } from "./store";
 import "./App.css";
+
+const MODES: { value: Mode; label: string }[] = [
+  { value: "browse", label: "Browse" },
+  { value: "search", label: "Search" },
+  { value: "library", label: "Filters" },
+];
 
 export function App() {
   const state = useStore((s) => s.connection);
   const dialog = useStore((s) => s.dialog);
+  const mode = useStore((s) => s.mode);
+  const error = useStore((s) => s.error);
   const openConnect = useStore((s) => s.openConnect);
+  const setMode = useStore((s) => s.setMode);
   const loadProfiles = useStore((s) => s.loadProfiles);
 
   useEffect(() => {
@@ -17,29 +29,56 @@ export function App() {
   }, [loadProfiles]);
 
   return (
-    <div className="window">
+    <div className={mode === "browse" ? "window" : "window with-toolbar"}>
       <header className="utility drag">
         <span className="wordmark">Ldapper</span>
+
         <button className="conn no-drag" onClick={openConnect}>
           <i className={state?.connected ? "led live" : "led"} />
-          {state?.connected
-            ? `${state.host} · ${state.boundAs || "anonymous"}`
-            : "not connected"}
+          {state?.connected ? `${state.host} · ${state.boundAs || "anonymous"}` : "not connected"}
           <span className="chev">▾</span>
         </button>
+
+        <div className="segs small no-drag modes">
+          {MODES.map((m) => (
+            <button
+              key={m.value}
+              className={mode === m.value ? "seg on" : "seg"}
+              onClick={() => setMode(m.value)}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+
         <span className="spacer" />
         <button className="util no-drag" onClick={openConnect}>
           Connections
         </button>
       </header>
 
+      {mode !== "browse" && <Toolbar />}
+
       <main className="workspace">
-        <Tree />
-        <Detail />
+        {mode === "browse" && (
+          <>
+            <Tree />
+            <Detail />
+          </>
+        )}
+        {mode === "search" && (
+          <>
+            <Tree />
+            <Results />
+          </>
+        )}
+        {mode === "library" && <Library />}
       </main>
 
       <footer className="statusbar">
-        {state?.connected ? (
+        {error ? (
+          <span className="failed">{error}</span>
+        ) : state?.connected ? (
           <>
             <span className="live">Connected</span>
             <span>{state.encryption === "none" ? "unencrypted" : state.encryption.toUpperCase()}</span>
