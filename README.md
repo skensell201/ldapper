@@ -17,8 +17,21 @@ The same goes for `objectGUID`, Windows FILETIME timestamps, and the bit flags p
 
 ## Status
 
-The engine is built and tested; the interface is not started yet. `ldapper-probe`
-drives the whole engine from a terminal:
+Ldapper runs. It connects to a directory, walks its tree and reads an object's
+attributes. Search, the filter library screen and export are built and tested
+in the engine and are waiting on their interface.
+
+Download the latest build from
+[Releases](https://github.com/skensell201/ldapper/releases), or build it
+yourself:
+
+```bash
+go install github.com/wailsapp/wails/v2/cmd/wails@v2.13.0
+wails build
+```
+
+There is also `ldapper-probe`, a terminal harness that drives the whole engine
+without the window — useful when a directory behaves in a way no test predicted:
 
 ```bash
 go build ./cmd/ldapper-probe
@@ -33,7 +46,8 @@ built-in set without connecting to anything.
 The design is settled and written down:
 
 - Design spec — [`docs/superpowers/specs/2026-08-05-ldapper-design.md`](docs/superpowers/specs/2026-08-05-ldapper-design.md)
-- Implementation plan for the engine — [`docs/superpowers/plans/2026-08-05-ldapper-core.md`](docs/superpowers/plans/2026-08-05-ldapper-core.md)
+- Engine plan — [`docs/superpowers/plans/2026-08-05-ldapper-core.md`](docs/superpowers/plans/2026-08-05-ldapper-core.md)
+- Shell plan — [`docs/superpowers/plans/2026-08-05-ldapper-shell.md`](docs/superpowers/plans/2026-08-05-ldapper-shell.md)
 - Visual mockups and the logo — [`docs/design/`](docs/design/) (open the HTML files in a browser)
 
 ## The mark
@@ -75,9 +89,9 @@ Not in v1: writing to the directory, snapshots and diffs, Kerberos, schema editi
 
 ## Built with
 
-Go and [go-ldap](https://github.com/go-ldap/ldap) for the core, [Wails](https://wails.io) for the
-shell, React and TypeScript for the interface. Windows is the primary target; macOS and Linux
-builds follow.
+Go and [go-ldap](https://github.com/go-ldap/ldap) for the engine,
+[Wails v2](https://wails.io) for the shell, React and TypeScript for the
+interface. Releases cover Windows and macOS.
 
 ## License
 
