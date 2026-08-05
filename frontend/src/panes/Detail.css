@@ -1,0 +1,47 @@
+.detail-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 22px 16px; flex: none; }
+.avatar {
+  width: 38px; height: 38px; flex: none; border-radius: 12px;
+  background: var(--raise); display: grid; place-items: center; color: var(--mist);
+}
+.avatar svg { width: 18px; height: 18px; }
+.detail-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.detail-title .cn { font-size: 17px; font-weight: 600; letter-spacing: -0.34px; color: var(--white); }
+.detail-title .dn {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--fog);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.detail-head .ghost {
+  margin-left: auto; flex: none;
+  height: 30px; padding: 0 16px; border-radius: var(--r-pill);
+  background: var(--raise); color: var(--ash); font-size: 12px;
+}
+.detail-head .ghost:hover { color: var(--white); }
+
+.attr-head {
+  display: grid; grid-template-columns: 220px 1fr; gap: 16px;
+  padding: 0 22px 10px;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--iris);
+  box-shadow: inset 0 -1px 0 var(--hairline);
+  flex: none;
+}
+
+.attr-scroll { flex: 1; overflow: auto; min-height: 0; }
+.attr-inner { position: relative; width: 100%; }
+
+.attr-row {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: grid; grid-template-columns: 220px 1fr; gap: 16px;
+  padding: 8px 22px;
+  box-shadow: inset 0 -1px 0 var(--hairline-soft);
+}
+.attr-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0; color: var(--mist); }
+.attr-value { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.val { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--white); word-break: break-all; }
+.raw { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--fog); word-break: break-all; }
+
+.decoded-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.decoded {
+  padding: 2px 11px; border-radius: var(--r-pill);
+  background: var(--raise); color: var(--white);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0;
+}

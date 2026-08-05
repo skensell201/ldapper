@@ -1,6 +1,9 @@
 package app
 
-import "testing"
+import (
+	"context"
+	"testing"
+)
 
 func TestNewLoadsBothStores(t *testing.T) {
 	t.Setenv("LDAPPER_CONFIG_DIR", t.TempDir())
@@ -81,7 +84,7 @@ func TestShutdownClosesEverything(t *testing.T) {
 		})
 	}
 
-	a.Shutdown(nil)
+	a.Shutdown(context.TODO())
 
 	if closed != 2 {
 		t.Errorf("%d connections were closed, want 2", closed)

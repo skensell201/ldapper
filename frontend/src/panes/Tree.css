@@ -1,0 +1,32 @@
+.tree-scroll { flex: 1; overflow: auto; padding: 0 8px 10px; min-height: 0; }
+.tree-inner { position: relative; width: 100%; }
+
+.row {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; align-items: center; gap: 8px;
+  height: var(--row-height);
+  padding-right: 10px;
+  border-radius: var(--r-input);
+  color: var(--ash);
+  white-space: nowrap;
+  cursor: default;
+}
+.row:hover { background: var(--raise); }
+.row.selected { background: var(--coral); color: var(--white); font-weight: 500; }
+.row.selected .row-icon,
+.row.selected .chev-btn,
+.row.selected .count { color: rgba(255, 255, 255, 0.8); }
+.row.selected .more { background: rgba(255, 255, 255, 0.2); color: var(--white); }
+
+.chev-btn { width: 10px; flex: none; color: var(--iris); font-size: 8px; text-align: center; }
+.row-icon { width: 14px; height: 14px; flex: none; color: var(--iris); }
+.label { overflow: hidden; text-overflow: ellipsis; }
+.count { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); }
+
+.more {
+  margin-left: auto; flex: none;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0;
+  color: var(--mist);
+  padding: 1px 8px; border-radius: var(--r-pill); background: var(--raise);
+}
+.more:hover { color: var(--white); }

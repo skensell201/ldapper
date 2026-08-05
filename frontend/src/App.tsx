@@ -1,122 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect } from "react";
+import { Tree } from "./panes/Tree";
+import { Detail } from "./panes/Detail";
+import { Connect } from "./dialogs/Connect";
+import { Certificate } from "./dialogs/Certificate";
+import { useStore } from "./store";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const state = useStore((s) => s.connection);
+  const dialog = useStore((s) => s.dialog);
+  const openConnect = useStore((s) => s.openConnect);
+  const loadProfiles = useStore((s) => s.loadProfiles);
+
+  useEffect(() => {
+    void loadProfiles();
+  }, [loadProfiles]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <div className="window">
+      <header className="utility drag">
+        <span className="wordmark">Ldapper</span>
+        <button className="conn no-drag" onClick={openConnect}>
+          <i className={state?.connected ? "led live" : "led"} />
+          {state?.connected
+            ? `${state.host} · ${state.boundAs || "anonymous"}`
+            : "not connected"}
+          <span className="chev">▾</span>
         </button>
-      </section>
+        <span className="spacer" />
+        <button className="util no-drag" onClick={openConnect}>
+          Connections
+        </button>
+      </header>
 
-      <div className="ticks"></div>
+      <main className="workspace">
+        <Tree />
+        <Detail />
+      </main>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <footer className="statusbar">
+        {state?.connected ? (
+          <>
+            <span className="live">Connected</span>
+            <span>{state.encryption === "none" ? "unencrypted" : state.encryption.toUpperCase()}</span>
+            <span>{state.isActiveDirectory ? "Active Directory" : "LDAP"}</span>
+            <span>{state.supportsPaging ? "paged results" : "no paging control"}</span>
+            <span className="spacer" />
+            <span>{state.rootDN}</span>
+          </>
+        ) : (
+          <span>idle</span>
+        )}
+      </footer>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {dialog === "connect" && <Connect />}
+      {dialog === "certificate" && <Certificate />}
+    </div>
+  );
 }
-
-export default App
