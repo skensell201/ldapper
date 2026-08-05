@@ -1,3 +1,5 @@
+<img src="assets/icon.svg" width="88" alt="">
+
 # Ldapper
 
 A desktop explorer for LDAP directories — a replacement for Sysinternals AD Explorer that also
@@ -18,7 +20,20 @@ The same goes for `objectGUID`, Windows FILETIME timestamps, and the bit flags p
 Pre-implementation. The design is settled and written down:
 
 - Design spec — [`docs/superpowers/specs/2026-08-05-ldapper-design.md`](docs/superpowers/specs/2026-08-05-ldapper-design.md)
-- Visual mockups — [`docs/design/`](docs/design/) (open the HTML files in a browser)
+- Implementation plan for the engine — [`docs/superpowers/plans/2026-08-05-ldapper-core.md`](docs/superpowers/plans/2026-08-05-ldapper-core.md)
+- Visual mockups and the logo — [`docs/design/`](docs/design/) (open the HTML files in a browser)
+
+## The mark
+
+Every directory listing draws its indentation with `└` — which is also the first letter of the
+name. The logo is two levels of nesting and three nodes, with the leaf in coral: you descend the
+branch, and the thing you were looking for lights up.
+
+Source of truth is `assets/icon.svg`. Regenerate the raster sizes from it rather than editing them:
+
+```bash
+rsvg-convert -w 1024 -h 1024 assets/icon.svg -o build/appicon.png
+```
 
 ## Planned for v1
 

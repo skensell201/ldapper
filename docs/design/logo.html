@@ -1,0 +1,260 @@
+<title>Ldapper — знак и логотип</title>
+
+<style>
+  :root {
+    color-scheme: dark;
+    --canvas: #181824;
+    --plum:   #26253b;
+    --well:   #1f1e30;
+    --raise:  #2f2e47;
+    --coral:  #ff4a36;
+    --iris:   #535676;
+    --white:  #ffffff;
+    --mist:   #a3a3a7;
+    --ash:    #8e8da0;
+    --fog:    #696f81;
+    --sans: "Inter Tight", Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sh: rgba(0,0,0,.28) 0 10px 28px -10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.45;
+    letter-spacing: -0.32px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 1080px; margin: 0 auto; padding: 64px 24px 110px; display: flex; flex-direction: column; gap: 72px; }
+
+  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--coral); margin: 0; }
+  h1 { font-size: 54px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.04; margin: 0; text-wrap: balance; }
+  h2 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin: 0; }
+  .lede { max-width: 60ch; color: var(--ash); font-size: 18px; letter-spacing: -0.36px; margin: 0; }
+  .note { max-width: 66ch; color: var(--fog); font-size: 14px; letter-spacing: -0.28px; line-height: 1.55; margin: 0; }
+  .note code, .lede code { font-family: var(--mono); font-size: .9em; letter-spacing: 0; color: var(--ash); }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+  .head { display: flex; flex-direction: column; gap: 8px; }
+
+  /* hero */
+  .hero {
+    background: var(--plum);
+    border-radius: 24px;
+    box-shadow: var(--sh);
+    padding: 56px 48px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .hero .tile { width: 148px; height: 148px; flex: none; }
+  .hero-text { display: flex; flex-direction: column; gap: 10px; min-width: 260px; }
+  .hero-text .name { font-size: 52px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+  .hero-text .tag { color: var(--ash); font-size: 17px; letter-spacing: -0.34px; }
+
+  /* size ladder */
+  .ladder {
+    background: var(--plum);
+    border-radius: 20px;
+    box-shadow: var(--sh);
+    padding: 36px;
+    display: flex;
+    align-items: flex-end;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .rung { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .rung img { display: block; image-rendering: -webkit-optimize-contrast; }
+  .rung span { font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--iris); }
+
+  /* backgrounds */
+  .grounds { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+  .ground {
+    border-radius: 20px;
+    padding: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--sh);
+  }
+  .ground svg, .ground img { width: 76px; height: 76px; display: block; }
+  .ground b { font-size: 12px; font-weight: 500; letter-spacing: 0; font-family: var(--mono); }
+  .g-dark  { background: var(--canvas); color: var(--fog); box-shadow: inset 0 0 0 1px rgba(247,247,255,.08); }
+  .g-plum  { background: var(--plum);   color: var(--fog); }
+  .g-paper { background: #ffffff;       color: #696f81; }
+  .g-coral { background: var(--coral);  color: rgba(255,255,255,.8); }
+
+  /* in situ */
+  .app {
+    background: var(--plum);
+    border-radius: 20px;
+    box-shadow: var(--sh);
+    overflow: hidden;
+  }
+  .utility { display: flex; align-items: center; gap: 14px; padding: 0 18px; height: 46px; }
+  .traffic { display: flex; gap: 7px; margin-right: 2px; }
+  .traffic i { width: 10px; height: 10px; border-radius: 50%; background: var(--raise); display: block; }
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand svg { width: 19px; height: 19px; display: block; }
+  .brand span { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
+  .conn {
+    display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 14px;
+    border-radius: 100px; background: var(--well);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--ash);
+  }
+  .conn i { width: 6px; height: 6px; border-radius: 50%; background: var(--mist); }
+  .utility .sp { margin-left: auto; }
+  .utility a { font-size: 13px; color: var(--fog); text-decoration: none; }
+  .canvas-strip { height: 132px; background: var(--well); margin: 0 10px 10px; border-radius: 16px; display: grid; place-items: center; }
+  .canvas-strip span { font-family: var(--mono); font-size: 11px; color: var(--iris); letter-spacing: 0; }
+
+  /* construction */
+  .build { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; align-items: start; }
+  .card { background: var(--plum); border-radius: 20px; box-shadow: var(--sh); padding: 26px; display: flex; flex-direction: column; gap: 12px; }
+  .card b { font-size: 14px; font-weight: 600; }
+  .card span { font-size: 13.5px; color: var(--fog); line-height: 1.55; }
+  .card code { font-family: var(--mono); font-size: 12.5px; color: var(--mist); letter-spacing: 0; }
+  .glyph { font-family: var(--mono); font-size: 40px; line-height: 1.1; color: var(--mist); letter-spacing: 0; white-space: pre; }
+  .glyph em { font-style: normal; color: var(--coral); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; font-weight: 400; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--iris); padding: 0 0 10px; }
+  td { padding: 9px 0; color: var(--fog); box-shadow: inset 0 -1px 0 rgba(247,247,255,.06); vertical-align: top; }
+  td.f { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0; color: var(--mist); white-space: nowrap; padding-right: 24px; }
+
+  @media (max-width: 720px) { .page { padding: 40px 16px 80px; gap: 52px; } h1 { font-size: 36px; } .hero { padding: 34px 26px; } }
+</style>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 64 64">
+    <g fill="none" stroke="#5c5f85" stroke-width="4" stroke-linecap="round">
+      <path d="M15 20 V27 Q15 32 20 32 H26"/>
+      <path d="M32 37 V44 Q32 49 37 49 H43"/>
+    </g>
+    <circle cx="15" cy="15" r="4" fill="#8e8da0"/>
+    <circle cx="32" cy="32" r="4" fill="#a3a3a7"/>
+    <circle cx="49" cy="49" r="5.5" fill="#ff4a36"/>
+  </symbol>
+  <symbol id="tile" viewBox="0 0 64 64">
+    <rect width="64" height="64" rx="14" fill="#181824"/>
+    <g fill="none" stroke="#5c5f85" stroke-width="4" stroke-linecap="round">
+      <path d="M15 20 V27 Q15 32 20 32 H26"/>
+      <path d="M32 37 V44 Q32 49 37 49 H43"/>
+    </g>
+    <circle cx="15" cy="15" r="4" fill="#8e8da0"/>
+    <circle cx="32" cy="32" r="4" fill="#a3a3a7"/>
+    <circle cx="49" cy="49" r="5.5" fill="#ff4a36"/>
+  </symbol>
+</svg>
+
+<div class="page">
+
+  <header class="head">
+    <p class="eyebrow">Ldapper · знак</p>
+    <h1>Ветка дерева, которая одновременно буква L</h1>
+    <p class="lede">В любом обходчике каталога отступ рисуется символом <code>└</code>. Это и есть первая буква названия. Две ступени вложенности, три узла, последний — коралловый.</p>
+  </header>
+
+  <div class="hero">
+    <svg class="tile"><use href="#tile"/></svg>
+    <div class="hero-text">
+      <div class="name">Ldapper</div>
+      <div class="tag">Обозреватель каталогов LDAP и Active Directory</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="head">
+      <h2>Почему именно так</h2>
+    </div>
+    <div class="build">
+      <div class="card">
+        <div class="glyph">└─ DC
+   └─ OU
+      └─ <em>CN</em></div>
+        <b>Знак — это само дерево</b>
+        <span>Ровно то, что админ видит в выводе <code>ldapsearch</code> и в левой панели приложения. Не метафора дерева, а буквальная форма отступа.</span>
+      </div>
+      <div class="card">
+        <b>Коралл достаётся листу</b>
+        <span>Два верхних узла нейтральные, нижний — акцентный. Спускаешься по ветке, искомое подсвечивается. Правило «один коралловый элемент» соблюдено: во всём знаке он один.</span>
+      </div>
+      <div class="card">
+        <b>Три круга, две линии</b>
+        <span>Пять фигур на всю марку. На 16 пикселях остаётся различимой ступенчатая диагональ и красная точка внизу справа — этого достаточно, чтобы найти вкладку глазами.</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>Размеры</h2>
+      <p class="note">Слева направо — иконка приложения, док, список программ, вкладка браузера, фавиконка. Ниже 16 пикселей знак не используется.</p>
+    </div>
+    <div class="ladder">
+      <div class="rung"><svg width="128" height="128"><use href="#tile"/></svg><span>128</span></div>
+      <div class="rung"><svg width="64" height="64"><use href="#tile"/></svg><span>64</span></div>
+      <div class="rung"><svg width="32" height="32"><use href="#tile"/></svg><span>32</span></div>
+      <div class="rung"><svg width="16" height="16"><use href="#tile"/></svg><span>16</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>На разных подложках</h2>
+      <p class="note">Плитка носит свой фон с собой, поэтому годится и для README на GitHub, где тема зависит от читателя. Знак без плитки на белом теряет верхние узлы — там используем плитку.</p>
+    </div>
+    <div class="grounds">
+      <div class="ground g-dark"><svg><use href="#mark"/></svg><b>на холсте</b></div>
+      <div class="ground g-plum"><svg><use href="#mark"/></svg><b>на панели</b></div>
+      <div class="ground g-paper"><svg><use href="#tile"/></svg><b>на белом — плиткой</b></div>
+      <div class="ground g-coral"><svg><use href="#tile"/></svg><b>на коралле — плиткой</b></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>В интерфейсе</h2>
+      <p class="note">В верхней строке знак стоит на 19 пикселях рядом со словесной маркой — узел-лист попадает ровно в высоту строчной буквы.</p>
+    </div>
+    <div class="app">
+      <div class="utility">
+        <div class="traffic"><i></i><i></i><i></i></div>
+        <div class="brand"><svg><use href="#mark"/></svg><span>Ldapper</span></div>
+        <div class="conn"><i></i> dc01.corp.example.com · CORP\a.kensel</div>
+        <span class="sp"></span>
+        <a href="#in-app">Connections</a>
+        <a href="#in-app">Settings</a>
+      </div>
+      <div class="canvas-strip" id="in-app"><span>рабочая область</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>Файлы</h2>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Файл</th><th>Для чего</th></tr></thead>
+        <tbody>
+          <tr><td class="f">assets/logo.svg</td><td>Знак без подложки — для интерфейса и тёмных страниц</td></tr>
+          <tr><td class="f">assets/icon.svg</td><td>Знак в плитке — иконка приложения и README</td></tr>
+          <tr><td class="f">assets/wordmark.svg</td><td>Знак со словесной маркой — шапки и презентации</td></tr>
+          <tr><td class="f">assets/icon-512.png<br>icon-128.png<br>icon-32.png<br>icon-16.png</td><td>Растровые размеры для мест, где SVG не принимают</td></tr>
+          <tr><td class="f">build/appicon.png</td><td>1024×1024 — то, что Wails забирает при сборке</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Растр собирается из <code>assets/icon.svg</code> одной командой: <code>rsvg-convert -w 1024 -h 1024 assets/icon.svg -o build/appicon.png</code>. Правится всегда SVG, PNG пересобираются.</p>
+  </section>
+
+</div>
