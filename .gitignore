@@ -17,3 +17,9 @@ node_modules/
 # Local
 .env
 .DS_Store
+
+# Wails
+/frontend/node_modules/
+/frontend/dist/
+/frontend/wailsjs/
+/build/bin/

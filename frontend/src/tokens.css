@@ -1,0 +1,77 @@
+:root {
+  color-scheme: dark;
+
+  --canvas: #181824;
+  --plum:   #26253b;
+  --well:   #1f1e30;
+  --deep:   #131320;
+  --raise:  #2f2e47;
+
+  --coral: #ff4a36;
+  --iris:  #535676;
+
+  --white: #ffffff;
+  --mist:  #a3a3a7;
+  --ash:   #8e8da0;
+  --fog:   #696f81;
+  --hairline: rgba(247, 247, 255, 0.09);
+  --hairline-soft: rgba(247, 247, 255, 0.05);
+
+  --sans: "Inter Tight", Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --r-card: 20px;
+  --r-pane: 16px;
+  --r-pill: 100px;
+  --r-input: 8px;
+
+  --sh-modal: rgba(0, 0, 0, 0.5) 0 28px 70px -18px;
+
+  /* The tree is virtualised, so every row is exactly this tall. Changing it
+     here changes the measurement the virtualiser makes. */
+  --row-height: 28px;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--canvas);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: -0.26px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Wails' frameless window needs an explicit drag region. */
+.drag { --wails-draggable: drag; }
+.no-drag { --wails-draggable: no-drag; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
+
+input { font: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
