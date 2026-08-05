@@ -1,0 +1,164 @@
+[
+  {
+    "id": "ad-disabled-accounts",
+    "name": "Disabled accounts",
+    "description": "User accounts that have been switched off.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=2))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "whenChanged", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-locked-out",
+    "name": "Locked out right now",
+    "description": "Accounts locked by the password policy. They unlock on their own once the lockout window passes.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(lockoutTime>=1))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "lockoutTime", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-password-never-expires",
+    "name": "Password never expires",
+    "description": "Accounts exempt from password expiry.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=65536))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "pwdLastSet", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-must-change-password",
+    "name": "Must change at next logon",
+    "description": "Accounts whose password has been flagged for replacement.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(pwdLastSet=0))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "whenCreated", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-stale-users-90d",
+    "name": "Stale users · 90 days",
+    "description": "Enabled accounts that have not authenticated in 90 days. Disabled ones are excluded — they have their own filter.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(lastLogonTimestamp<={{now-90d:filetime}}))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "lastLogonTimestamp", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-stale-computers-60d",
+    "name": "Stale computers · 60 days",
+    "description": "Machine accounts that have not checked in for 60 days.",
+    "filter": "(&(objectCategory=computer)(lastLogonTimestamp<={{now-60d:filetime}}))",
+    "scope": "subtree",
+    "columns": ["cn", "operatingSystem", "lastLogonTimestamp", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-privileged-accounts",
+    "name": "Privileged accounts",
+    "description": "Accounts carrying adminCount=1 — members, now or once, of a protected group.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(adminCount=1))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "memberOf", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-accounts-with-spn",
+    "name": "Accounts with an SPN",
+    "description": "User accounts registered as a service. Usually service accounts.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(servicePrincipalName=*))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "servicePrincipalName", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-no-preauth",
+    "name": "Kerberos pre-auth disabled",
+    "description": "Accounts that skip Kerberos pre-authentication — worth reviewing.",
+    "filter": "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))",
+    "scope": "subtree",
+    "columns": ["cn", "sAMAccountName", "userAccountControl", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-unconstrained-delegation",
+    "name": "Unconstrained delegation",
+    "description": "Computers trusted to impersonate any user to any service.",
+    "filter": "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=524288))",
+    "scope": "subtree",
+    "columns": ["cn", "operatingSystem", "userAccountControl", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-domain-controllers",
+    "name": "Domain controllers",
+    "description": "Every server holding a writable copy of the directory.",
+    "filter": "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))",
+    "scope": "subtree",
+    "columns": ["cn", "dNSHostName", "operatingSystem", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "ad-group-policy-objects",
+    "name": "Group policy objects",
+    "description": "Every GPO defined in the domain.",
+    "filter": "(objectClass=groupPolicyContainer)",
+    "scope": "subtree",
+    "columns": ["displayName", "cn", "whenChanged", "distinguishedName"],
+    "dialect": "ad"
+  },
+  {
+    "id": "all-people",
+    "name": "All people",
+    "description": "Every person object, whichever class the directory uses for them.",
+    "filter": "(|(objectClass=person)(objectClass=inetOrgPerson))",
+    "scope": "subtree",
+    "columns": ["cn", "mail", "distinguishedName"],
+    "dialect": "generic"
+  },
+  {
+    "id": "all-groups",
+    "name": "All groups",
+    "description": "Every group object across the common schemas.",
+    "filter": "(|(objectClass=group)(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=posixGroup))",
+    "scope": "subtree",
+    "columns": ["cn", "description", "distinguishedName"],
+    "dialect": "generic"
+  },
+  {
+    "id": "all-organizational-units",
+    "name": "All organizational units",
+    "description": "The skeleton of the directory.",
+    "filter": "(objectClass=organizationalUnit)",
+    "scope": "subtree",
+    "columns": ["ou", "description", "distinguishedName"],
+    "dialect": "generic"
+  },
+  {
+    "id": "empty-groups",
+    "name": "Empty groups",
+    "description": "Groups with no members at all.",
+    "filter": "(&(|(objectClass=group)(objectClass=groupOfNames))(!(member=*)))",
+    "scope": "subtree",
+    "columns": ["cn", "description", "whenCreated", "distinguishedName"],
+    "dialect": "generic"
+  },
+  {
+    "id": "people-without-email",
+    "name": "People without email",
+    "description": "Person objects with no mail attribute.",
+    "filter": "(&(objectClass=person)(!(mail=*)))",
+    "scope": "subtree",
+    "columns": ["cn", "whenCreated", "distinguishedName"],
+    "dialect": "generic"
+  },
+  {
+    "id": "posix-accounts",
+    "name": "POSIX accounts",
+    "description": "Accounts carrying Unix attributes.",
+    "filter": "(objectClass=posixAccount)",
+    "scope": "subtree",
+    "columns": ["uid", "uidNumber", "gidNumber", "homeDirectory", "distinguishedName"],
+    "dialect": "posix"
+  }
+]
