@@ -32,6 +32,7 @@ type options struct {
 	ntlm                  bool
 	base, filter, scope   string
 	attributes            string
+	pageSize              uint
 	asLDIF, asCSV         bool
 }
 
@@ -55,6 +56,7 @@ func run() error {
 	flag.StringVar(&o.filter, "filter", "(objectClass=*)", "LDAP filter, {{now-90d:filetime}} and friends allowed")
 	flag.StringVar(&o.scope, "scope", "subtree", "base, one or subtree")
 	flag.StringVar(&o.attributes, "attributes", "", "comma-separated attributes to fetch")
+	flag.UintVar(&o.pageSize, "pagesize", 0, "entries per page when browsing; 0 uses the 1000 Active Directory defaults to")
 	flag.BoolVar(&o.asLDIF, "ldif", false, "write results as LDIF")
 	flag.BoolVar(&o.asCSV, "csv", false, "write results as CSV")
 
@@ -102,7 +104,7 @@ func run() error {
 	case "info":
 		return printInfo(conn, info)
 	case "browse":
-		return printChildren(conn, o.base)
+		return printChildren(conn, o.base, uint32(o.pageSize))
 	case "search":
 		return runSearch(ctx, conn, o)
 	default:
@@ -172,7 +174,7 @@ func printInfo(conn *session.Conn, info schema.Info) error {
 	return nil
 }
 
-func printChildren(conn *session.Conn, base string) error {
+func printChildren(conn *session.Conn, base string, size uint32) error {
 	var (
 		cookie []byte
 		page   int
@@ -181,7 +183,7 @@ func printChildren(conn *session.Conn, base string) error {
 
 	for {
 		page++
-		result, err := browse.Children(conn.Conn, base, 0, cookie)
+		result, err := browse.Children(conn.Conn, base, size, cookie)
 		if err != nil {
 			return err
 		}

@@ -17,7 +17,20 @@ The same goes for `objectGUID`, Windows FILETIME timestamps, and the bit flags p
 
 ## Status
 
-Pre-implementation. The design is settled and written down:
+The engine is built and tested; the interface is not started yet. `ldapper-probe`
+drives the whole engine from a terminal:
+
+```bash
+go build ./cmd/ldapper-probe
+./ldapper-probe -host dc01.corp.example.com -port 636 -encryption ldaps \
+  -ntlm -user 'CORP\a.kensel' -password '…' info
+```
+
+`info` reports what the server is, `browse` walks a branch page by page,
+`search` runs a filter and can export the results, and `filters` lists the
+built-in set without connecting to anything.
+
+The design is settled and written down:
 
 - Design spec — [`docs/superpowers/specs/2026-08-05-ldapper-design.md`](docs/superpowers/specs/2026-08-05-ldapper-design.md)
 - Implementation plan for the engine — [`docs/superpowers/plans/2026-08-05-ldapper-core.md`](docs/superpowers/plans/2026-08-05-ldapper-core.md)
@@ -34,6 +47,20 @@ Source of truth is `assets/icon.svg`. Regenerate the raster sizes from it rather
 ```bash
 rsvg-convert -w 1024 -h 1024 assets/icon.svg -o build/appicon.png
 ```
+
+## Tests
+
+```bash
+make test         # unit tests, race detector on
+make lint         # go vet and golangci-lint
+make integration  # starts OpenLDAP in Docker, runs against it, tears it down
+```
+
+The integration fixture seeds 122 people so that a page size of 50 needs three
+round trips. If the paging control ever stops reaching the server, that test
+reports one page instead of three — a smaller fixture would pass silently and
+browsing a real organizational unit would quietly stop at its first thousand
+objects.
 
 ## Planned for v1
 
