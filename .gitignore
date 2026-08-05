@@ -20,6 +20,11 @@ node_modules/
 
 # Wails
 /frontend/node_modules/
-/frontend/dist/
 /frontend/wailsjs/
 /build/bin/
+
+# The built frontend is generated, but main.go embeds it, so `go build` needs
+# the directory to exist and hold at least one file. The placeholder is
+# committed and everything beside it is not; `wails build` fills it in.
+/frontend/dist/*
+!/frontend/dist/.gitkeep
