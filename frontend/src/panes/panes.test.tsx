@@ -458,3 +458,18 @@ describe("the window", () => {
     expect(screen.getAllByText("dc=example,dc=com").length).toBeGreaterThan(0);
   });
 });
+
+describe("which build this is", () => {
+  it("shows the version in the status bar, where a bug report will look", async () => {
+    render(<App />);
+    expect(await screen.findByText("v9.9.9")).toBeInTheDocument();
+  });
+
+  it("marks a build made from a dirty tree", async () => {
+    api.Build.mockResolvedValue({ version: "v9.9.9", commit: "abc1234", modified: true } as never);
+    render(<App />);
+    // The plus is small, and it is the difference between a release and
+    // somebody's working copy.
+    expect(await screen.findByText("v9.9.9+")).toBeInTheDocument();
+  });
+});

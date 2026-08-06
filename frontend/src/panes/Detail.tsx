@@ -2,6 +2,7 @@ import { useMemo, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "../store";
 import { Icon } from "../Icon";
+import { rdnValue } from "../identity";
 import "./Detail.css";
 
 /** A row of the table is one value, not one attribute: an attribute with
@@ -11,13 +12,6 @@ interface ValueRow {
   first: boolean;
   raw: string;
   decoded: string[];
-}
-
-/** valueOf strips the attribute name from an RDN so the heading reads
- *  "Anna Volkova" rather than "CN=Anna Volkova". */
-function valueOf(rdn: string): string {
-  const i = rdn.indexOf("=");
-  return i >= 0 ? rdn.slice(i + 1) : rdn;
 }
 
 export function Detail() {
@@ -80,7 +74,7 @@ export function Detail() {
           <Icon name={detail.icon} />
         </span>
         <span className="detail-title">
-          <span className="cn">{valueOf(detail.rdn)}</span>
+          <span className="cn">{rdnValue(detail.rdn)}</span>
           <span className="dn" title={detail.dn}>
             {detail.dn}
           </span>

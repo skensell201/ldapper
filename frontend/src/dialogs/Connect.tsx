@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
-import * as api from "../../wailsjs/go/app/App";
+import { api } from "../api";
 import "./Dialog.css";
 
 const ENCRYPTIONS = [

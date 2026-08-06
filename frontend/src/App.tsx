@@ -10,7 +10,8 @@ import { useStore, type Mode } from "./store";
 import { shortIdentity } from "./identity";
 import { healthLabel, healthOf } from "./health";
 import { Mark } from "./Mark";
-import { Environment } from "../wailsjs/runtime/runtime";
+import { api, Environment } from "./api";
+import type { app } from "../wailsjs/go/models";
 import "./App.css";
 
 const MODES: { value: Mode; label: string }[] = [
@@ -32,8 +33,10 @@ export function App() {
   // needs room for them on the left. Windows and Linux do not, and reserving
   // it there just pushed the name off centre.
   const [platform, setPlatform] = useState("");
+  const [build, setBuild] = useState<app.BuildInfo | null>(null);
   useEffect(() => {
     void Environment().then((e) => setPlatform(e.platform));
+    void api.Build().then(setBuild);
   }, []);
 
   useEffect(() => {
@@ -113,9 +116,23 @@ export function App() {
             </span>
             <span>{state.isActiveDirectory ? "Active Directory" : "LDAP"}</span>
             <span>{state.supportsPaging ? "paged results" : "no paging control"}</span>
-            <span className="spacer" />
             <span title={state.rootDN}>{state.rootDN}</span>
           </>
+        )}
+
+        <span className="spacer" />
+        {build && (
+          <span
+            className="build"
+            title={
+              build.commit
+                ? `Ldapper ${build.version}, built from ${build.commit}${build.modified ? " with local changes" : ""}`
+                : `Ldapper ${build.version}`
+            }
+          >
+            {build.version}
+            {build.modified ? "+" : ""}
+          </span>
         )}
       </footer>
 

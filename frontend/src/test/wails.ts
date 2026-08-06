@@ -24,14 +24,15 @@ export const api = {
   ChooseExportPath: vi.fn(async () => ""),
   ExportSearch: vi.fn(async () => ""),
   ExportEntry: vi.fn(async () => ""),
+  Build: vi.fn(async () => ({ version: "v9.9.9", commit: "abc1234", modified: false })),
 };
 
 /** Handlers the store registered with EventsOn, so a test can emit an event
  *  the way Go would. */
 export const handlers: Record<string, (data: unknown) => void> = {};
 
-vi.mock("../../wailsjs/go/app/App", () => api);
-vi.mock("../../wailsjs/runtime/runtime", () => ({
+vi.mock("../api", () => ({
+  api,
   EventsOn: (name: string, fn: (data: unknown) => void) => {
     handlers[name] = fn;
     return () => delete handlers[name];

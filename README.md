@@ -8,6 +8,8 @@ speaks plain LDAP.
 Ldapper walks the directory tree, shows an object's attributes in full, runs raw RFC 4515 filters
 against it, and exports what you find. Version 1 is strictly read-only.
 
+![Browsing a directory](docs/screenshots/01-browse.jpg)
+
 ## Why another one
 
 Every attribute value is shown as the server returned it — and decoded right underneath.
@@ -61,6 +63,26 @@ Source of truth is `assets/icon.svg`. Regenerate the raster sizes from it rather
 ```bash
 rsvg-convert -w 1024 -h 1024 assets/icon.svg -o build/appicon.png
 ```
+
+## What it looks like
+
+**Search** streams results as the server produces them, so the table fills
+while the tree is still being walked.
+
+![Searching](docs/screenshots/02-search.jpg)
+
+**The filter library** ships eighteen filters. Every one is editable, an edited
+one is marked, and Reset returns it to the version Ldapper ships. Filters the
+connected server cannot answer are greyed with the reason — never hidden.
+Substitutions resolve as you type.
+
+![The filter library](docs/screenshots/04-filters.jpg)
+
+**Connections** are saved on the machine, with passwords in the system
+keychain and never in the settings file. Anonymous binding is offered because
+plenty of directories allow reading without an account.
+
+![Connecting](docs/screenshots/03-connect.jpg)
 
 ## Try it in one command
 

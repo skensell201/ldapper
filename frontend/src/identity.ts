@@ -18,6 +18,14 @@ export function shortIdentity(boundAs: string): string {
   return equals < 0 ? rdn : unescape(rdn.slice(equals + 1));
 }
 
+/** rdnValue is the readable part of a relative name: CN=Volkova\2C Anna
+ *  becomes Volkova, Anna. The tree and the attribute pane both show it, and
+ *  showing the escaped form is showing the wire format instead of the name. */
+export function rdnValue(rdn: string): string {
+  const equals = rdn.indexOf("=");
+  return unescape(equals < 0 ? rdn : rdn.slice(equals + 1));
+}
+
 function firstUnescapedComma(dn: string): number {
   for (let i = 0; i < dn.length; i++) {
     if (dn[i] === "\\") {

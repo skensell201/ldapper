@@ -1,4 +1,9 @@
-.PHONY: test lint integration tidy build front demo demo-down
+.PHONY: test lint integration tidy build front demo demo-down release-build
+
+# VERSION is what the status bar shows. A local build says "dev" unless told
+# otherwise, because claiming a release it is not would mislead a bug report.
+VERSION ?= dev
+LDFLAGS := -X github.com/skensell201/ldapper/app.version=$(VERSION)
 
 test: front
 	go test -race ./...
@@ -21,6 +26,11 @@ integration:
 build:
 	go build ./...
 
+# release-build produces the same binary the release workflow does, for
+# checking a stamp locally before cutting a tag.
+release-build:
+	wails build -clean -ldflags "$(LDFLAGS)"
+
 tidy:
 	go mod tidy
 
@@ -34,7 +44,7 @@ demo:
 	docker compose -f dev/directory/docker-compose.yml up -d --wait
 	@mkdir -p build/demo
 	@printf '%s\n' '[{"id":"demo","name":"Example Corporation","host":"localhost","port":4389,"encryption":"none","bindMethod":"anonymous","rememberPassword":false}]' > build/demo/connections.json
-	wails build
+	wails build -ldflags "$(LDFLAGS)"
 	@echo
 	@echo "  Ldapper is opening against the demo directory."
 	@echo "  The connection is already saved — press Connect, and nothing else."

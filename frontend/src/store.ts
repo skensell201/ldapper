@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import * as api from "../wailsjs/go/app/App";
-import { EventsOn } from "../wailsjs/runtime/runtime";
+import { api, EventsOn } from "./api";
 import { app } from "../wailsjs/go/models";
 import {
   EVENT_SEARCH_BATCH,

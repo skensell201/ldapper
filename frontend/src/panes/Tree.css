@@ -10,6 +10,10 @@
   color: var(--ash);
   white-space: nowrap;
   cursor: default;
+  /* Double-clicking expands a node. Without this it also selects the label
+     and starts a drag, which looks like the row came loose. */
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .row:hover { background: var(--raise); }
 .row.selected { background: var(--coral); color: var(--white); font-weight: 500; }
