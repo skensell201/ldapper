@@ -8,6 +8,11 @@ speaks plain LDAP.
 Ldapper walks the directory tree, shows an object's attributes in full, runs raw RFC 4515 filters
 against it, and exports what you find. Version 1 is strictly read-only.
 
+> **Not the other Ldapper.** [Synzack/ldapper](https://github.com/Synzack/ldapper) is an
+> interactive Go shell for enumerating and modifying LDAP during offensive-security engagements.
+> This one is a read-only desktop application for looking at a directory. Same name, adjacent
+> corner of the same protocol, different program — worth knowing which you are reading about.
+
 ![Browsing a directory](docs/screenshots/01-browse.jpg)
 
 ## Why another one
