@@ -124,3 +124,55 @@ func contains(list []filters.Dialect, want filters.Dialect) bool {
 	}
 	return false
 }
+
+// Active Directory publishes its marker in supportedCapabilities, never in
+// supportedControl. Looking in the wrong list reported every domain
+// controller as plain LDAP and greyed out all twelve of its filters.
+func TestActiveDirectoryIsFoundInTheCapabilities(t *testing.T) {
+	info := Info{
+		SupportedControls: []string{
+			"1.2.840.113556.1.4.319",  // paged results
+			"1.2.840.113556.1.4.801",  // security descriptor flags
+			"1.2.840.113556.1.4.473",  // sort
+		},
+		SupportedCapabilities: []string{
+			"1.2.840.113556.1.4.800",  // LDAP_CAP_ACTIVE_DIRECTORY_OID
+			"1.2.840.113556.1.4.1670", // V51
+			"1.2.840.113556.1.4.1791", // LDAP integrity
+		},
+	}
+
+	if !info.IsActiveDirectory() {
+		t.Error("IsActiveDirectory() = false for a server advertising the capability")
+	}
+
+	var sawAD bool
+	for _, d := range info.Dialects() {
+		if d == filters.DialectAD {
+			sawAD = true
+		}
+	}
+	if !sawAD {
+		t.Error("Dialects() omits the AD dialect, so every AD filter would be greyed out")
+	}
+}
+
+// A server that republishes the capability among its controls — which happens
+// behind some proxies — is still Active Directory.
+func TestActiveDirectoryIsFoundInTheControlsToo(t *testing.T) {
+	info := Info{SupportedControls: []string{"1.2.840.113556.1.4.800"}}
+	if !info.IsActiveDirectory() {
+		t.Error("IsActiveDirectory() = false when the marker arrives among the controls")
+	}
+}
+
+// OpenLDAP publishes neither, and must not be mistaken for Active Directory.
+func TestPlainLDAPHasNeither(t *testing.T) {
+	info := Info{
+		SupportedControls:     []string{"1.2.840.113556.1.4.319", "2.16.840.1.113730.3.4.2"},
+		SupportedCapabilities: []string{},
+	}
+	if info.IsActiveDirectory() {
+		t.Error("IsActiveDirectory() = true for a server advertising neither marker")
+	}
+}

@@ -7,6 +7,7 @@ import { Toolbar } from "./Toolbar";
 import { Connect } from "./dialogs/Connect";
 import { Certificate } from "./dialogs/Certificate";
 import { useStore, type Mode } from "./store";
+import { shortIdentity } from "./identity";
 import "./App.css";
 
 const MODES: { value: Mode; label: string }[] = [
@@ -33,9 +34,13 @@ export function App() {
       <header className="utility drag">
         <span className="wordmark">Ldapper</span>
 
-        <button className="conn no-drag" onClick={openConnect}>
+        <button
+          className="conn no-drag"
+          onClick={openConnect}
+          title={state?.connected ? `${state.host} — ${state.boundAs || "anonymous"}` : "Not connected"}
+        >
           <i className={state?.connected ? "led live" : "led"} />
-          {state?.connected ? `${state.host} · ${state.boundAs || "anonymous"}` : "not connected"}
+          {state?.connected ? `${state.host} · ${shortIdentity(state.boundAs)}` : "not connected"}
           <span className="chev">▾</span>
         </button>
 
@@ -77,18 +82,29 @@ export function App() {
 
       <footer className="statusbar">
         {error ? (
-          <span className="failed">{error}</span>
+          <span className="state bad">
+            <i className="led warn" />
+            {error}
+          </span>
         ) : state?.connected ? (
           <>
-            <span className="live">Connected</span>
-            <span>{state.encryption === "none" ? "unencrypted" : state.encryption.toUpperCase()}</span>
+            <span className="state good">
+              <i className="led live" />
+              Connected
+            </span>
+            <span className={state.encryption === "none" ? "warnish" : ""}>
+              {state.encryption === "none" ? "unencrypted" : state.encryption.toUpperCase()}
+            </span>
             <span>{state.isActiveDirectory ? "Active Directory" : "LDAP"}</span>
             <span>{state.supportsPaging ? "paged results" : "no paging control"}</span>
             <span className="spacer" />
-            <span>{state.rootDN}</span>
+            <span title={state.rootDN}>{state.rootDN}</span>
           </>
         ) : (
-          <span>idle</span>
+          <span className="state">
+            <i className="led" />
+            not connected
+          </span>
         )}
       </footer>
 

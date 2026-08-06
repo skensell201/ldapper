@@ -369,10 +369,44 @@ describe("the window", () => {
 
   it("shows what a connection is before anything is connected", () => {
     render(<App />);
-    // The phrase appears twice on purpose: once in the chrome, once where the
-    // tree would be.
-    expect(screen.getAllByText("not connected")).toHaveLength(2);
-    expect(screen.getByText("idle")).toBeInTheDocument();
+    // Three times on purpose: the chrome, the empty tree, and the status bar.
+    expect(screen.getAllByText("not connected")).toHaveLength(3);
+  });
+
+  // The status bar and the chrome must never disagree about the connection.
+  it("shows the same state in the chrome and the status bar", () => {
+    useStore.setState({ connection: connected as never });
+    render(<App />);
+
+    const status = screen.getByText("Connected").closest(".state")!;
+    expect(status.querySelector(".led.live")).not.toBeNull();
+
+    const pill = screen.getByTitle(/localhost/);
+    expect(pill.querySelector(".led.live")).not.toBeNull();
+  });
+
+  // A distinguished name is too long for the pill, so only its leftmost value
+  // is shown — with the whole thing in the tooltip.
+  it("shortens a long bound identity and keeps it in the tooltip", () => {
+    useStore.setState({
+      connection: {
+        ...connected,
+        host: "dc3-spb.da.lan",
+        boundAs: "CN=SpaceReader,OU=Service Accounts,DC=da,DC=lan",
+      } as never,
+    });
+    render(<App />);
+
+    expect(screen.getByText(/dc3-spb\.da\.lan · SpaceReader/)).toBeInTheDocument();
+    expect(screen.getByTitle(/OU=Service Accounts/)).toBeInTheDocument();
+  });
+
+  // Connecting to Active Directory has to say so: it is what decides whether
+  // twelve of the built-in filters are available.
+  it("names the kind of directory it is connected to", () => {
+    useStore.setState({ connection: { ...connected, isActiveDirectory: true } as never });
+    render(<App />);
+    expect(screen.getByText("Active Directory")).toBeInTheDocument();
   });
 
   // A binding that returns nothing must not leave the window silently empty.
@@ -398,6 +432,6 @@ describe("the window", () => {
     expect(screen.getByText("unencrypted")).toBeInTheDocument();
     expect(screen.getByText("LDAP")).toBeInTheDocument();
     expect(screen.getByText("paged results")).toBeInTheDocument();
-    expect(screen.getByText("dc=example,dc=com")).toBeInTheDocument();
+    expect(screen.getAllByText("dc=example,dc=com").length).toBeGreaterThan(0);
   });
 });

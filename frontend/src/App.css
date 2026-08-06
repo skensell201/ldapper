@@ -6,11 +6,13 @@
 .utility { display: flex; align-items: center; gap: 14px; padding: 0 18px 0 82px; }
 .wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
 .conn {
-  display: flex; align-items: center; gap: 9px;
+  display: flex; align-items: center; gap: 9px; flex: none;
   height: 28px; padding: 0 14px;
   border-radius: var(--r-pill); background: var(--well);
   font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--ash);
-  max-width: 46ch; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  /* The identity is shortened before it gets here, so the pill sizes to its
+     contents instead of cutting a distinguished name off mid-word. */
+  white-space: nowrap;
 }
 .conn:hover { color: var(--white); }
 .led { width: 6px; height: 6px; border-radius: 50%; background: var(--iris); flex: none; }
@@ -37,8 +39,14 @@
   font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris);
   overflow: hidden; white-space: nowrap;
 }
-.statusbar .live { color: var(--mist); }
-.statusbar .failed { color: var(--coral); overflow: hidden; text-overflow: ellipsis; }
+/* The status bar reads the same way as the indicator in the chrome: same dot,
+   same colour, so the two can never disagree about what is going on. */
+.statusbar .state { display: inline-flex; align-items: center; gap: 8px; flex: none; }
+.statusbar .state.good { color: var(--white); }
+.statusbar .state.bad { color: var(--coral); overflow: hidden; text-overflow: ellipsis; }
+/* An unencrypted connection is worth noticing without being alarming. */
+.statusbar .warnish { color: var(--mist); }
+.statusbar > span { overflow: hidden; text-overflow: ellipsis; }
 
 .empty { display: grid; place-items: center; height: 100%; color: var(--iris); font-family: var(--mono); font-size: 11px; }
 .error { margin: 10px 18px; padding: 10px 14px; border-radius: var(--r-input); background: rgba(255, 74, 54, 0.12); color: var(--coral); font-size: 12px; }

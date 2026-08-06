@@ -106,12 +106,12 @@ function Editor({ filter }: { filter: app.FilterSummary }) {
         )}
         <span className="spacer" />
         {filter.supported && filter.id && (
-          <button className="ebtn" onClick={() => useIt(filter)}>
+          <button className="ebtn run" onClick={() => useIt(filter)}>
             Run
           </button>
         )}
         {filter.builtIn && filter.modified && (
-          <button className="ebtn plain" onClick={() => void resetFilter(filter.id)}>
+          <button className="ebtn" onClick={() => void resetFilter(filter.id)}>
             Reset
           </button>
         )}
@@ -188,7 +188,7 @@ function Editor({ filter }: { filter: app.FilterSummary }) {
 
       <div className="acts">
         {filter.id && (
-          <button className="ebtn plain" onClick={() => void deleteFilter(filter.id)}>
+          <button className="ebtn danger" onClick={() => void deleteFilter(filter.id)}>
             Delete
           </button>
         )}

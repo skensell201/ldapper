@@ -16,25 +16,35 @@ const (
 	OIDPagedResults = "1.2.840.113556.1.4.319"
 	// OIDActiveDirectory is advertised by Active Directory and by nothing
 	// else in common use, which makes it a reliable way to recognise it.
+	//
+	// It is a *capability*, not a control: Active Directory publishes it in
+	// supportedCapabilities and never in supportedControl. Looking for it in
+	// the wrong attribute meant every Active Directory server was reported as
+	// plain LDAP, which greyed out all twelve of its filters.
 	OIDActiveDirectory = "1.2.840.113556.1.4.800"
 )
 
 // Info is what the RootDSE told us.
 type Info struct {
-	NamingContexts       []string
-	DefaultNamingContext string
-	SupportedControls    []string
-	SupportedSASL        []string
-	SubschemaSubentry    string
-	VendorName           string
+	NamingContexts        []string
+	DefaultNamingContext  string
+	SupportedControls     []string
+	SupportedCapabilities []string
+	SupportedSASL         []string
+	SubschemaSubentry     string
+	VendorName            string
 	// ObjectClasses is filled in lazily from the subschema; it stays empty
 	// until something needs it.
 	ObjectClasses []string
 }
 
 // IsActiveDirectory reports whether this is an Active Directory server.
+//
+// The capability list is where the marker actually lives. The control list is
+// checked as well, because a server behind a proxy sometimes republishes the
+// two together, and being generous here costs nothing.
 func (i Info) IsActiveDirectory() bool {
-	for _, oid := range i.SupportedControls {
+	for _, oid := range append(append([]string{}, i.SupportedCapabilities...), i.SupportedControls...) {
 		if oid == OIDActiveDirectory {
 			return true
 		}
@@ -88,7 +98,8 @@ func Read(conn *ldap.Conn) (Info, error) {
 		"(objectClass=*)",
 		[]string{
 			"namingContexts", "defaultNamingContext", "supportedControl",
-			"supportedSASLMechanisms", "subschemaSubentry", "vendorName",
+			"supportedCapabilities", "supportedSASLMechanisms",
+			"subschemaSubentry", "vendorName",
 		},
 		nil,
 	)
@@ -103,12 +114,13 @@ func Read(conn *ldap.Conn) (Info, error) {
 
 	e := res.Entries[0]
 	return Info{
-		NamingContexts:       e.GetAttributeValues("namingContexts"),
-		DefaultNamingContext: e.GetAttributeValue("defaultNamingContext"),
-		SupportedControls:    e.GetAttributeValues("supportedControl"),
-		SupportedSASL:        e.GetAttributeValues("supportedSASLMechanisms"),
-		SubschemaSubentry:    e.GetAttributeValue("subschemaSubentry"),
-		VendorName:           e.GetAttributeValue("vendorName"),
+		NamingContexts:        e.GetAttributeValues("namingContexts"),
+		DefaultNamingContext:  e.GetAttributeValue("defaultNamingContext"),
+		SupportedControls:     e.GetAttributeValues("supportedControl"),
+		SupportedCapabilities: e.GetAttributeValues("supportedCapabilities"),
+		SupportedSASL:         e.GetAttributeValues("supportedSASLMechanisms"),
+		SubschemaSubentry:     e.GetAttributeValue("subschemaSubentry"),
+		VendorName:            e.GetAttributeValue("vendorName"),
 	}, nil
 }
 
