@@ -1,40 +1,34 @@
-Fixes from the first run against a real domain controller.
+A connection's health now has a colour, and the title bar carries the mark.
 
-## Active Directory is recognised again
+## Green, amber, red
 
-This is the one that mattered. `1.2.840.113556.1.4.800` is a *capability*, and
-Active Directory publishes it in `supportedCapabilities` — never in
-`supportedControl`, which is where Ldapper looked for it.
+The rest of the interface is deliberately aubergine and coral, but a
+connection's health is not decoration — it is the one thing worth reading from
+across the room.
 
-Every domain controller was therefore reported as plain LDAP. The status bar
-said so, and all twelve Active Directory filters sat greyed out with a message
-explaining that the server did not support them. It did.
+- **Green** — connected over LDAPS or StartTLS, working.
+- **Amber** — connected, but without TLS. Credentials are crossing the network
+  in the clear. It works, and you should know.
+- **Red** — the server could not be reached, or something went wrong since.
 
-If you connected to a domain and wondered why the filters were unavailable,
-that was why.
+Both colours are pulled toward the aubergine so they belong to this interface
+rather than looking like a traffic light bolted onto it. One function decides
+which state applies, and the indicator in the title bar and the status bar
+both read it — so they cannot disagree about what the dot means.
 
-## The bound identity fits now
+The status bar spells the state out beside the dot, and calls out an
+unencrypted connection as `no TLS` rather than stating it flatly.
 
-`CN=SpaceReader,OU=Service Accounts,DC=da,DC=lan` ran off the end of the
-connection pill and was cut mid-word. Only the leftmost value is shown —
-`SpaceReader` — with the whole name in the tooltip. A comma inside a name is
-unescaped there too.
+## The title bar
 
-## The status bar agrees with the chrome
+It carries the Ldapper mark now, beside the name.
 
-They described the connection separately and could drift apart. They share an
-indicator and a colour now: white when connected, coral when something went
-wrong. An unencrypted connection is called out rather than stated flatly.
-
-## Run and Delete look like controls
-
-Both read as labels that happened to be clickable. Run is outlined as the
-thing you came to the editor to press. Delete shows its intent on approach
-instead of sitting permanently red next to Save.
+The left inset that macOS needs for its window controls was being applied
+everywhere, which pushed the name off centre on Windows. Only macOS gets it.
 
 ## Verified
 
-315 Go tests, 33 frontend tests, 37 integration tests. The Active Directory
-detection has tests covering a domain controller's real capability list, a
-server that republishes the marker among its controls, and OpenLDAP, which
-publishes neither and must not be mistaken for a domain.
+315 Go tests, 41 frontend tests, 37 integration tests. The health states have
+tests of their own, including the one that matters most: an error outranks an
+open connection, because saying "Connected" over the top of a failure would be
+a lie.
