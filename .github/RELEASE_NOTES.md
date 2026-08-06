@@ -1,34 +1,38 @@
-A connection's health now has a colour, and the title bar carries the mark.
+Which build you are running is now on screen, and the README shows what
+Ldapper looks like.
 
-## Green, amber, red
+## The version, where you will look for it
 
-The rest of the interface is deliberately aubergine and coral, but a
-connection's health is not decoration — it is the one thing worth reading from
-across the room.
+Bottom right of the status bar. It is the one place always on screen, it is
+the first thing a bug report needs, and a separate About window for a tool
+this size is a click nobody wants.
 
-- **Green** — connected over LDAPS or StartTLS, working.
-- **Amber** — connected, but without TLS. Credentials are crossing the network
-  in the clear. It works, and you should know.
-- **Red** — the server could not be reached, or something went wrong since.
+A build made without the stamp says `dev` rather than claiming a release it is
+not, and a build from a working tree with uncommitted changes gets a `+`. The
+tooltip carries the commit.
 
-Both colours are pulled toward the aubergine so they belong to this interface
-rather than looking like a traffic light bolted onto it. One function decides
-which state applies, and the indicator in the title bar and the status bar
-both read it — so they cannot disagree about what the dot means.
+## Screenshots
 
-The status bar spells the state out beside the dot, and calls out an
-unencrypted connection as `no TLS` rather than stating it flatly.
+The README now shows browsing, searching, the filter library and the
+connection dialog.
 
-## The title bar
+## Two more fixes, found while taking them
 
-It carries the Ldapper mark now, beside the name.
+- The heading above the attribute table showed `Volkova\2C Anna`. The
+  unescaping added for the tree had never been applied there, so the two panes
+  disagreed about the same name.
+- Double-clicking a tree row to expand it also selected the label and started
+  a drag, which made the row look like it had come loose.
+- The scope selector wrapped "One level" onto two lines, making that segment
+  taller than the ones beside it.
 
-The left inset that macOS needs for its window controls was being applied
-everywhere, which pushed the name off centre on Windows. Only macOS gets it.
+## For anyone working on the interface
+
+`npm run dev` in `frontend/` now runs the interface against a stand-in for the
+Go side, so it can be worked on without building the application. It is the
+same components and the same stylesheets — it is how the screenshots above
+were taken.
 
 ## Verified
 
-315 Go tests, 41 frontend tests, 37 integration tests. The health states have
-tests of their own, including the one that matters most: an error outranks an
-open connection, because saying "Connected" over the top of a failure would be
-a lie.
+318 Go tests, 46 frontend tests, 37 integration tests.
