@@ -36,4 +36,5 @@ vi.mock("../../wailsjs/runtime/runtime", () => ({
     handlers[name] = fn;
     return () => delete handlers[name];
   },
+  Environment: async () => ({ buildType: "test", platform: "darwin", arch: "arm64" }),
 }));

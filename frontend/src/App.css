@@ -3,8 +3,13 @@
    panes; browsing has no toolbar and gives the space back to the tree. */
 .window.with-toolbar { grid-template-rows: 44px auto 1fr 34px; }
 
-.utility { display: flex; align-items: center; gap: 14px; padding: 0 18px 0 82px; }
-.wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
+.utility { display: flex; align-items: center; gap: 14px; padding: 0 18px; }
+/* Only macOS puts its window controls inside our chrome. */
+.utility.mac { padding-left: 82px; }
+
+.brand { display: flex; align-items: center; gap: 9px; flex: none; }
+.brand .mark { display: block; flex: none; }
+.wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
 .conn {
   display: flex; align-items: center; gap: 9px; flex: none;
   height: 28px; padding: 0 14px;
@@ -15,8 +20,12 @@
   white-space: nowrap;
 }
 .conn:hover { color: var(--white); }
-.led { width: 6px; height: 6px; border-radius: 50%; background: var(--iris); flex: none; }
-.led.live { background: var(--white); }
+/* One dot, one meaning, wherever it appears. */
+.led { width: 7px; height: 7px; border-radius: 50%; background: var(--iris); flex: none; }
+.led.good { background: var(--good); box-shadow: 0 0 0 3px rgba(70, 211, 154, 0.16); }
+.led.warn { background: var(--warn); box-shadow: 0 0 0 3px rgba(242, 169, 59, 0.16); }
+.led.bad  { background: var(--bad);  box-shadow: 0 0 0 3px rgba(255, 74, 54, 0.18); }
+.led.idle { background: var(--iris); }
 .chev { color: var(--iris); font-size: 9px; }
 .modes { margin-left: 6px; }
 .util { font-size: 13px; color: var(--fog); }
@@ -40,12 +49,15 @@
   overflow: hidden; white-space: nowrap;
 }
 /* The status bar reads the same way as the indicator in the chrome: same dot,
-   same colour, so the two can never disagree about what is going on. */
-.statusbar .state { display: inline-flex; align-items: center; gap: 8px; flex: none; }
-.statusbar .state.good { color: var(--white); }
-.statusbar .state.bad { color: var(--coral); overflow: hidden; text-overflow: ellipsis; }
-/* An unencrypted connection is worth noticing without being alarming. */
-.statusbar .warnish { color: var(--mist); }
+   same colour, from the same function, so the two cannot disagree. */
+.statusbar .state { display: inline-flex; align-items: center; gap: 8px; flex: none; font-weight: 600; }
+.statusbar .state.good { color: var(--good); }
+.statusbar .state.warn { color: var(--warn); }
+.statusbar .state.bad  { color: var(--bad); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.statusbar .state.idle { color: var(--iris); font-weight: 400; }
+
+/* The one detail that carries a colour of its own: credentials in the clear. */
+.statusbar .warn-text { color: var(--warn); }
 .statusbar > span { overflow: hidden; text-overflow: ellipsis; }
 
 .empty { display: grid; place-items: center; height: 100%; color: var(--iris); font-family: var(--mono); font-size: 11px; }

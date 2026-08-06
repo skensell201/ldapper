@@ -369,20 +369,43 @@ describe("the window", () => {
 
   it("shows what a connection is before anything is connected", () => {
     render(<App />);
-    // Three times on purpose: the chrome, the empty tree, and the status bar.
-    expect(screen.getAllByText("not connected")).toHaveLength(3);
+    // The chrome and the empty tree both say it; the status bar spells it out.
+    expect(screen.getAllByText("not connected")).toHaveLength(2);
+    expect(screen.getByText("Not connected")).toBeInTheDocument();
+  });
+
+  // The dot and the word carry the same meaning, and an operator reads the
+  // dot from across the room.
+  it("colours the state green when encrypted, amber without TLS", () => {
+    useStore.setState({ connection: { ...connected, encryption: "ldaps" } as never });
+    const { unmount } = render(<App />);
+    expect(screen.getByText("Connected").closest(".state")).toHaveClass("good");
+    unmount();
+
+    useStore.setState({ connection: { ...connected, encryption: "none" } as never });
+    render(<App />);
+    expect(screen.getByText("Connected, unencrypted").closest(".state")).toHaveClass("warn");
+    expect(screen.getByText("no TLS")).toBeInTheDocument();
+  });
+
+  it("colours the state red when the server could not be reached", () => {
+    useStore.setState({ connection: null, error: "dial tcp: connection refused" });
+    render(<App />);
+    const state = screen.getByText("dial tcp: connection refused").closest(".state");
+    expect(state).toHaveClass("bad");
+    expect(state!.querySelector(".led.bad")).not.toBeNull();
   });
 
   // The status bar and the chrome must never disagree about the connection.
   it("shows the same state in the chrome and the status bar", () => {
-    useStore.setState({ connection: connected as never });
+    useStore.setState({ connection: { ...connected, encryption: "ldaps" } as never });
     render(<App />);
 
     const status = screen.getByText("Connected").closest(".state")!;
-    expect(status.querySelector(".led.live")).not.toBeNull();
+    expect(status.querySelector(".led.good")).not.toBeNull();
 
     const pill = screen.getByTitle(/localhost/);
-    expect(pill.querySelector(".led.live")).not.toBeNull();
+    expect(pill.querySelector(".led.good")).not.toBeNull();
   });
 
   // A distinguished name is too long for the pill, so only its leftmost value
@@ -428,8 +451,8 @@ describe("the window", () => {
   it("describes the connection in the status bar", () => {
     useStore.setState({ connection: connected as never });
     render(<App />);
-    expect(screen.getByText("Connected")).toBeInTheDocument();
-    expect(screen.getByText("unencrypted")).toBeInTheDocument();
+    expect(screen.getByText("Connected, unencrypted")).toBeInTheDocument();
+    expect(screen.getByText("no TLS")).toBeInTheDocument();
     expect(screen.getByText("LDAP")).toBeInTheDocument();
     expect(screen.getByText("paged results")).toBeInTheDocument();
     expect(screen.getAllByText("dc=example,dc=com").length).toBeGreaterThan(0);

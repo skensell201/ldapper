@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Tree } from "./panes/Tree";
 import { Detail } from "./panes/Detail";
 import { Results } from "./panes/Results";
@@ -8,6 +8,9 @@ import { Connect } from "./dialogs/Connect";
 import { Certificate } from "./dialogs/Certificate";
 import { useStore, type Mode } from "./store";
 import { shortIdentity } from "./identity";
+import { healthLabel, healthOf } from "./health";
+import { Mark } from "./Mark";
+import { Environment } from "../wailsjs/runtime/runtime";
 import "./App.css";
 
 const MODES: { value: Mode; label: string }[] = [
@@ -25,21 +28,38 @@ export function App() {
   const setMode = useStore((s) => s.setMode);
   const loadProfiles = useStore((s) => s.loadProfiles);
 
+  // macOS puts its window controls inside our own chrome, so the title bar
+  // needs room for them on the left. Windows and Linux do not, and reserving
+  // it there just pushed the name off centre.
+  const [platform, setPlatform] = useState("");
+  useEffect(() => {
+    void Environment().then((e) => setPlatform(e.platform));
+  }, []);
+
   useEffect(() => {
     void loadProfiles();
   }, [loadProfiles]);
 
+  const health = healthOf(state, error);
+
   return (
     <div className={mode === "browse" ? "window" : "window with-toolbar"}>
-      <header className="utility drag">
-        <span className="wordmark">Ldapper</span>
+      <header className={platform === "darwin" ? "utility drag mac" : "utility drag"}>
+        <span className="brand">
+          <Mark />
+          <span className="wordmark">Ldapper</span>
+        </span>
 
         <button
           className="conn no-drag"
           onClick={openConnect}
-          title={state?.connected ? `${state.host} — ${state.boundAs || "anonymous"}` : "Not connected"}
+          title={
+            state?.connected
+              ? `${healthLabel(health, state, error)} — ${state.host}, ${state.boundAs || "anonymous"}`
+              : healthLabel(health, state, error)
+          }
         >
-          <i className={state?.connected ? "led live" : "led"} />
+          <i className={`led ${health}`} />
           {state?.connected ? `${state.host} · ${shortIdentity(state.boundAs)}` : "not connected"}
           <span className="chev">▾</span>
         </button>
@@ -81,30 +101,21 @@ export function App() {
       </main>
 
       <footer className="statusbar">
-        {error ? (
-          <span className="state bad">
-            <i className="led warn" />
-            {error}
-          </span>
-        ) : state?.connected ? (
+        <span className={`state ${health}`} title={healthLabel(health, state, error)}>
+          <i className={`led ${health}`} />
+          {healthLabel(health, state, error)}
+        </span>
+
+        {state?.connected && !error && (
           <>
-            <span className="state good">
-              <i className="led live" />
-              Connected
-            </span>
-            <span className={state.encryption === "none" ? "warnish" : ""}>
-              {state.encryption === "none" ? "unencrypted" : state.encryption.toUpperCase()}
+            <span className={state.encryption === "none" ? "warn-text" : ""}>
+              {state.encryption === "none" ? "no TLS" : state.encryption.toUpperCase()}
             </span>
             <span>{state.isActiveDirectory ? "Active Directory" : "LDAP"}</span>
             <span>{state.supportsPaging ? "paged results" : "no paging control"}</span>
             <span className="spacer" />
             <span title={state.rootDN}>{state.rootDN}</span>
           </>
-        ) : (
-          <span className="state">
-            <i className="led" />
-            not connected
-          </span>
         )}
       </footer>
 

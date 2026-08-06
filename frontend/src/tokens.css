@@ -10,6 +10,15 @@
   --coral: #ff4a36;
   --iris:  #535676;
 
+  /* Status colours. The rest of the interface is deliberately aubergine and
+     coral, but a connection's health is not decoration — it is the one thing
+     worth reading across the room, and three states need three colours.
+     Both are pulled toward the aubergine so they belong here rather than
+     looking like a traffic light bolted on. */
+  --good: #46d39a;
+  --warn: #f2a93b;
+  --bad:  var(--coral);
+
   --white: #ffffff;
   --mist:  #a3a3a7;
   --ash:   #8e8da0;
