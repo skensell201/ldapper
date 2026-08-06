@@ -3,22 +3,33 @@
    panes; browsing has no toolbar and gives the space back to the tree. */
 .window.with-toolbar { grid-template-rows: 44px auto 1fr 34px; }
 
-.utility { display: flex; align-items: center; gap: 14px; padding: 0 18px; }
+.utility { display: flex; align-items: center; gap: 14px; padding: 0 18px; overflow: hidden; }
+/* Windows draws its own controls at the very edge, so the bar gives up its
+   right padding to them. */
+.utility.win { padding-right: 0; }
 /* Only macOS puts its window controls inside our chrome. */
 .utility.mac { padding-left: 82px; }
 
 .brand { display: flex; align-items: center; gap: 9px; flex: none; }
+.util { flex: none; }
 .brand .mark { display: block; flex: none; }
 .wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
 .conn {
-  display: flex; align-items: center; gap: 9px; flex: none;
+  display: flex; align-items: center; gap: 9px;
   height: 28px; padding: 0 14px;
   border-radius: var(--r-pill); background: var(--well);
   font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--ash);
-  /* The identity is shortened before it gets here, so the pill sizes to its
-     contents instead of cutting a distinguished name off mid-word. */
   white-space: nowrap;
+  /* The identity is shortened before it gets here, so the pill usually sizes
+     to its contents. When the bar runs out of room it is the thing that
+     gives — never the window controls, which would leave no way to close the
+     window, and never the mode switch, which is how you get anywhere. */
+  flex: 0 1 auto;
+  min-width: 6ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+.conn .chev { flex: none; }
 .conn:hover { color: var(--white); }
 /* One dot, one meaning, wherever it appears. */
 .led { width: 7px; height: 7px; border-radius: 50%; background: var(--iris); flex: none; }

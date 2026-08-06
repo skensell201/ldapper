@@ -31,11 +31,30 @@ export const api = {
  *  the way Go would. */
 export const handlers: Record<string, (data: unknown) => void> = {};
 
+/** Which platform the interface believes it is on. A test changes it to check
+ *  the chrome, which differs between Windows and macOS. */
+/** The window controls, which only exist on a real window. */
+export const windowControls = {
+  minimise: vi.fn(),
+  toggleMaximise: vi.fn(),
+  quit: vi.fn(),
+};
+
+export const environment = vi.fn(async () => ({
+  buildType: "test",
+  platform: "darwin",
+  arch: "arm64",
+}));
+
 vi.mock("../api", () => ({
   api,
   EventsOn: (name: string, fn: (data: unknown) => void) => {
     handlers[name] = fn;
     return () => delete handlers[name];
   },
-  Environment: async () => ({ buildType: "test", platform: "darwin", arch: "arm64" }),
+  Environment: environment,
+  WindowMinimise: windowControls.minimise,
+  WindowToggleMaximise: windowControls.toggleMaximise,
+  WindowIsMaximised: async () => false,
+  Quit: windowControls.quit,
 }));

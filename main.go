@@ -5,6 +5,7 @@ package main
 import (
 	"embed"
 	"log"
+	goruntime "runtime"
 
 	"github.com/skensell201/ldapper/app"
 	"github.com/wailsapp/wails/v2"
@@ -29,6 +30,15 @@ func main() {
 		MinWidth:    960,
 		MinHeight:   600,
 		AssetServer: &assetserver.Options{Assets: assets},
+		// Windows draws a title bar that has nothing to do with the rest of
+		// the window: a light strip above a dark application. Going frameless
+		// there lets the interface draw its own, with the window controls at
+		// the end of the same bar that carries the connection.
+		//
+		// macOS is left alone. Its window controls belong to the system, and
+		// TitleBarHiddenInset already puts them inside our chrome where they
+		// look native.
+		Frameless: goruntime.GOOS == "windows",
 		// The window chrome is part of the design, so it matches the canvas
 		// rather than sitting on the system's own grey.
 		BackgroundColour: &options.RGBA{R: 24, G: 24, B: 36, A: 1},

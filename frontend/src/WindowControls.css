@@ -1,0 +1,26 @@
+/* Sized and spaced the way Windows does it, so the buttons land where the
+   hand already expects them. */
+/* The row sits flush against the right edge of the window, which is where
+   Windows puts it and where the pointer goes without looking. The header
+   drops its own right padding to make room. */
+.winctl { display: flex; align-items: stretch; align-self: stretch; margin-left: 8px; flex: none; }
+
+.winctl button {
+  width: 46px;
+  display: grid;
+  place-items: center;
+  color: var(--mist);
+  border-radius: 0;
+}
+.winctl button:hover { background: var(--raise); color: var(--white); }
+
+/* Closing is the one irreversible button in the row, and Windows marks it. */
+.winctl button.close:hover { background: var(--coral); color: var(--white); }
+
+.winctl svg {
+  width: 10px; height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}

@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { api, handlers } from "../test/wails";
+import { api, environment, handlers, windowControls } from "../test/wails";
 import { useStore } from "../store";
 import { Tree } from "./Tree";
 import { Detail } from "./Detail";
@@ -61,6 +61,7 @@ function treeEntry(n: ReturnType<typeof node>, extra = {}) {
 beforeEach(() => {
   reset();
   Object.values(api).forEach((fn) => fn.mockClear?.());
+  environment.mockResolvedValue({ buildType: "test", platform: "darwin", arch: "arm64" });
 });
 
 describe("the tree", () => {
@@ -456,6 +457,39 @@ describe("the window", () => {
     expect(screen.getByText("LDAP")).toBeInTheDocument();
     expect(screen.getByText("paged results")).toBeInTheDocument();
     expect(screen.getAllByText("dc=example,dc=com").length).toBeGreaterThan(0);
+  });
+});
+
+describe("the window controls", () => {
+  // Windows is frameless, so nothing but this draws the buttons. If they stop
+  // rendering there is no way to close the window.
+  it("draws minimise, maximise and close on Windows", async () => {
+    environment.mockResolvedValue({ buildType: "test", platform: "windows", arch: "amd64" });
+    render(<App />);
+
+    for (const label of ["Minimise", "Maximise", "Close"]) {
+      expect(await screen.findByRole("button", { name: label })).toBeInTheDocument();
+    }
+  });
+
+  // macOS draws its own, inside this same bar. Ours would be a second set.
+  it("draws none of them on macOS", async () => {
+    environment.mockResolvedValue({ buildType: "test", platform: "darwin", arch: "arm64" });
+    render(<App />);
+
+    expect(await screen.findByText("Ldapper")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Close" })).toBeNull();
+  });
+
+  it("minimises and closes when asked", async () => {
+    environment.mockResolvedValue({ buildType: "test", platform: "windows", arch: "amd64" });
+    render(<App />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Minimise" }));
+    expect(windowControls.minimise).toHaveBeenCalled();
+
+    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(windowControls.quit).toHaveBeenCalled();
   });
 });
 

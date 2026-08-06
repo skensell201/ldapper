@@ -10,7 +10,9 @@ import { useStore, type Mode } from "./store";
 import { shortIdentity } from "./identity";
 import { healthLabel, healthOf } from "./health";
 import { Mark } from "./Mark";
-import { api, Environment } from "./api";
+import { WindowControls } from "./WindowControls";
+import { api, Environment, WindowToggleMaximise } from "./api";
+
 import type { app } from "../wailsjs/go/models";
 import "./App.css";
 
@@ -47,7 +49,14 @@ export function App() {
 
   return (
     <div className={mode === "browse" ? "window" : "window with-toolbar"}>
-      <header className={platform === "darwin" ? "utility drag mac" : "utility drag"}>
+      <header
+        className={`utility drag${platform === "darwin" ? " mac" : ""}${platform === "windows" ? " win" : ""}`}
+        onDoubleClick={() => {
+          // Double-clicking a title bar maximises the window everywhere. Ours
+          // has to do it itself on Windows, where there is no title bar left.
+          if (platform === "windows") void WindowToggleMaximise();
+        }}
+      >
         <span className="brand">
           <Mark />
           <span className="wordmark">Ldapper</span>
@@ -83,6 +92,7 @@ export function App() {
         <button className="util no-drag" onClick={openConnect}>
           Connections
         </button>
+        {platform === "windows" && <WindowControls />}
       </header>
 
       {mode !== "browse" && <Toolbar />}

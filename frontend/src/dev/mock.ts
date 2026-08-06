@@ -192,7 +192,17 @@ export const mockRuntime = {
     (listeners[name] ??= []).push(fn);
     return () => {};
   },
-  Environment: async () => ({ buildType: "dev", platform: "darwin", arch: "arm64" }),
+  // ?platform=windows shows the chrome Windows gets, which is the only way to
+  // look at it without a Windows machine in front of you.
+  Environment: async () => ({
+    buildType: "dev",
+    platform: new URLSearchParams(location.search).get("platform") ?? "darwin",
+    arch: "arm64",
+  }),
+  WindowMinimise: () => {},
+  WindowToggleMaximise: () => {},
+  WindowIsMaximised: async () => false,
+  Quit: () => {},
 };
 
 /** installed reports whether the mock is standing in for the real bindings. */

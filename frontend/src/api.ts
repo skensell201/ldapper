@@ -17,3 +17,10 @@ type Bindings = typeof bindings;
 export const api: Bindings = (usingMock ? (mock as unknown as Bindings) : bindings);
 export const EventsOn = usingMock ? mockRuntime.EventsOn : runtime.EventsOn;
 export const Environment = usingMock ? mockRuntime.Environment : runtime.Environment;
+
+// The window controls only exist on a real window, so under the dev server
+// they do nothing rather than throwing.
+export const WindowMinimise = usingMock ? mockRuntime.WindowMinimise : runtime.WindowMinimise;
+export const WindowToggleMaximise = usingMock ? mockRuntime.WindowToggleMaximise : runtime.WindowToggleMaximise;
+export const WindowIsMaximised = usingMock ? mockRuntime.WindowIsMaximised : runtime.WindowIsMaximised;
+export const Quit = usingMock ? mockRuntime.Quit : runtime.Quit;

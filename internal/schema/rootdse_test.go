@@ -131,9 +131,9 @@ func contains(list []filters.Dialect, want filters.Dialect) bool {
 func TestActiveDirectoryIsFoundInTheCapabilities(t *testing.T) {
 	info := Info{
 		SupportedControls: []string{
-			"1.2.840.113556.1.4.319",  // paged results
-			"1.2.840.113556.1.4.801",  // security descriptor flags
-			"1.2.840.113556.1.4.473",  // sort
+			"1.2.840.113556.1.4.319", // paged results
+			"1.2.840.113556.1.4.801", // security descriptor flags
+			"1.2.840.113556.1.4.473", // sort
 		},
 		SupportedCapabilities: []string{
 			"1.2.840.113556.1.4.800",  // LDAP_CAP_ACTIVE_DIRECTORY_OID
