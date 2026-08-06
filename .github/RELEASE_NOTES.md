@@ -1,50 +1,40 @@
-The interface is now tested, not just built — and there is a single command
-that opens Ldapper against a real directory with nothing to fill in.
+Fixes from the first run against a real domain controller.
 
-## The window has tests now
+## Active Directory is recognised again
 
-Twenty-four of them, rendering every pane with the shapes the Go side actually
-produces. This closes the gap that mattered most: until now the panes were
-verified by reading them, and the one time that was not enough, the
-application opened to an empty rectangle.
+This is the one that mattered. `1.2.840.113556.1.4.800` is a *capability*, and
+Active Directory publishes it in `supportedCapabilities` — never in
+`supportedControl`, which is where Ldapper looked for it.
 
-They cover what would break silently — a pane crashing on real data, a
-decoded value not reaching the screen, a search batch arriving from Go and not
-appearing, a truncated search reported as "found nothing", a filter the server
-cannot answer being hidden instead of greyed.
+Every domain controller was therefore reported as plain LDAP. The status bar
+said so, and all twelve Active Directory filters sat greyed out with a message
+explaining that the server did not support them. It did.
 
-## Connect without an account
+If you connected to a domain and wondered why the filters were unavailable,
+that was why.
 
-Plenty of directories allow reading without credentials, and Ldapper had no
-way to ask. **Anonymous** joins NTLM and simple bind in the connection dialog,
-and the credential fields step aside when it is chosen.
+## The bound identity fits now
 
-## The connection dialog lists your connections
+`CN=SpaceReader,OU=Service Accounts,DC=da,DC=lan` ran off the end of the
+connection pill and was cut mid-word. Only the leftmost value is shown —
+`SpaceReader` — with the whole name in the tooltip. A comma inside a name is
+unescaped there too.
 
-It had no way to pick among saved connections at all: it silently edited the
-first one and read its values once, so opening it a moment early showed
-factory defaults over a connection that was already there — with nothing on
-screen to explain it. There is now a list of saved connections with a **+ New**
-beside them.
+## The status bar agrees with the chrome
 
-## One command to see it
+They described the connection separately and could drift apart. They share an
+indicator and a colour now: white when connected, coral when something went
+wrong. An unencrypted connection is called out rather than stated flatly.
 
-```bash
-make demo
-```
+## Run and Delete look like controls
 
-A directory of 2594 entries in Docker, a connection saved for it, and the
-application open and pointed at it. Press Connect. `make demo-down` when done.
-
-## Also fixed
-
-- A binding that returns nothing — the Go side failing in a way it could not
-  report — left the window silently empty. It now says the directory did not
-  answer.
-- Errors while loading saved connections were swallowed, producing the same
-  unexplained empty form.
+Both read as labels that happened to be clickable. Run is outlined as the
+thing you came to the editor to press. Delete shows its intent on approach
+instead of sitting permanently red next to Save.
 
 ## Verified
 
-313 Go tests, 24 frontend tests, 37 integration tests against OpenLDAP. The
-Windows build compiles and links in CI but still has not been run by hand.
+315 Go tests, 33 frontend tests, 37 integration tests. The Active Directory
+detection has tests covering a domain controller's real capability list, a
+server that republishes the marker among its controls, and OpenLDAP, which
+publishes neither and must not be mistaken for a domain.
