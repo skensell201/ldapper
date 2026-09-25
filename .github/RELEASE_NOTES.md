@@ -1,33 +1,37 @@
-Windows gets its own title bar, drawn by Ldapper.
+Ldapper has a new look, and its mark a new ink.
 
-## One bar instead of two
+## Plum and lavender
 
-Windows was putting a light title bar above a dark application. Two bars, one
-of them belonging to a different design entirely, and the name repeated in
-both.
+The window moves from aubergine and coral to a darker plum, with the panes
+lifted a step above it rather than sunk below it. Depth comes from those steps
+and from hairline edges — there are no drop shadows anywhere — and a faint
+violet aurora sits behind the title bar.
 
-The window is frameless there now. Minimise, maximise and close sit at the end
-of the same bar that carries the connection — sized and spaced the way Windows
-does them, so the pointer lands where it expects to, with the close button
-turning coral on approach. Double-clicking the bar maximises the window, and
-dragging it moves the window, as before.
+Colour is rationed now, and each one means one thing:
 
-macOS is untouched. Its window controls belong to the system and already sit
-inside this bar looking native; drawing our own there would be a second set.
+- **Lavender** is the interface talking: pane headings, what is selected, the
+  version in the status bar. A selected row is a lavender wash with a bar at
+  its edge, where it used to be a solid coral block.
+- **Green** is the one button to press on a screen — Search, Connect, Save —
+  and a connection that is working. Nothing else is green, so the eye finds it.
+- **Ember** is kept for errors and for deleting things.
 
-## One thing that could have gone badly
+Buttons and switches are rounded rectangles instead of pills. Text is a warm
+bone rather than pure white, which glared on the dark plum. Inputs have a
+visible edge, and a lavender ring when they have focus.
 
-When the bar ran short of room, the item that gave way was the window controls
-— which would have left no way to close the window at all. It is the
-connection pill that shrinks now, and the controls never do.
+## The mark
 
-## For anyone working on the interface
+The same two levels of a tree and three nodes, now inked in a single gradient
+from violet at the root to ember at the leaf. The app icon, the Windows icon,
+the favicon and every raster size are regenerated from `assets/icon.svg`.
 
-`npm run dev` accepts `?platform=windows`, which shows the chrome Windows gets.
-It is the only way to look at it without a Windows machine, and it is how this
-was checked.
+## Nothing else changed
+
+This release is visual only. No behaviour, no settings and no saved
+connections are touched.
 
 ## Verified
 
-318 Go tests, 49 frontend tests — including that the three buttons exist on
-Windows and that none of them are drawn on macOS — and 37 integration tests.
+318 Go tests, 49 frontend tests and 37 integration tests. The screenshots in
+the README are retaken from this build's interface.
