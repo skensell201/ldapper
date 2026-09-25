@@ -58,7 +58,7 @@ export function App() {
         }}
       >
         <span className="brand">
-          <Mark />
+          <Mark size={20} />
           <span className="wordmark">Ldapper</span>
         </span>
 

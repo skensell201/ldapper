@@ -15,12 +15,16 @@
   user-select: none;
   -webkit-user-drag: none;
 }
-.row:hover { background: var(--raise); }
-.row.selected { background: var(--coral); color: var(--white); font-weight: 500; }
+.row:hover { background: rgba(229, 231, 235, 0.05); color: var(--bone); }
+/* Selection is a lavender wash with a bar at its edge — lit, not filled. */
+.row.selected {
+  background: rgba(185, 151, 255, 0.14); color: var(--bone); font-weight: 500;
+  box-shadow: inset 2px 0 0 var(--lavender);
+}
 .row.selected .row-icon,
 .row.selected .chev-btn,
-.row.selected .count { color: rgba(255, 255, 255, 0.8); }
-.row.selected .more { background: rgba(255, 255, 255, 0.2); color: var(--white); }
+.row.selected .count { color: var(--lavender); }
+.row.selected .more { background: rgba(185, 151, 255, 0.18); color: var(--bone); }
 
 .chev-btn { width: 10px; flex: none; color: var(--iris); font-size: 8px; text-align: center; }
 .row-icon { width: 14px; height: 14px; flex: none; color: var(--iris); }
@@ -31,6 +35,6 @@
   margin-left: auto; flex: none;
   font-family: var(--mono); font-size: 10.5px; letter-spacing: 0;
   color: var(--mist);
-  padding: 1px 8px; border-radius: var(--r-pill); background: var(--raise);
+  padding: 1px 8px; border-radius: 6px; background: var(--raise);
 }
-.more:hover { color: var(--white); }
+.more:hover { color: var(--bone); }

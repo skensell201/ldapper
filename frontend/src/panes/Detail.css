@@ -1,26 +1,27 @@
 .detail-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 22px 16px; flex: none; }
 .avatar {
   width: 38px; height: 38px; flex: none; border-radius: 12px;
-  background: var(--raise); display: grid; place-items: center; color: var(--mist);
+  background: var(--raise); display: grid; place-items: center; color: var(--lavender);
+  box-shadow: inset 0 0 0 1px var(--hairline);
 }
 .avatar svg { width: 18px; height: 18px; }
 .detail-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.detail-title .cn { font-size: 17px; font-weight: 600; letter-spacing: -0.34px; color: var(--white); }
+.detail-title .cn { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; color: var(--bone); }
 .detail-title .dn {
   font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--fog);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .detail-head .ghost {
   margin-left: auto; flex: none;
-  height: 30px; padding: 0 16px; border-radius: var(--r-pill);
-  background: var(--raise); color: var(--ash); font-size: 12px;
+  height: 30px; padding: 0 16px; border-radius: var(--r-btn);
+  box-shadow: inset 0 0 0 1px var(--hairline); color: var(--mist); font-size: 12px;
 }
-.detail-head .ghost:hover { color: var(--white); }
+.detail-head .ghost:hover { color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
 
 .attr-head {
   display: grid; grid-template-columns: 220px 1fr; gap: 16px;
   padding: 0 22px 10px;
-  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--iris);
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fog);
   box-shadow: inset 0 -1px 0 var(--hairline);
   flex: none;
 }
@@ -36,12 +37,12 @@
 }
 .attr-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0; color: var(--mist); }
 .attr-value { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.val { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--white); word-break: break-all; }
+.val { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--bone); word-break: break-all; }
 .raw { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--fog); word-break: break-all; }
 
 .decoded-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .decoded {
-  padding: 2px 11px; border-radius: var(--r-pill);
-  background: var(--raise); color: var(--white);
+  padding: 2px 9px; border-radius: var(--r-input);
+  background: var(--raise); color: var(--bone); box-shadow: inset 0 0 0 1px var(--hairline);
   font-family: var(--mono); font-size: 11px; letter-spacing: 0;
 }

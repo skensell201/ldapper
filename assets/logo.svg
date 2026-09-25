@@ -1,10 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ldapper">
   <title>Ldapper</title>
-  <g fill="none" stroke="#5c5f85" stroke-width="4" stroke-linecap="round">
+  <defs>
+    <linearGradient id="ink" x1="12" y1="12" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#855aff"/>
+      <stop offset="0.55" stop-color="#ff7ad9"/>
+      <stop offset="1" stop-color="#ff5632"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#ink)" stroke-width="4" stroke-linecap="round">
     <path d="M15 20 V27 Q15 32 20 32 H26"/>
     <path d="M32 37 V44 Q32 49 37 49 H43"/>
   </g>
-  <circle cx="15" cy="15" r="4" fill="#8e8da0"/>
-  <circle cx="32" cy="32" r="4" fill="#a3a3a7"/>
-  <circle cx="49" cy="49" r="5.5" fill="#ff4a36"/>
+  <g fill="url(#ink)">
+    <circle cx="15" cy="15" r="4"/>
+    <circle cx="32" cy="32" r="4"/>
+    <circle cx="49" cy="49" r="5.5"/>
+  </g>
 </svg>

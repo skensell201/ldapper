@@ -87,7 +87,7 @@ export function Toolbar() {
           Stop
         </button>
       ) : (
-        <button className="tbtn" onClick={() => void runSearch()} disabled={!connected}>
+        <button className="tbtn primary" onClick={() => void runSearch()} disabled={!connected}>
           Search
         </button>
       )}

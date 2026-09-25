@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Ldapper — Doppler style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+
+  /* Surfaces: depth comes from colour steps, never from drop shadows. */
+  --canvas: #1c1624;   /* Midnight Plum */
+  --card:   #2d2734;   /* Shadow Plum */
+  --raise:  #3a3340;   /* Elevated panel */
+  --deep:   #16111d;
+
+  --lavender: #b997ff; /* wordmark, eyebrows, selection accents */
+  --signal:   #00f575; /* the one primary action + "connected" */
+  --violet:   #6b13f5;
+  --ember:    #ff5632;
+  --plasma:   #ff9efa;
+  --warn:     #f2b43b;
+  --bad:      #ff5632;
+
+  --bone: #f1f0ec;     /* primary text — never pure white */
+  --ash:  #d0c9c4;     /* secondary text */
+  --mid:  #a5a2a5;     /* helper, placeholders */
+  --iron: #55505b;     /* input borders */
+  --line: rgba(229, 231, 235, 0.10);
+  --line-2: rgba(229, 231, 235, 0.15);
+
+  --sans: Inter, Geist, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --r-small: 8px;
+  --r-btn: 12px;
+  --r-card: 20px;
+  --r-pill: 9999px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: #0e0b12; color: var(--bone);
+  font-family: var(--sans); font-size: 13px; font-weight: 450; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding: 24px 16px 48px;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+
+/* ---------- presentation chrome (not part of the app) ---------- */
+.stage { max-width: 1456px; margin: 0 auto; }
+.picker { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+.picker .lbl { color: var(--mid); font-size: 12px; letter-spacing: 0.03em; margin-right: 8px; }
+.picker button { padding: 8px 16px; border-radius: var(--r-btn); border: 1px solid var(--iron); color: var(--ash); font-size: 13px; }
+.picker button.on { background: var(--card); color: var(--bone); border-color: var(--line-2); }
+.picker .sep { width: 1px; height: 24px; background: var(--iron); margin: 0 8px; }
+.before { display: none; width: 100%; border-radius: 12px; }
+.stage.show-before .before { display: block; }
+.stage.show-before .window { display: none; }
+.note { color: var(--mid); font-size: 12px; margin-top: 14px; max-width: 900px; }
+
+/* ---------------------------- the app ---------------------------- */
+.window {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-rows: 52px 1fr 34px;
+  height: 829px; border-radius: 12px;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+}
+.window.with-toolbar { grid-template-rows: 52px auto 1fr 34px; }
+/* A faint aurora behind the chrome: violet → pink, fading to the canvas. */
+.window::before {
+  content: ""; position: absolute; inset: -240px 0 auto 0; height: 520px; pointer-events: none;
+  background:
+    radial-gradient(40% 60% at 22% 30%, rgba(107, 19, 245, 0.22), transparent 70%),
+    radial-gradient(30% 45% at 58% 20%, rgba(255, 158, 250, 0.08), transparent 70%),
+    radial-gradient(28% 40% at 85% 25%, rgba(255, 86, 50, 0.06), transparent 70%);
+}
+.window > * { position: relative; }
+
+.utility {
+  display: flex; align-items: center; gap: 16px; padding: 0 16px 0 82px;
+  background: rgba(28, 22, 36, 0.6); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 9px; }
+.wordmark { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; color: var(--bone); }
+.wordmark b { color: var(--lavender); font-weight: 500; }
+.conn {
+  display: flex; align-items: center; gap: 9px;
+  height: 30px; padding: 0 14px;
+  border-radius: var(--r-btn); border: 1px solid var(--line-2);
+  font-family: var(--mono); font-size: 11px; color: var(--ash);
+}
+.conn:hover { color: var(--bone); border-color: var(--iron); }
+.led { width: 7px; height: 7px; border-radius: 50%; background: var(--mid); flex: none; }
+.led.good { background: var(--signal); box-shadow: 0 0 0 3px rgba(0, 245, 117, 0.14), 0 0 10px rgba(0, 245, 117, 0.45); }
+.chev { color: var(--mid); font-size: 9px; }
+
+.segs { display: flex; gap: 2px; padding: 3px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-btn); }
+.seg { padding: 5px 14px; border-radius: 9px; font-size: 12.5px; color: var(--mid); white-space: nowrap; }
+.seg:hover { color: var(--bone); }
+.seg.on { background: var(--raise); color: var(--bone); box-shadow: inset 0 0 0 1px var(--line-2); }
+.spacer { margin-left: auto; }
+.ghost { height: 30px; padding: 0 14px; border-radius: var(--r-btn); border: 1px solid var(--line-2); color: var(--bone); font-size: 12.5px; }
+.ghost:hover { border-color: var(--iron); background: rgba(229,231,235,0.04); }
+
+.toolbar { display: flex; gap: 10px; align-items: center; padding: 12px 16px 0; }
+.filter-box {
+  flex: 1; height: 38px; padding: 0 14px;
+  background: var(--card); border: 1px solid var(--iron); border-radius: var(--r-btn);
+  color: var(--bone); font-family: var(--mono); font-size: 12px; outline: none;
+}
+.filter-box:focus { border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(185, 151, 255, 0.18); }
+.primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 18px; border-radius: var(--r-btn);
+  background: var(--signal); color: #000; font-weight: 500; font-size: 13px;
+}
+.primary:hover { filter: brightness(1.08); }
+.plain { height: 38px; padding: 0 14px; color: var(--mid); font-size: 13px; }
+.plain:hover { color: var(--bone); }
+
+.workspace { display: grid; grid-template-columns: 320px 1fr; gap: 12px; padding: 12px 16px 16px; min-height: 0; }
+.pane { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.pane-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 20px 10px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lavender);
+}
+.pane-head .n { font-family: var(--mono); letter-spacing: 0; text-transform: none; color: var(--mid); font-weight: 400; }
+
+/* tree */
+.tree { padding: 0 8px 8px; overflow: auto; }
+.row { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px; border-radius: var(--r-small); color: var(--ash); font-size: 13px; }
+.row:hover { background: rgba(229, 231, 235, 0.04); color: var(--bone); }
+.row .tw { width: 10px; color: var(--iron); font-size: 9px; text-align: center; }
+.row svg { width: 14px; height: 14px; flex: none; stroke: var(--mid); fill: none; stroke-width: 1.5; }
+.row .cnt { margin-left: auto; font-family: var(--mono); font-size: 10.5px; color: var(--iron); }
+.row.sel { background: rgba(185, 151, 255, 0.14); color: var(--bone); box-shadow: inset 2px 0 0 var(--lavender); }
+.row.sel svg { stroke: var(--lavender); }
+.row.sel .cnt { color: var(--lavender); }
+
+/* detail */
+.detail-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 24px 16px; border-bottom: 1px solid var(--line); }
+.avatar { width: 40px; height: 40px; border-radius: var(--r-btn); background: var(--raise); display: grid; place-items: center; border: 1px solid var(--line-2); }
+.avatar svg { width: 18px; height: 18px; stroke: var(--lavender); fill: none; stroke-width: 1.5; }
+.detail-head h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.detail-head .dn { font-family: var(--mono); font-size: 11px; color: var(--mid); margin-top: 4px; }
+.detail-head .ghost { margin-left: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); padding: 12px 24px 8px; border-bottom: 1px solid var(--line); }
+td { padding: 7px 24px; border-bottom: 1px solid var(--line); vertical-align: top; font-family: var(--mono); font-size: 12px; }
+td.k { color: var(--ash); width: 30%; }
+td.v { color: var(--bone); }
+.raw { color: var(--mid); }
+.chip { display: inline-block; margin: 4px 6px 0 0; padding: 2px 9px; border-radius: var(--r-small); background: var(--raise); border: 1px solid var(--line-2); color: var(--bone); font-size: 11px; }
+.chip.lav { color: var(--lavender); background: rgba(185, 151, 255, 0.1); border-color: rgba(185, 151, 255, 0.25); }
+.scroll { overflow: auto; }
+
+/* results */
+.res-head { display: flex; justify-content: space-between; padding: 16px 24px 4px; font-family: var(--mono); font-size: 11px; color: var(--mid); }
+.res-head b { color: var(--bone); font-weight: 500; }
+.res td { font-family: var(--sans); font-size: 13px; padding: 6px 24px; }
+.res td:first-child { color: var(--bone); }
+.res td:nth-child(2) { color: var(--ash); }
+.res td:last-child { font-family: var(--mono); font-size: 11.5px; color: var(--mid); }
+.res tr:hover td { background: rgba(229, 231, 235, 0.03); }
+.res tr.sel td { background: rgba(185, 151, 255, 0.10); }
+.res tr.sel td:first-child { box-shadow: inset 2px 0 0 var(--lavender); }
+
+.statusbar {
+  display: flex; align-items: center; gap: 20px; padding: 0 22px;
+  background: var(--deep); border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 10.5px; color: var(--mid); white-space: nowrap;
+}
+.statusbar .state { display: inline-flex; align-items: center; gap: 8px; color: var(--signal); font-weight: 600; }
+.statusbar .build { color: var(--lavender); }
+
+/* dialog */
+.scrim { position: absolute; inset: 0; background: rgba(14, 11, 18, 0.6); backdrop-filter: blur(6px); display: none; place-items: center; z-index: 5; }
+.window.dialog .scrim { display: grid; }
+.dialog-box {
+  width: 520px; background: var(--raise); border: 1px solid var(--line-2); border-radius: var(--r-card); padding: 32px;
+  box-shadow: 0 0 60px rgba(185, 151, 255, 0.15);
+}
+.eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lavender); }
+.dialog-box h3 { margin: 6px 0 20px; font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; color: var(--ash); margin-bottom: 6px; }
+.field input { width: 100%; height: 38px; padding: 0 12px; border-radius: var(--r-small); border: 1px solid var(--iron); background: var(--card); color: var(--bone); font-family: var(--mono); font-size: 12px; outline: none; }
+.field input:focus { border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(185, 151, 255, 0.18); }
+.field input::placeholder { color: var(--mid); }
+.two { display: grid; grid-template-columns: 1fr 120px; gap: 12px; }
+.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+.actions .ghost { height: 38px; padding: 0 18px; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="picker">
+    <span class="lbl">ЭКРАН</span>
+    <button data-view="browse" class="on">Browse</button>
+    <button data-view="search">Search</button>
+    <button data-view="dialog">Connect</button>
+    <span class="sep"></span>
+    <span class="lbl">СРАВНИТЬ</span>
+    <button id="toggle-before">Показать «было»</button>
+  </div>
+
+  <img class="before" id="before" src="../screenshots/01-browse.jpg" alt="Текущий вид">
+
+  <div class="window" id="win">
+    <header class="utility">
+      <span class="brand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b997ff" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/></svg>
+        <span class="wordmark">Ldapper</span>
+      </span>
+      <button class="conn"><i class="led good"></i>dc01.corp.example.com · SpaceReader<span class="chev">▾</span></button>
+      <div class="segs" id="modes">
+        <button class="seg on" data-view="browse">Browse</button>
+        <button class="seg" data-view="search">Search</button>
+        <button class="seg">Filters</button>
+      </div>
+      <span class="spacer"></span>
+      <button class="ghost">Connections</button>
+    </header>
+
+    <div class="toolbar" id="toolbar" style="display:none">
+      <input class="filter-box" value="(&(objectClass=person)(title=*Engineer*))">
+      <div class="segs"><button class="seg">Base</button><button class="seg">One level</button><button class="seg on">Subtree</button></div>
+      <button class="primary">Search <span>→</span></button>
+      <button class="plain">Export</button>
+    </div>
+
+    <main class="workspace">
+      <section class="pane">
+        <div class="pane-head">Directory <span class="n">20</span></div>
+        <div class="tree" id="tree"></div>
+      </section>
+
+      <section class="pane" id="detail">
+        <div class="detail-head">
+          <div class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></div>
+          <div>
+            <h2>Volkova, Anna</h2>
+            <div class="dn">cn=Volkova\2C Anna,ou=people,ou=corp,dc=example,dc=com</div>
+          </div>
+          <button class="ghost">Copy DN</button>
+        </div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td class="k">cn</td><td class="v">Volkova, Anna</td></tr>
+              <tr><td class="k">mail</td><td class="v">a.volkova@example.com<br>anna@example.com</td></tr>
+              <tr><td class="k">objectClass</td><td class="v">top<br>person<br>organizationalPerson<br>inetOrgPerson</td></tr>
+              <tr><td class="k">objectSid</td><td class="v"><span class="raw">AQUAAAAAAAUVAAAAx1HaZLwzNM8UAe0BUAQAAA==</span><br><span class="chip">S-1-5-21-3638186439-3476304828-32309524-1104</span></td></tr>
+              <tr><td class="k">pwdLastSet</td><td class="v"><span class="raw">133894094610000000</span><br><span class="chip">2025-04-18 00:24:21 UTC</span></td></tr>
+              <tr><td class="k">userAccountControl</td><td class="v"><span class="raw">66048</span><br><span class="chip lav">NORMAL_ACCOUNT</span><span class="chip lav">DONT_EXPIRE_PASSWORD</span></td></tr>
+              <tr><td class="k">accountExpires</td><td class="v"><span class="raw">9223372036854775807</span><br><span class="chip">never</span></td></tr>
+              <tr><td class="k">sn</td><td class="v">Volkova</td></tr>
+              <tr><td class="k">telephoneNumber</td><td class="v">+49 30 123456</td></tr>
+              <tr><td class="k">title</td><td class="v">Systems Engineer</td></tr>
+              <tr><td class="k">whenCreated</td><td class="v"><span class="raw">20230914081233.0Z</span><br><span class="chip">2023-09-14 08:12:33 UTC</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="pane" id="results" style="display:none">
+        <div class="res-head"><span><b>120</b> matched</span><span>120 matched in 143 ms</span></div>
+        <div class="scroll">
+          <table class="res">
+            <thead><tr><th>cn</th><th>title</th><th>distinguishedName</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="statusbar">
+      <span class="state"><i class="led good"></i>Connected</span>
+      <span>LDAPS</span><span>Active Directory</span><span>paged results</span><span>dc=example,dc=com</span>
+      <span class="spacer"></span>
+      <span class="build">v0.4.1</span>
+    </footer>
+
+    <div class="scrim">
+      <div class="dialog-box">
+        <div class="eyebrow">New connection</div>
+        <h3>Connect to a directory</h3>
+        <div class="field two">
+          <div><label>Host</label><input value="dc01.corp.example.com"></div>
+          <div><label>Port</label><input value="636"></div>
+        </div>
+        <div class="field">
+          <label>Encryption</label>
+          <div class="segs"><button class="seg on" style="flex:1">LDAPS</button><button class="seg" style="flex:1">StartTLS</button><button class="seg" style="flex:1">None</button></div>
+        </div>
+        <div class="field"><label>Bind DN</label><input value="CN=SpaceReader,OU=service accounts,DC=example,DC=com"></div>
+        <div class="field"><label>Password</label><input type="password" placeholder="••••••••"></div>
+        <div class="actions"><button class="ghost">Cancel</button><button class="primary">Connect <span>→</span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Макет по стилю Doppler (Refero): фон Midnight Plum #1c1624, панели #2d2734, текст Bone #f1f0ec,
+  лавандовый #b997ff — только для словесного знака, заголовков-подписей и выделения, зелёный #00f575 — только
+  для главной кнопки и индикатора «Connected». Шрифт Inter 450, радиусы 20/12/8 px, без теней — глубина за счёт
+  ступеней фона и полупрозрачных линий. Коралловый акцент уходит.</p>
+</div>
+
+<script>
+const person = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
+const folder = '<svg viewBox="0 0 24 24"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2h8.5A1.5 1.5 0 0 1 21 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>';
+const globe = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>';
+const tree = [
+  [0, globe, 'dc=example,dc=com', '▾'], [1, folder, 'corp', '▾'], [2, folder, 'people', '▾'],
+  [3, person, 'Volkova, Anna', '', 'sel'], [3, person, 'Анна Волкова'], [3, person, 'Anna Volkova 1'],
+  [3, person, 'Boris Ivanov 2'], [3, person, 'Daria Orlova 3'], [3, person, 'Egor Titov 4'],
+  [3, person, 'Irina Belova 5'], [3, person, 'Kirill Zaytsev 6'], [3, person, 'Marina Rud 7'],
+  [3, person, 'Nikita Frolov 8'], [3, person, 'Olga Sokolova 9'], [3, person, 'Pavel Morozov 10'],
+  [2, folder, 'groups', '▸'], [2, folder, 'service accounts', '▸'], [2, folder, 'departments', '▸'],
+  [1, folder, 'computers', '▸'], [1, folder, 'system', '▸'],
+];
+document.getElementById('tree').innerHTML = tree.map(([d, ic, name, tw = '', cls = '']) =>
+  `<div class="row ${cls}" style="padding-left:${10 + d * 15}px"><span class="tw">${tw}</span>${ic}<span>${name}</span>${tw ? '' : '<span class="cnt">0</span>'}</div>`
+).join('');
+
+const names = ['Boris Ivanov', 'Daria Orlova', 'Egor Titov', 'Irina Belova', 'Kirill Zaytsev', 'Marina Rud', 'Nikita Frolov', 'Olga Sokolova', 'Pavel Morozov', 'Anna Volkova'];
+const titles = ['Accountant', 'Support Analyst', 'Team Lead', 'Controller', 'Systems Engineer'];
+document.getElementById('rows').innerHTML = Array.from({ length: 24 }, (_, i) => {
+  const n = `${names[i % 10]} ${i + 1}`;
+  return `<tr class="${i === 4 ? 'sel' : ''}"><td>${n}</td><td>${titles[i % 5]}</td><td>cn=${n},ou=people,ou=corp,dc=example,dc=com</td></tr>`;
+}).join('');
+
+const win = document.getElementById('win'), stage = document.getElementById('stage');
+let view = 'browse';
+function show(v) {
+  view = v;
+  const search = v === 'search';
+  win.classList.toggle('with-toolbar', search);
+  win.classList.toggle('dialog', v === 'dialog');
+  document.getElementById('toolbar').style.display = search ? 'flex' : 'none';
+  document.getElementById('detail').style.display = search ? 'none' : 'flex';
+  document.getElementById('results').style.display = search ? 'flex' : 'none';
+  document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === v || (v === 'dialog' && b.closest('#modes') && b.dataset.view === 'browse')));
+  document.getElementById('before').src = '../screenshots/' + ({ browse: '01-browse', search: '02-search', dialog: '03-connect' })[v] + '.jpg';
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => show(b.dataset.view)));
+document.getElementById('toggle-before').addEventListener('click', e => {
+  const on = stage.classList.toggle('show-before');
+  e.target.classList.toggle('on', on);
+  e.target.textContent = on ? 'Показать «стало»' : 'Показать «было»';
+});
+</script>
+</body>
+</html>

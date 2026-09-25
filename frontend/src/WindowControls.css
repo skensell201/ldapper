@@ -12,10 +12,10 @@
   color: var(--mist);
   border-radius: 0;
 }
-.winctl button:hover { background: var(--raise); color: var(--white); }
+.winctl button:hover { background: var(--raise); color: var(--bone); }
 
 /* Closing is the one irreversible button in the row, and Windows marks it. */
-.winctl button.close:hover { background: var(--coral); color: var(--white); }
+.winctl button.close:hover { background: #c42b1c; color: var(--bone); }
 
 .winctl svg {
   width: 10px; height: 10px;

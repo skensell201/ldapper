@@ -1,9 +1,19 @@
-.window { display: grid; grid-template-rows: 44px 1fr 34px; height: 100%; background: var(--plum); }
+/* A faint aurora behind the chrome — violet at the mark's end of the bar,
+   fading to plum long before it reaches the panes. It is the one place the
+   gradient the mark is inked in shows up at size. */
+.window {
+  display: grid; grid-template-rows: 44px 1fr 34px; height: 100%;
+  background:
+    radial-gradient(46% 380px at 14% -140px, rgba(107, 19, 245, 0.34), transparent 72%),
+    radial-gradient(30% 300px at 60% -150px, rgba(255, 158, 250, 0.10), transparent 72%),
+    radial-gradient(28% 300px at 94% -150px, rgba(255, 86, 50, 0.08), transparent 72%),
+    var(--canvas);
+}
 /* Search and the filter library add a toolbar row between the chrome and the
    panes; browsing has no toolbar and gives the space back to the tree. */
 .window.with-toolbar { grid-template-rows: 44px auto 1fr 34px; }
 
-.utility { display: flex; align-items: center; gap: 14px; padding: 0 18px; overflow: hidden; }
+.utility { display: flex; align-items: center; gap: 14px; padding: 0 18px; overflow: hidden; border-bottom: 1px solid var(--hairline-soft); }
 /* Windows draws its own controls at the very edge, so the bar gives up its
    right padding to them. */
 .utility.win { padding-right: 0; }
@@ -13,12 +23,12 @@
 .brand { display: flex; align-items: center; gap: 9px; flex: none; }
 .util { flex: none; }
 .brand .mark { display: block; flex: none; }
-.wordmark { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+.wordmark { font-size: 14.5px; font-weight: 500; letter-spacing: -0.01em; line-height: 1; color: var(--bone); }
 .conn {
   display: flex; align-items: center; gap: 9px;
   height: 28px; padding: 0 14px;
-  border-radius: var(--r-pill); background: var(--well);
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--ash);
+  border-radius: var(--r-btn); box-shadow: inset 0 0 0 1px var(--hairline);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--mist);
   white-space: nowrap;
   /* The identity is shortened before it gets here, so the pill usually sizes
      to its contents. When the bar runs out of room it is the thing that
@@ -30,33 +40,33 @@
   text-overflow: ellipsis;
 }
 .conn .chev { flex: none; }
-.conn:hover { color: var(--white); }
+.conn:hover { color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
 /* One dot, one meaning, wherever it appears. */
 .led { width: 7px; height: 7px; border-radius: 50%; background: var(--iris); flex: none; }
-.led.good { background: var(--good); box-shadow: 0 0 0 3px rgba(70, 211, 154, 0.16); }
-.led.warn { background: var(--warn); box-shadow: 0 0 0 3px rgba(242, 169, 59, 0.16); }
-.led.bad  { background: var(--bad);  box-shadow: 0 0 0 3px rgba(255, 74, 54, 0.18); }
+.led.good { background: var(--good); box-shadow: 0 0 0 3px rgba(0, 245, 117, 0.14), 0 0 8px rgba(0, 245, 117, 0.45); }
+.led.warn { background: var(--warn); box-shadow: 0 0 0 3px rgba(242, 180, 59, 0.16); }
+.led.bad  { background: var(--bad);  box-shadow: 0 0 0 3px rgba(255, 86, 50, 0.18); }
 .led.idle { background: var(--iris); }
 .chev { color: var(--iris); font-size: 9px; }
 .modes { margin-left: 6px; }
-.util { font-size: 13px; color: var(--fog); }
-.util:hover { color: var(--white); }
+.util { height: 28px; padding: 0 14px; border-radius: var(--r-btn); box-shadow: inset 0 0 0 1px var(--hairline); font-size: 12.5px; color: var(--mist); }
+.util:hover { color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
 .spacer { margin-left: auto; }
 
-.workspace { display: grid; grid-template-columns: 320px 1fr; gap: 10px; padding: 0 10px 10px; min-height: 0; }
-.pane { background: var(--well); border-radius: var(--r-pane); overflow: hidden; min-width: 0; display: flex; flex-direction: column; }
+.workspace { display: grid; grid-template-columns: 320px 1fr; gap: 10px; padding: 10px; min-height: 0; }
+.pane { background: var(--card); box-shadow: inset 0 0 0 1px var(--hairline-soft); border-radius: var(--r-pane); overflow: hidden; min-width: 0; display: flex; flex-direction: column; }
 .pane-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 18px 10px;
-  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--iris);
+  padding: 14px 20px 10px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lavender);
   flex: none;
 }
-.pane-head .n { font-family: var(--mono); text-transform: none; letter-spacing: 0; color: var(--fog); }
+.pane-head .n { font-family: var(--mono); font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--iris); }
 
 .statusbar {
   display: flex; align-items: center; gap: 20px; padding: 0 22px;
-  background: var(--deep);
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris);
+  background: var(--deep); border-top: 1px solid var(--hairline-soft);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--fog);
   overflow: hidden; white-space: nowrap;
 }
 /* The status bar reads the same way as the indicator in the chrome: same dot,
@@ -65,7 +75,7 @@
 .statusbar .state.good { color: var(--good); }
 .statusbar .state.warn { color: var(--warn); }
 .statusbar .state.bad  { color: var(--bad); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.statusbar .state.idle { color: var(--iris); font-weight: 400; }
+.statusbar .state.idle { color: var(--fog); font-weight: 400; }
 
 /* The one detail that carries a colour of its own: credentials in the clear. */
 .statusbar .warn-text { color: var(--warn); }
@@ -73,12 +83,13 @@
 
 /* Which build this is, in the one place that is always on screen. It is the
    first thing a bug report needs and the last thing anyone wants to hunt for. */
-.statusbar .build { flex: none; color: var(--iris); }
+.statusbar .build { flex: none; color: var(--lavender); }
 
 .empty { display: grid; place-items: center; height: 100%; color: var(--iris); font-family: var(--mono); font-size: 11px; }
-.error { margin: 10px 18px; padding: 10px 14px; border-radius: var(--r-input); background: rgba(255, 74, 54, 0.12); color: var(--coral); font-size: 12px; }
+.error { margin: 10px 18px; padding: 10px 14px; border-radius: var(--r-input); background: rgba(255, 86, 50, 0.12); color: var(--bad); font-size: 12px; }
 
 /* Shared by the toolbar, the mode switch and both dialogs. */
-.segs { display: flex; gap: 4px; padding: 4px; background: var(--well); border-radius: var(--r-pill); }
-.seg { flex: 1; text-align: center; padding: 6px 0; border-radius: var(--r-pill); font-size: 12px; color: var(--fog); }
-.seg.on { background: var(--raise); color: var(--white); }
+.segs { display: flex; gap: 2px; padding: 3px; background: var(--card); box-shadow: inset 0 0 0 1px var(--hairline-soft); border-radius: var(--r-btn); }
+.seg { flex: 1; text-align: center; padding: 6px 0; border-radius: 9px; font-size: 12px; color: var(--fog); }
+.seg:hover { color: var(--bone); }
+.seg.on { background: var(--raise); color: var(--bone); box-shadow: inset 0 0 0 1px var(--hairline); }

@@ -60,8 +60,9 @@ The design is settled and written down:
 ## The mark
 
 Every directory listing draws its indentation with `└` — which is also the first letter of the
-name. The logo is two levels of nesting and three nodes, with the leaf in coral: you descend the
-branch, and the thing you were looking for lights up.
+name. The logo is two levels of nesting and three nodes, inked in one gradient that runs from
+violet at the root to ember at the leaf: you descend the branch, and the thing you were looking
+for is the warmest point on it.
 
 Source of truth is `assets/icon.svg`. Regenerate the raster sizes from it rather than editing them:
 

@@ -1,12 +1,13 @@
-.toolbar { display: flex; align-items: center; gap: 10px; padding: 4px 18px 12px; flex: none; }
+.toolbar { display: flex; align-items: center; gap: 10px; padding: 10px 10px 0; flex: none; }
 
 .filter-box {
   flex: 1; min-width: 0;
   height: 36px; padding: 0 14px;
-  background: var(--well); border: 0; border-radius: var(--r-input);
-  color: var(--white); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
+  background: var(--card); border: 1px solid var(--iron); border-radius: var(--r-btn);
+  color: var(--bone); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
 }
 .filter-box::placeholder { color: var(--iris); }
+.filter-box:focus-visible { outline: none; border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(185, 151, 255, 0.18); }
 
 .segs.small { padding: 3px; flex: none; }
 /* "One level" is two words and was wrapping onto two lines, which made the
@@ -15,11 +16,15 @@
 
 .tbtn {
   flex: none; height: 36px; padding: 0 18px;
-  border-radius: var(--r-pill); background: var(--well);
-  color: var(--ash); font-size: 12.5px; font-weight: 500;
+  border-radius: var(--r-btn); box-shadow: inset 0 0 0 1px var(--hairline);
+  color: var(--mist); font-size: 12.5px; font-weight: 500;
 }
-.tbtn:hover:not(:disabled) { color: var(--white); }
-.tbtn.plain { background: transparent; color: var(--fog); }
+.tbtn:hover:not(:disabled) { color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
+.tbtn.plain { box-shadow: none; color: var(--fog); }
+.tbtn.plain:hover:not(:disabled) { box-shadow: none; }
+/* Search is the one thing on this screen to press, and the only green on it. */
+.tbtn.primary { background: var(--signal); box-shadow: none; color: #000; }
+.tbtn.primary:hover:not(:disabled) { color: #000; box-shadow: none; filter: brightness(1.08); }
 .tbtn:disabled { opacity: 0.45; cursor: default; }
 
-.toolbar-note { font-size: 12.5px; color: var(--fog); }
+.toolbar-note { padding-left: 10px; font-size: 12.5px; color: var(--fog); }

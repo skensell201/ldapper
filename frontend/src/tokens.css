@@ -1,40 +1,52 @@
 :root {
   color-scheme: dark;
 
-  --canvas: #181824;
-  --plum:   #26253b;
-  --well:   #1f1e30;
-  --deep:   #131320;
-  --raise:  #2f2e47;
+  /* Surfaces. Depth comes from stepping the plum lighter, never from drop
+     shadows: the canvas, the cards that sit on it, and what rises above them. */
+  --canvas: #1c1624;
+  --card:   #2d2734;
+  --raise:  #3a3340;
+  --lift:   #463e4d;
+  --deep:   #16111d;
 
-  --coral: #ff4a36;
-  --iris:  #535676;
+  /* Two signals, both rationed. Lavender marks what the interface itself is
+     saying — headings, the wordmark, what is selected. Green is for the one
+     thing to press, and for a connection that is working. Neither is ever a
+     large fill. */
+  --lavender: #b997ff;
+  --signal:   #00f575;
 
-  /* Status colours. The rest of the interface is deliberately aubergine and
-     coral, but a connection's health is not decoration — it is the one thing
-     worth reading across the room, and three states need three colours.
-     Both are pulled toward the aubergine so they belong here rather than
-     looking like a traffic light bolted on. */
-  --good: #46d39a;
-  --warn: #f2a93b;
-  --bad:  var(--coral);
+  /* The gradient the mark is inked in, and the aurora behind the window. */
+  --violet: #6b13f5;
+  --ember:  #ff5632;
 
-  --white: #ffffff;
-  --mist:  #a3a3a7;
-  --ash:   #8e8da0;
-  --fog:   #696f81;
-  --hairline: rgba(247, 247, 255, 0.09);
-  --hairline-soft: rgba(247, 247, 255, 0.05);
+  /* Status colours. A connection's health is not decoration — it is the one
+     thing worth reading across the room, and three states need three colours. */
+  --good: var(--signal);
+  --warn: #f2b43b;
+  --bad:  var(--ember);
 
-  --sans: "Inter Tight", Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  /* Text runs from bone down. Never pure white: on plum it glares. */
+  --bone: #f1f0ec;
+  --mist: #d0c9c4;
+  --ash:  #b8b1b6;
+  --fog:  #a5a2a5;
+  --iris: #7a7480;
+  --iron: #55505b;
+  --hairline: rgba(229, 231, 235, 0.12);
+  --hairline-soft: rgba(229, 231, 235, 0.06);
+
+  --sans: Inter, Geist, "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 
   --r-card: 20px;
-  --r-pane: 16px;
-  --r-pill: 100px;
+  --r-pane: 20px;
+  --r-btn: 12px;
   --r-input: 8px;
+  --r-pill: 9999px;
 
-  --sh-modal: rgba(0, 0, 0, 0.5) 0 28px 70px -18px;
+  /* The only glow: a dialog lit from within, rather than a shadow under it. */
+  --sh-modal: 0 0 60px rgba(185, 151, 255, 0.15);
 
   /* The tree is virtualised, so every row is exactly this tall. Changing it
      here changes the measurement the virtualiser makes. */
@@ -47,11 +59,12 @@ html, body, #root { height: 100%; margin: 0; }
 
 body {
   background: var(--canvas);
-  color: var(--white);
+  color: var(--bone);
   font-family: var(--sans);
   font-size: 13px;
+  font-weight: 450;
   line-height: 1.4;
-  letter-spacing: -0.26px;
+  letter-spacing: -0.1px;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
 }
@@ -72,7 +85,7 @@ button {
 button:focus-visible,
 input:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--coral);
+  outline: 2px solid var(--lavender);
   outline-offset: 2px;
 }
 

@@ -1,57 +1,63 @@
 .scrim {
   position: fixed; inset: 0; z-index: 10;
-  background: rgba(19, 19, 32, 0.72);
+  background: rgba(14, 11, 18, 0.66);
+  backdrop-filter: blur(6px);
   display: grid; place-items: center; padding: 24px;
 }
 
 .modal {
   width: 460px; max-width: 100%; max-height: 100%; overflow: auto;
-  background: var(--plum); border-radius: var(--r-card); box-shadow: var(--sh-modal);
-  padding: 30px; display: flex; flex-direction: column; gap: 20px;
+  background: var(--raise); border-radius: var(--r-card);
+  box-shadow: inset 0 0 0 1px var(--hairline), var(--sh-modal);
+  padding: 32px; display: flex; flex-direction: column; gap: 20px;
 }
-.modal h3 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.48px; line-height: 1.15; }
-.modal .sub { margin: -12px 0 0; font-size: 13px; color: var(--fog); line-height: 1.45; }
+.modal h3 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.modal .sub { margin: -12px 0 0; font-size: 13px; color: var(--mist); line-height: 1.5; }
 
 .form { display: flex; flex-direction: column; gap: 14px; }
-.lbl { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--iris); margin-bottom: 6px; display: block; }
+.lbl { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fog); margin-bottom: 6px; display: block; }
 .cols { display: grid; grid-template-columns: 1fr 96px; gap: 10px; }
 
 .field {
   display: flex; align-items: center; width: 100%;
   height: 36px; padding: 0 14px;
-  background: var(--well); border: 0; border-radius: var(--r-input);
-  color: var(--white); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
+  background: var(--card); border: 1px solid var(--iron); border-radius: var(--r-input);
+  color: var(--bone); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
 }
 .field::placeholder { color: var(--iris); }
+.field:focus-visible { outline: none; border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(185, 151, 255, 0.18); }
 
 
 .check { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--ash); }
-.check input { accent-color: var(--coral); }
+.check input { accent-color: var(--lavender); }
 
 .acts { display: flex; align-items: center; gap: 10px; }
 .acts .spacer { margin-left: auto; }
-.btn { height: 36px; padding: 0 20px; border-radius: var(--r-pill); font-size: 12.5px; font-weight: 500; }
+.btn { height: 36px; padding: 0 20px; border-radius: var(--r-btn); font-size: 12.5px; font-weight: 500; }
 .btn.plain { color: var(--fog); }
-.btn.plain:hover { color: var(--white); }
-.btn.light { background: var(--white); color: var(--canvas); font-weight: 600; }
-.btn.cta { background: var(--coral); color: var(--white); font-weight: 600; box-shadow: rgba(255, 74, 54, 0.28) 0 6px 18px -6px; }
+.btn.plain:hover { color: var(--bone); }
+.btn.light { background: transparent; color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
+.btn.light:hover:not(:disabled) { box-shadow: inset 0 0 0 1px var(--mist); }
+/* Connect is the one thing in the dialog to press, and the only green in it. */
+.btn.cta { background: var(--signal); color: #000; }
+.btn.cta:hover:not(:disabled) { filter: brightness(1.08); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
-.cert { background: var(--well); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
-.cert-head { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 500; color: var(--coral); }
+.cert { background: var(--card); box-shadow: inset 0 0 0 1px var(--hairline-soft); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.cert-head { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 500; color: var(--warn); }
 .cert dl { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 12px; font-size: 11px; }
 .cert dt { color: var(--iris); font-family: var(--mono); letter-spacing: 0; }
 .cert dd { margin: 0; color: var(--ash); font-family: var(--mono); letter-spacing: 0; word-break: break-all; }
-.cert dd.fp { color: var(--white); }
+.cert dd.fp { color: var(--bone); }
 
 .saved-list { display: flex; flex-direction: column; gap: 4px; max-height: 168px; overflow: auto; }
 .saved {
   display: flex; align-items: center; gap: 9px;
   padding: 8px 12px; border-radius: var(--r-input);
-  background: var(--well); color: var(--ash);
+  background: var(--card); color: var(--ash);
   font-size: 12.5px; text-align: left;
 }
-.saved:hover { color: var(--white); }
-.saved.on { background: var(--raise); color: var(--white); }
+.saved:hover { color: var(--bone); }
+.saved.on { background: rgba(185, 151, 255, 0.14); color: var(--bone); box-shadow: inset 2px 0 0 var(--lavender); }
 .saved .where { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); }
 .saved.on .where { color: var(--ash); }
