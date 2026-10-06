@@ -1,48 +1,30 @@
-Ldapper has a new look, and now a light one as well as a dark one.
+Pick a theme yourself, a connection dialog that fits, and tidier scrollbars
+on Windows.
 
-## Light and dark
+## Choose the theme
 
-The window follows the system. In light mode it is a pale grey ground with
-white cards lifted off it by a soft shadow; in dark mode the same layout sits
-on graphite, with hairline edges where a shadow would not show. There is no
-setting to find — change the system appearance and Ldapper changes with it.
+The title bar has a theme switch beside Connections: follow the system,
+light, or dark. A pinned theme stays pinned across restarts. Choose "follow
+the system" to go back to switching with the operating system. The choice
+belongs to this machine, not to any connection.
 
-## Ink and three tones
+## The connection dialog fits
 
-The one thing to press on a screen — Connect, Search, Save, Copy DN — is an
-ink-black pill in light mode and a white one in dark. Everything else is an
-outlined pill or plain text, so the eye still finds the button that matters.
+The dialog is now wide rather than tall. Where to connect is on the left and
+who to connect as is on the right, so the whole form fits the window and
+Connect is always in view. Before, it had to be scrolled.
 
-Colour now marks what a thing is rather than how important it is:
+## Scrollbars on Windows
 
-- **Lilac** is the interface pointing: the selected row, pane headings, the
-  selected saved connection, the edited mark on a filter.
-- **Mint** is time and health: decoded timestamps, `never`, and a working
-  connection.
-- **Rose** is flags: the bits decoded from `userAccountControl`.
-
-Decoded values are token chips toned that way, so in an attribute table a SID,
-a date and a flag can be told apart before they are read. Filter dialects get
-the same treatment in the library — Active Directory, generic and POSIX each
-have their own tone.
-
-## Roomier
-
-Tree rows, result rows and attribute rows are a little taller, headings a
-little larger, and fields and buttons a size up. The status bar shows each
-fact about the connection as its own chip.
-
-## Fixed
-
-- In the connection dialog, "Remember the password" was set in monospace and
-  wrapped mid-word: it was picking up a style meant for the filter editor.
+Windows drew its classic scrollbar, arrow buttons and all, cutting square
+through the rounded panes and the dialog. It is now a thin rounded bar in a
+clear track that keeps away from the corners, and it darkens under the
+pointer. macOS keeps its own scrollbars, which already look this way.
 
 ## Nothing else changed
 
-This release is visual only. No behaviour, no settings and no saved
-connections are touched.
+No behaviour, no settings and no saved connections are touched.
 
 ## Verified
 
-318 Go tests, 56 frontend tests and 37 integration tests. The screenshots in
-the README are retaken from this build's interface.
+318 Go tests, 63 frontend tests and 37 integration tests.
