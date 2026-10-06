@@ -1,30 +1,41 @@
-Ldapper has a new look, and its mark a new ink.
+Ldapper has a new look, and now a light one as well as a dark one.
 
-## Plum and lavender
+## Light and dark
 
-The window moves from aubergine and coral to a darker plum, with the panes
-lifted a step above it rather than sunk below it. Depth comes from those steps
-and from hairline edges — there are no drop shadows anywhere — and a faint
-violet aurora sits behind the title bar.
+The window follows the system. In light mode it is a pale grey ground with
+white cards lifted off it by a soft shadow; in dark mode the same layout sits
+on graphite, with hairline edges where a shadow would not show. There is no
+setting to find — change the system appearance and Ldapper changes with it.
 
-Colour is rationed now, and each one means one thing:
+## Ink and three tones
 
-- **Lavender** is the interface talking: pane headings, what is selected, the
-  version in the status bar. A selected row is a lavender wash with a bar at
-  its edge, where it used to be a solid coral block.
-- **Green** is the one button to press on a screen — Search, Connect, Save —
-  and a connection that is working. Nothing else is green, so the eye finds it.
-- **Ember** is kept for errors and for deleting things.
+The one thing to press on a screen — Connect, Search, Save, Copy DN — is an
+ink-black pill in light mode and a white one in dark. Everything else is an
+outlined pill or plain text, so the eye still finds the button that matters.
 
-Buttons and switches are rounded rectangles instead of pills. Text is a warm
-bone rather than pure white, which glared on the dark plum. Inputs have a
-visible edge, and a lavender ring when they have focus.
+Colour now marks what a thing is rather than how important it is:
 
-## The mark
+- **Lilac** is the interface pointing: the selected row, pane headings, the
+  selected saved connection, the edited mark on a filter.
+- **Mint** is time and health: decoded timestamps, `never`, and a working
+  connection.
+- **Rose** is flags: the bits decoded from `userAccountControl`.
 
-The same two levels of a tree and three nodes, now inked in a single gradient
-from violet at the root to ember at the leaf. The app icon, the Windows icon,
-the favicon and every raster size are regenerated from `assets/icon.svg`.
+Decoded values are token chips toned that way, so in an attribute table a SID,
+a date and a flag can be told apart before they are read. Filter dialects get
+the same treatment in the library — Active Directory, generic and POSIX each
+have their own tone.
+
+## Roomier
+
+Tree rows, result rows and attribute rows are a little taller, headings a
+little larger, and fields and buttons a size up. The status bar shows each
+fact about the connection as its own chip.
+
+## Fixed
+
+- In the connection dialog, "Remember the password" was set in monospace and
+  wrapped mid-word: it was picking up a style meant for the filter editor.
 
 ## Nothing else changed
 
@@ -33,5 +44,5 @@ connections are touched.
 
 ## Verified
 
-318 Go tests, 49 frontend tests and 37 integration tests. The screenshots in
+318 Go tests, 56 frontend tests and 37 integration tests. The screenshots in
 the README are retaken from this build's interface.
