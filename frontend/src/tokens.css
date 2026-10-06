@@ -1,6 +1,6 @@
-/* Two themes, one set of names. The window follows the system: light by day,
-   dark when the system is dark. Every rule in the interface reads these names
-   and never a colour, so a theme is only ever this file. */
+/* Two themes, one set of names. The window follows the system unless the
+   switch in the title bar pins one. Every rule in the interface reads these
+   names and never a colour, so a theme is only ever this file. */
 :root {
   color-scheme: light;
 
@@ -47,6 +47,8 @@
 
   --focus: rgba(98, 77, 227, 0.22);
   --scrim: rgba(21, 23, 24, 0.32);
+  --scroll: rgba(26, 29, 30, 0.18);
+  --scroll-hover: rgba(26, 29, 30, 0.34);
 
   --sh-card:  0px 1px 2px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.06);
   --sh-btn:   inset 0px 1px 0px 0px rgba(255, 255, 255, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.06);
@@ -67,49 +69,51 @@
   --row-height: 32px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
+/* The dark theme. theme.ts puts data-theme on the document before the first
+   paint — from the system, or from the choice in the title bar. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
 
-    --bg:        #0e0f10;
-    --surface:   #1a1d1e;
-    --surface-2: #17191a;
-    --sunken:    #151718;
-    --hover:     #222527;
-    --seg:       #151718;
-    --seg-on:    #2b2f31;
+  --bg:        #0e0f10;
+  --surface:   #1a1d1e;
+  --surface-2: #17191a;
+  --sunken:    #151718;
+  --hover:     #222527;
+  --seg:       #151718;
+  --seg-on:    #2b2f31;
 
-    --text:   #ecedee;
-    --text-2: #d7dbdf;
-    --muted:  #9ba1a6;
-    --faint:  #868d93;
-    --code:   #c1c7cd;
+  --text:   #ecedee;
+  --text-2: #d7dbdf;
+  --muted:  #9ba1a6;
+  --faint:  #868d93;
+  --code:   #c1c7cd;
 
-    --line:      #2b2f31;
-    --line-2:    #26292b;
-    --line-soft: #222527;
-    /* In the dark a shadow cannot be seen, so cards get a hairline instead. */
-    --card-line: #26292b;
-    --field-line: #313538;
+  --line:      #2b2f31;
+  --line-2:    #26292b;
+  --line-soft: #222527;
+  /* In the dark a shadow cannot be seen, so cards get a hairline instead. */
+  --card-line: #26292b;
+  --field-line: #313538;
 
-    --primary-bg: #f6f7f9;
-    --primary-fg: #151718;
+  --primary-bg: #f6f7f9;
+  --primary-fg: #151718;
 
-    --lilac-bg: #2a2453; --lilac-fg: #cfc7fc; --lilac-dot: #9b8bf7; --lilac-card: #211d3d;
-    --mint-bg:  #14352a; --mint-fg:  #93e2b7; --mint-dot:  #3cc27a; --mint-card:  #132a20;
-    --rose-bg:  #3b1829; --rose-fg:  #f6aecd; --rose-dot:  #ec5c9a; --rose-card:  #2c1520;
+  --lilac-bg: #2a2453; --lilac-fg: #cfc7fc; --lilac-dot: #9b8bf7; --lilac-card: #211d3d;
+  --mint-bg:  #14352a; --mint-fg:  #93e2b7; --mint-dot:  #3cc27a; --mint-card:  #132a20;
+  --rose-bg:  #3b1829; --rose-fg:  #f6aecd; --rose-dot:  #ec5c9a; --rose-card:  #2c1520;
 
-    --warn: #f0a24b;
-    --bad:  #ff6b6b;
-    --bad-bg: #3a1a1a;
+  --warn: #f0a24b;
+  --bad:  #ff6b6b;
+  --bad-bg: #3a1a1a;
 
-    --focus: rgba(155, 139, 247, 0.32);
-    --scrim: rgba(0, 0, 0, 0.6);
+  --focus: rgba(155, 139, 247, 0.32);
+  --scrim: rgba(0, 0, 0, 0.6);
+  --scroll: rgba(236, 237, 238, 0.18);
+  --scroll-hover: rgba(236, 237, 238, 0.34);
 
-    --sh-card:  0px 1px 2px 0px rgba(0, 0, 0, 0.4), 0px 6px 16px 0px rgba(0, 0, 0, 0.3);
-    --sh-btn:   0px 1px 2px 0px rgba(0, 0, 0, 0.4);
-    --sh-modal: 0px 8px 8px -4px rgba(0, 0, 0, 0.5), 0px 20px 24px -4px rgba(0, 0, 0, 0.6);
-  }
+  --sh-card:  0px 1px 2px 0px rgba(0, 0, 0, 0.4), 0px 6px 16px 0px rgba(0, 0, 0, 0.3);
+  --sh-btn:   0px 1px 2px 0px rgba(0, 0, 0, 0.4);
+  --sh-modal: 0px 8px 8px -4px rgba(0, 0, 0, 0.5), 0px 20px 24px -4px rgba(0, 0, 0, 0.6);
 }
 
 * { box-sizing: border-box; }
@@ -149,6 +153,22 @@ input:focus-visible,
 }
 
 input { font: inherit; }
+
+/* Windows draws a classic scrollbar — a grey slab with arrow buttons — that
+   cuts square through rounded panes and dialogs. There it becomes a thin
+   pill floating in a clear track, kept clear of rounded corners. macOS is
+   left alone: its overlay scrollbars already look this way. */
+:root:not([data-platform="darwin"]) ::-webkit-scrollbar { width: 12px; height: 12px; }
+:root:not([data-platform="darwin"]) ::-webkit-scrollbar-track { background: transparent; margin: 14px 0; }
+:root:not([data-platform="darwin"]) ::-webkit-scrollbar-thumb {
+  background: var(--scroll) padding-box;
+  border: 3px solid transparent;
+  border-radius: 9999px;
+  min-height: 40px;
+}
+:root:not([data-platform="darwin"]) ::-webkit-scrollbar-thumb:hover { background-color: var(--scroll-hover); }
+:root:not([data-platform="darwin"]) ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+:root:not([data-platform="darwin"]) ::-webkit-scrollbar-corner { background: transparent; }
 
 @media (prefers-reduced-motion: reduce) {
   * {

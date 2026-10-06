@@ -11,6 +11,12 @@
   box-shadow: inset 0 0 0 1px var(--card-line), var(--sh-modal);
   padding: 32px; display: flex; flex-direction: column; gap: 20px;
 }
+/* The connection dialog is wide rather than tall: two columns fit a window
+   that a single long column would overflow. */
+.modal.wide { width: 820px; }
+.connect-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 28px; align-items: start; }
+.modal .sub + .connect-grid, .modal .error + .connect-grid { margin-top: 0; }
+
 .modal h3 { margin: 0; font-size: 26px; font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
 .modal .sub { margin: -10px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
 

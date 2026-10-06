@@ -102,147 +102,155 @@ export function Connect() {
   return (
     <div className="scrim" onClick={close}>
       <div
-        className="modal no-drag"
+        className="modal wide no-drag"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
         <h3>Connect to a directory</h3>
         <p className="sub">
-          Saved on this machine. The password goes to the system keychain, never to the
-          settings file.
+          Saved on this machine. The password goes to the system keychain, never to the settings
+          file.
         </p>
 
         {error && <div className="error">{error}</div>}
 
-        {profiles.length > 0 && (
-          <div>
-            <span className="lbl">Saved connections</span>
-            <div className="saved-list">
-              {profiles.map((p) => (
-                <button
-                  key={p.id}
-                  className={selected === p.id ? "saved on" : "saved"}
-                  onClick={() => load(p)}
-                >
-                  <i className={p.connected ? "led live" : "led"} />
-                  {p.name || p.host}
-                  <span className="where">
-                    {p.host}:{p.port}
-                  </span>
-                </button>
-              ))}
-              <button className={selected === "" ? "saved on" : "saved"} onClick={blank}>
-                + New
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Two columns, so the whole form fits a window without scrolling:
+            where to connect on the left, who to connect as on the right. */}
+        <div className="connect-grid">
+          <div className="form">
+            {profiles.length > 0 && (
+              <div>
+                <span className="lbl">Saved connections</span>
+                <div className="saved-list">
+                  {profiles.map((p) => (
+                    <button
+                      key={p.id}
+                      className={selected === p.id ? "saved on" : "saved"}
+                      onClick={() => load(p)}
+                    >
+                      <i className={p.connected ? "led live" : "led"} />
+                      {p.name || p.host}
+                      <span className="where">
+                        {p.host}:{p.port}
+                      </span>
+                    </button>
+                  ))}
+                  <button className={selected === "" ? "saved on" : "saved"} onClick={blank}>
+                    + New
+                  </button>
+                </div>
+              </div>
+            )}
 
-        <div className="form">
-          <div>
-            <span className="lbl">Name</span>
-            <input
-              className="field"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              aria-label="Connection name"
-            />
-          </div>
-
-          <div className="cols">
             <div>
-              <span className="lbl">Host</span>
+              <span className="lbl">Name</span>
               <input
                 className="field"
-                value={host}
-                onChange={(e) => setHost(e.target.value)}
-                placeholder="dc01.corp.example.com"
-                aria-label="Host"
-                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                aria-label="Connection name"
               />
             </div>
+
+            <div className="cols">
+              <div>
+                <span className="lbl">Host</span>
+                <input
+                  className="field"
+                  value={host}
+                  onChange={(e) => setHost(e.target.value)}
+                  placeholder="dc01.corp.example.com"
+                  aria-label="Host"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <span className="lbl">Port</span>
+                <input
+                  className="field"
+                  value={port}
+                  onChange={(e) => setPort(e.target.value)}
+                  inputMode="numeric"
+                  aria-label="Port"
+                />
+              </div>
+            </div>
+
             <div>
-              <span className="lbl">Port</span>
-              <input
-                className="field"
-                value={port}
-                onChange={(e) => setPort(e.target.value)}
-                inputMode="numeric"
-                aria-label="Port"
-              />
-            </div>
-          </div>
-
-          <div>
-            <span className="lbl">Encryption</span>
-            <div className="segs">
-              {ENCRYPTIONS.map((o) => (
-                <button
-                  key={o.value}
-                  className={encryption === o.value ? "seg on" : "seg"}
-                  onClick={() => setEncryption(o.value)}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <span className="lbl">Authentication</span>
-            <div className="segs">
-              {BINDS.map((o) => (
-                <button
-                  key={o.value}
-                  className={bindMethod === o.value ? "seg on" : "seg"}
-                  onClick={() => setBindMethod(o.value)}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {bindMethod === "anonymous" ? (
-            <p className="sub">
-              Connecting without credentials. Most directories allow reading a
-              part of the tree this way, and will simply show less.
-            </p>
-          ) : (
-            <>
-              <div>
-                <span className="lbl">User</span>
-                <input
-                  className="field"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder={bindMethod === "ntlm" ? "CORP\\a.kensel" : "cn=admin,dc=example,dc=com"}
-                  aria-label="User"
-                />
+              <span className="lbl">Encryption</span>
+              <div className="segs">
+                {ENCRYPTIONS.map((o) => (
+                  <button
+                    key={o.value}
+                    className={encryption === o.value ? "seg on" : "seg"}
+                    onClick={() => setEncryption(o.value)}
+                  >
+                    {o.label}
+                  </button>
+                ))}
               </div>
+            </div>
+          </div>
 
-              <div>
-                <span className="lbl">Password</span>
-                <input
-                  className="field"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  aria-label="Password"
-                />
+          <div className="form">
+            <div>
+              <span className="lbl">Authentication</span>
+              <div className="segs">
+                {BINDS.map((o) => (
+                  <button
+                    key={o.value}
+                    className={bindMethod === o.value ? "seg on" : "seg"}
+                    onClick={() => setBindMethod(o.value)}
+                  >
+                    {o.label}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                />
-                Remember the password in this system&apos;s keychain
-              </label>
-            </>
-          )}
+            {bindMethod === "anonymous" ? (
+              <p className="sub">
+                Connecting without credentials. Most directories allow reading a part of the tree
+                this way, and will simply show less.
+              </p>
+            ) : (
+              <>
+                <div>
+                  <span className="lbl">User</span>
+                  <input
+                    className="field"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder={
+                      bindMethod === "ntlm" ? "CORP\\a.kensel" : "cn=admin,dc=example,dc=com"
+                    }
+                    aria-label="User"
+                  />
+                </div>
+
+                <div>
+                  <span className="lbl">Password</span>
+                  <input
+                    className="field"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    aria-label="Password"
+                  />
+                </div>
+
+                <label className="check">
+                  <input
+                    type="checkbox"
+                    checked={remember}
+                    onChange={(e) => setRemember(e.target.checked)}
+                  />
+                  Remember the password in this system&apos;s keychain
+                </label>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="acts">

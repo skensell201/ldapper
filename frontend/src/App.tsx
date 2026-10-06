@@ -11,6 +11,8 @@ import { shortIdentity } from "./identity";
 import { healthLabel, healthOf } from "./health";
 import { Mark } from "./Mark";
 import { WindowControls } from "./WindowControls";
+import { ThemeSwitch } from "./ThemeSwitch";
+import { useTheme } from "./theme";
 import { api, Environment, WindowToggleMaximise } from "./api";
 
 import type { app } from "../wailsjs/go/models";
@@ -37,7 +39,12 @@ export function App() {
   const [platform, setPlatform] = useState("");
   const [build, setBuild] = useState<app.BuildInfo | null>(null);
   useEffect(() => {
-    void Environment().then((e) => setPlatform(e.platform));
+    void Environment().then((e) => {
+      setPlatform(e.platform);
+      // The stylesheet styles scrollbars everywhere but macOS, whose own
+      // overlay ones already fit.
+      document.documentElement.dataset.platform = e.platform;
+    });
     void api.Build().then(setBuild);
   }, []);
 
@@ -46,6 +53,7 @@ export function App() {
   }, [loadProfiles]);
 
   const health = healthOf(state, error);
+  const [themePref, setThemePref] = useTheme();
 
   return (
     <div className={mode === "browse" ? "window" : "window with-toolbar"}>
@@ -89,6 +97,7 @@ export function App() {
         </div>
 
         <span className="spacer" />
+        <ThemeSwitch value={themePref} onChange={setThemePref} />
         <button className="util no-drag" onClick={openConnect}>
           Connections
         </button>
