@@ -40,8 +40,10 @@ func main() {
 		// look native.
 		Frameless: goruntime.GOOS == "windows",
 		// The window chrome is part of the design, so it matches the canvas
-		// rather than sitting on the system's own grey.
-		BackgroundColour: &options.RGBA{R: 24, G: 24, B: 36, A: 1},
+		// rather than sitting on the system's own grey. The interface follows
+		// the system theme; this is the light canvas, which is all that shows
+		// for the moment before the page paints.
+		BackgroundColour: &options.RGBA{R: 246, G: 247, B: 249, A: 1},
 		OnStartup:        a.Startup,
 		OnShutdown:       a.Shutdown,
 		Bind:             []any{a},

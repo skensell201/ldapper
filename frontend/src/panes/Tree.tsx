@@ -25,7 +25,7 @@ export function Tree() {
   const virtual = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 28,
+    estimateSize: () => 32,
     overscan: 12,
   });
 

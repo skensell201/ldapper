@@ -1,4 +1,4 @@
-.tree-scroll { flex: 1; overflow: auto; padding: 0 8px 10px; min-height: 0; }
+.tree-scroll { flex: 1; overflow: auto; padding: 0 10px 12px; min-height: 0; }
 .tree-inner { position: relative; width: 100%; }
 
 .row {
@@ -6,8 +6,9 @@
   display: flex; align-items: center; gap: 8px;
   height: var(--row-height);
   padding-right: 10px;
-  border-radius: var(--r-input);
-  color: var(--ash);
+  border-radius: var(--r-row);
+  color: var(--text-2);
+  font-size: 13px;
   white-space: nowrap;
   cursor: default;
   /* Double-clicking expands a node. Without this it also selects the label
@@ -15,26 +16,24 @@
   user-select: none;
   -webkit-user-drag: none;
 }
-.row:hover { background: rgba(229, 231, 235, 0.05); color: var(--bone); }
-/* Selection is a lavender wash with a bar at its edge — lit, not filled. */
-.row.selected {
-  background: rgba(185, 151, 255, 0.14); color: var(--bone); font-weight: 500;
-  box-shadow: inset 2px 0 0 var(--lavender);
-}
+.row:hover { background: var(--hover); color: var(--text); }
+/* Selection is a lilac wash — the same tone everywhere the interface points
+   at something. */
+.row.selected { background: var(--lilac-bg); color: var(--text); font-weight: 600; }
 .row.selected .row-icon,
 .row.selected .chev-btn,
-.row.selected .count { color: var(--lavender); }
-.row.selected .more { background: rgba(185, 151, 255, 0.18); color: var(--bone); }
+.row.selected .count { color: var(--lilac-dot); }
+.row.selected .more { background: var(--surface); color: var(--lilac-fg); }
 
-.chev-btn { width: 10px; flex: none; color: var(--iris); font-size: 8px; text-align: center; }
-.row-icon { width: 14px; height: 14px; flex: none; color: var(--iris); }
+.chev-btn { width: 10px; flex: none; color: var(--faint); font-size: 8px; text-align: center; }
+.row-icon { width: 15px; height: 15px; flex: none; color: var(--faint); }
 .label { overflow: hidden; text-overflow: ellipsis; }
-.count { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); }
+.count { margin-left: auto; font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--faint); }
 
 .more {
   margin-left: auto; flex: none;
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0;
-  color: var(--mist);
-  padding: 1px 8px; border-radius: 6px; background: var(--raise);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0;
+  color: var(--lilac-fg);
+  padding: 2px 10px; border-radius: var(--r-pill); background: var(--lilac-bg);
 }
-.more:hover { color: var(--bone); }
+.more:hover { background: var(--lilac-card); }

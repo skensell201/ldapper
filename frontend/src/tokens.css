@@ -1,56 +1,115 @@
+/* Two themes, one set of names. The window follows the system: light by day,
+   dark when the system is dark. Every rule in the interface reads these names
+   and never a colour, so a theme is only ever this file. */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Surfaces. Depth comes from stepping the plum lighter, never from drop
-     shadows: the canvas, the cards that sit on it, and what rises above them. */
-  --canvas: #1c1624;
-  --card:   #2d2734;
-  --raise:  #3a3340;
-  --lift:   #463e4d;
-  --deep:   #16111d;
+  /* Surfaces. A pale ground, white cards lifted off it by a soft shadow, and
+     a sunken grey for the inside of a field. */
+  --bg:        #f6f7f9;
+  --surface:   #ffffff;
+  --surface-2: #fafbfc;
+  --sunken:    #f6f7f9;
+  --hover:     #f1f3f5;
+  --seg:       #eceef0;
+  --seg-on:    #ffffff;
 
-  /* Two signals, both rationed. Lavender marks what the interface itself is
-     saying — headings, the wordmark, what is selected. Green is for the one
-     thing to press, and for a connection that is working. Neither is ever a
-     large fill. */
-  --lavender: #b997ff;
-  --signal:   #00f575;
+  /* Text runs from ink down to a grey that still reads as text. */
+  --text:   #1a1d1e;
+  --text-2: #30353a;
+  --muted:  #687076;
+  --faint:  #7e868c;
+  --code:   #4c5155;
 
-  /* The gradient the mark is inked in, and the aurora behind the window. */
-  --violet: #6b13f5;
-  --ember:  #ff5632;
+  --line:      #e6e8eb;
+  --line-2:    #ebedef;
+  --line-soft: #f0f1f3;
+  /* Cards carry no edge in the light theme — the shadow does that work. */
+  --card-line: transparent;
+  --field-line: #dfe3e6;
 
-  /* Status colours. A connection's health is not decoration — it is the one
-     thing worth reading across the room, and three states need three colours. */
-  --good: var(--signal);
-  --warn: #f2b43b;
-  --bad:  var(--ember);
+  /* The one thing to press on a screen is ink-black, never a colour. */
+  --primary-bg: #151718;
+  --primary-fg: #ffffff;
 
-  /* Text runs from bone down. Never pure white: on plum it glares. */
-  --bone: #f1f0ec;
-  --mist: #d0c9c4;
-  --ash:  #b8b1b6;
-  --fog:  #a5a2a5;
-  --iris: #7a7480;
-  --iron: #55505b;
-  --hairline: rgba(229, 231, 235, 0.12);
-  --hairline-soft: rgba(229, 231, 235, 0.06);
+  /* Three tones, each meaning one thing. Lilac is the interface talking —
+     selection, headings, identifiers. Mint is time and a working connection.
+     Rose is flags, and an error. */
+  --lilac-bg: #efecfd; --lilac-fg: #4b36c9; --lilac-dot: #624de3; --lilac-card: #f4f2fe;
+  --mint-bg:  #e7f6ee; --mint-fg:  #11683f; --mint-dot:  #2fb26b; --mint-card:  #ecf7f1;
+  --rose-bg:  #fdecf3; --rose-fg:  #a3245d; --rose-dot:  #e0498b; --rose-card:  #fdf0f6;
 
-  --sans: Inter, Geist, "Segoe UI", system-ui, -apple-system, sans-serif;
-  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  /* A connection's health is the one thing worth reading across the room. */
+  --good: var(--mint-dot);
+  --warn: #c7741a;
+  --bad:  #d93a3a;
+  --bad-bg: #fdeceb;
+
+  --focus: rgba(98, 77, 227, 0.22);
+  --scrim: rgba(21, 23, 24, 0.32);
+
+  --sh-card:  0px 1px 2px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.06);
+  --sh-btn:   inset 0px 1px 0px 0px rgba(255, 255, 255, 0.2), 0px 1px 2px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.06);
+  --sh-modal: 0px 8px 8px -4px rgba(0, 0, 0, 0.12), 0px 20px 24px -4px rgba(0, 0, 0, 0.18);
+
+  --sans: Inter, "Inter Display", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Fira Code", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 
   --r-card: 20px;
   --r-pane: 20px;
-  --r-btn: 12px;
-  --r-input: 8px;
+  --r-btn: 9999px;
+  --r-input: 10px;
+  --r-row: 10px;
   --r-pill: 9999px;
 
-  /* The only glow: a dialog lit from within, rather than a shadow under it. */
-  --sh-modal: 0 0 60px rgba(185, 151, 255, 0.15);
+  /* The tree is virtualised, so every row is exactly this tall. Tree.tsx
+     tells the virtualiser the same number; change both together. */
+  --row-height: 32px;
+}
 
-  /* The tree is virtualised, so every row is exactly this tall. Changing it
-     here changes the measurement the virtualiser makes. */
-  --row-height: 28px;
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --bg:        #0e0f10;
+    --surface:   #1a1d1e;
+    --surface-2: #17191a;
+    --sunken:    #151718;
+    --hover:     #222527;
+    --seg:       #151718;
+    --seg-on:    #2b2f31;
+
+    --text:   #ecedee;
+    --text-2: #d7dbdf;
+    --muted:  #9ba1a6;
+    --faint:  #868d93;
+    --code:   #c1c7cd;
+
+    --line:      #2b2f31;
+    --line-2:    #26292b;
+    --line-soft: #222527;
+    /* In the dark a shadow cannot be seen, so cards get a hairline instead. */
+    --card-line: #26292b;
+    --field-line: #313538;
+
+    --primary-bg: #f6f7f9;
+    --primary-fg: #151718;
+
+    --lilac-bg: #2a2453; --lilac-fg: #cfc7fc; --lilac-dot: #9b8bf7; --lilac-card: #211d3d;
+    --mint-bg:  #14352a; --mint-fg:  #93e2b7; --mint-dot:  #3cc27a; --mint-card:  #132a20;
+    --rose-bg:  #3b1829; --rose-fg:  #f6aecd; --rose-dot:  #ec5c9a; --rose-card:  #2c1520;
+
+    --warn: #f0a24b;
+    --bad:  #ff6b6b;
+    --bad-bg: #3a1a1a;
+
+    --focus: rgba(155, 139, 247, 0.32);
+    --scrim: rgba(0, 0, 0, 0.6);
+
+    --sh-card:  0px 1px 2px 0px rgba(0, 0, 0, 0.4), 0px 6px 16px 0px rgba(0, 0, 0, 0.3);
+    --sh-btn:   0px 1px 2px 0px rgba(0, 0, 0, 0.4);
+    --sh-modal: 0px 8px 8px -4px rgba(0, 0, 0, 0.5), 0px 20px 24px -4px rgba(0, 0, 0, 0.6);
+  }
 }
 
 * { box-sizing: border-box; }
@@ -58,12 +117,12 @@
 html, body, #root { height: 100%; margin: 0; }
 
 body {
-  background: var(--canvas);
-  color: var(--bone);
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 450;
-  line-height: 1.4;
+  line-height: 1.45;
   letter-spacing: -0.1px;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
@@ -85,7 +144,7 @@ button {
 button:focus-visible,
 input:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--lavender);
+  outline: 2px solid var(--lilac-dot);
   outline-offset: 2px;
 }
 

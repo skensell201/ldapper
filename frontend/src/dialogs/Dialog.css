@@ -1,63 +1,68 @@
 .scrim {
   position: fixed; inset: 0; z-index: 10;
-  background: rgba(14, 11, 18, 0.66);
+  background: var(--scrim);
   backdrop-filter: blur(6px);
   display: grid; place-items: center; padding: 24px;
 }
 
 .modal {
   width: 460px; max-width: 100%; max-height: 100%; overflow: auto;
-  background: var(--raise); border-radius: var(--r-card);
-  box-shadow: inset 0 0 0 1px var(--hairline), var(--sh-modal);
+  background: var(--surface); border-radius: 24px;
+  box-shadow: inset 0 0 0 1px var(--card-line), var(--sh-modal);
   padding: 32px; display: flex; flex-direction: column; gap: 20px;
 }
-.modal h3 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
-.modal .sub { margin: -12px 0 0; font-size: 13px; color: var(--mist); line-height: 1.5; }
+.modal h3 { margin: 0; font-size: 26px; font-weight: 650; letter-spacing: -0.03em; line-height: 1.15; }
+.modal .sub { margin: -10px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
 
 .form { display: flex; flex-direction: column; gap: 14px; }
-.lbl { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fog); margin-bottom: 6px; display: block; }
+.lbl { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; display: block; }
 .cols { display: grid; grid-template-columns: 1fr 96px; gap: 10px; }
 
 .field {
   display: flex; align-items: center; width: 100%;
-  height: 36px; padding: 0 14px;
-  background: var(--card); border: 1px solid var(--iron); border-radius: var(--r-input);
-  color: var(--bone); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
+  height: 40px; padding: 0 14px;
+  background: var(--sunken); border: 1px solid var(--field-line); border-radius: 12px;
+  color: var(--text); font-family: var(--mono); font-size: 12px; letter-spacing: 0;
 }
-.field::placeholder { color: var(--iris); }
-.field:focus-visible { outline: none; border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(185, 151, 255, 0.18); }
+.field::placeholder { color: var(--faint); }
+.field:focus-visible { outline: none; border-color: var(--lilac-dot); background: var(--surface); box-shadow: 0 0 0 4px var(--focus); }
 
 
-.check { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--ash); }
-.check input { accent-color: var(--lavender); }
+/* Scoped to the dialog: the filter editor has a .check of its own, in mono,
+   and an unscoped rule here and there would each restyle the other. */
+.modal .check {
+  display: flex; align-items: center; gap: 10px; margin: 0; min-height: 0;
+  font-family: var(--sans); font-size: 13px; color: var(--text-2); word-break: normal;
+}
+.modal .check input { accent-color: var(--lilac-dot); }
 
 .acts { display: flex; align-items: center; gap: 10px; }
 .acts .spacer { margin-left: auto; }
-.btn { height: 36px; padding: 0 20px; border-radius: var(--r-btn); font-size: 12.5px; font-weight: 500; }
-.btn.plain { color: var(--fog); }
-.btn.plain:hover { color: var(--bone); }
-.btn.light { background: transparent; color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
-.btn.light:hover:not(:disabled) { box-shadow: inset 0 0 0 1px var(--mist); }
-/* Connect is the one thing in the dialog to press, and the only green in it. */
-.btn.cta { background: var(--signal); color: #000; }
-.btn.cta:hover:not(:disabled) { filter: brightness(1.08); }
+.btn { height: 40px; padding: 0 20px; border-radius: var(--r-btn); font-size: 13px; font-weight: 500; }
+.btn.plain { color: var(--muted); }
+.btn.plain:hover { color: var(--text); }
+.btn.light { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+.btn.light:hover:not(:disabled) { background: var(--hover); }
+/* Connect is the one thing in the dialog to press, and the only ink in it. */
+.btn.cta { background: var(--primary-bg); color: var(--primary-fg); box-shadow: var(--sh-btn); font-weight: 600; }
+.btn.cta:hover:not(:disabled) { opacity: 0.88; }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
-.cert { background: var(--card); box-shadow: inset 0 0 0 1px var(--hairline-soft); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
-.cert-head { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 500; color: var(--warn); }
-.cert dl { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 12px; font-size: 11px; }
-.cert dt { color: var(--iris); font-family: var(--mono); letter-spacing: 0; }
-.cert dd { margin: 0; color: var(--ash); font-family: var(--mono); letter-spacing: 0; word-break: break-all; }
-.cert dd.fp { color: var(--bone); }
+.cert { background: var(--sunken); box-shadow: inset 0 0 0 1px var(--line-2); border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.cert-head { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600; color: var(--warn); }
+.cert dl { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 6px 12px; font-size: 11.5px; }
+.cert dt { color: var(--faint); font-family: var(--mono); letter-spacing: 0; }
+.cert dd { margin: 0; color: var(--text-2); font-family: var(--mono); letter-spacing: 0; word-break: break-all; }
+.cert dd.fp { color: var(--text); }
 
 .saved-list { display: flex; flex-direction: column; gap: 4px; max-height: 168px; overflow: auto; }
 .saved {
   display: flex; align-items: center; gap: 9px;
-  padding: 8px 12px; border-radius: var(--r-input);
-  background: var(--card); color: var(--ash);
-  font-size: 12.5px; text-align: left;
+  padding: 9px 12px; border-radius: 12px;
+  background: var(--sunken); color: var(--text-2);
+  font-size: 13px; text-align: left;
 }
-.saved:hover { color: var(--bone); }
-.saved.on { background: rgba(185, 151, 255, 0.14); color: var(--bone); box-shadow: inset 2px 0 0 var(--lavender); }
-.saved .where { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: var(--iris); }
-.saved.on .where { color: var(--ash); }
+.saved:hover { color: var(--text); background: var(--hover); }
+.saved.on { background: var(--lilac-bg); color: var(--text); font-weight: 600; }
+.saved .where { margin-left: auto; font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--faint); }
+.saved.on .where { color: var(--lilac-fg); }

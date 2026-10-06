@@ -19,7 +19,7 @@ export function Results() {
   const virtual = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 30,
+    estimateSize: () => 34,
     overscan: 14,
   });
 

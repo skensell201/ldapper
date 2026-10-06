@@ -1,28 +1,32 @@
-.detail-head { display: flex; align-items: flex-start; gap: 14px; padding: 20px 22px 16px; flex: none; }
+.detail-head { display: flex; align-items: center; gap: 16px; padding: 22px 24px 18px; flex: none; }
 .avatar {
-  width: 38px; height: 38px; flex: none; border-radius: 12px;
-  background: var(--raise); display: grid; place-items: center; color: var(--lavender);
-  box-shadow: inset 0 0 0 1px var(--hairline);
+  width: 48px; height: 48px; flex: none; border-radius: 14px;
+  background: var(--lilac-bg); display: grid; place-items: center; color: var(--lilac-dot);
 }
-.avatar svg { width: 18px; height: 18px; }
-.detail-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.detail-title .cn { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; color: var(--bone); }
+.avatar svg { width: 22px; height: 22px; }
+.detail-title { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.detail-title .cn { font-size: 24px; line-height: 1.15; font-weight: 650; letter-spacing: -0.03em; color: var(--text); }
 .detail-title .dn {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--fog);
+  max-width: 100%;
+  padding: 3px 9px; border-radius: 8px;
+  background: var(--sunken); box-shadow: inset 0 0 0 1px var(--line-2);
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--code);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .detail-head .ghost {
   margin-left: auto; flex: none;
-  height: 30px; padding: 0 16px; border-radius: var(--r-btn);
-  box-shadow: inset 0 0 0 1px var(--hairline); color: var(--mist); font-size: 12px;
+  height: 36px; padding: 0 18px; border-radius: var(--r-btn);
+  background: var(--primary-bg); color: var(--primary-fg); box-shadow: var(--sh-btn);
+  font-size: 12.5px; font-weight: 600;
 }
-.detail-head .ghost:hover { color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
+.detail-head .ghost:hover { opacity: 0.88; }
 
 .attr-head {
   display: grid; grid-template-columns: 220px 1fr; gap: 16px;
-  padding: 0 22px 10px;
-  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fog);
-  box-shadow: inset 0 -1px 0 var(--hairline);
+  padding: 10px 24px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2);
+  font-size: 12px; font-weight: 600; color: var(--faint);
   flex: none;
 }
 
@@ -32,17 +36,26 @@
 .attr-row {
   position: absolute; top: 0; left: 0; right: 0;
   display: grid; grid-template-columns: 220px 1fr; gap: 16px;
-  padding: 8px 22px;
-  box-shadow: inset 0 -1px 0 var(--hairline-soft);
+  padding: 10px 24px;
+  box-shadow: inset 0 -1px 0 var(--line-soft);
 }
-.attr-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0; color: var(--mist); }
-.attr-value { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.val { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--bone); word-break: break-all; }
-.raw { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--fog); word-break: break-all; }
+.attr-name { font-family: var(--mono); font-size: 12px; letter-spacing: 0; color: var(--code); }
+.attr-value { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.val { font-family: var(--mono); font-size: 12px; letter-spacing: 0; color: var(--text); word-break: break-all; }
+.raw { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0; color: var(--faint); word-break: break-all; }
 
+/* A decoded value is a token chip, toned by what it is: an identifier, a
+   moment in time, or a flag. */
 .decoded-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .decoded {
-  padding: 2px 9px; border-radius: var(--r-input);
-  background: var(--raise); color: var(--bone); box-shadow: inset 0 0 0 1px var(--hairline);
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 10px; border-radius: var(--r-pill);
+  background: var(--lilac-bg); color: var(--lilac-fg);
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0;
+  max-width: 100%;
 }
+.decoded::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--lilac-dot); flex: none; }
+.decoded.time { background: var(--mint-bg); color: var(--mint-fg); }
+.decoded.time::before { background: var(--mint-dot); }
+.decoded.flag { background: var(--rose-bg); color: var(--rose-fg); }
+.decoded.flag::before { background: var(--rose-dot); }

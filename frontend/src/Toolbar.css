@@ -1,30 +1,31 @@
-.toolbar { display: flex; align-items: center; gap: 10px; padding: 10px 10px 0; flex: none; }
+.toolbar { display: flex; align-items: center; gap: 10px; padding: 16px 20px 0; flex: none; }
 
 .filter-box {
   flex: 1; min-width: 0;
-  height: 36px; padding: 0 14px;
-  background: var(--card); border: 1px solid var(--iron); border-radius: var(--r-btn);
-  color: var(--bone); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
+  height: 40px; padding: 0 16px;
+  background: var(--surface); border: 1px solid var(--field-line); border-radius: var(--r-pill);
+  box-shadow: var(--sh-card);
+  color: var(--text); font-family: var(--mono); font-size: 12px; letter-spacing: 0;
 }
-.filter-box::placeholder { color: var(--iris); }
-.filter-box:focus-visible { outline: none; border-color: var(--lavender); box-shadow: 0 0 0 3px rgba(185, 151, 255, 0.18); }
+.filter-box::placeholder { color: var(--faint); }
+.filter-box:focus-visible { outline: none; border-color: var(--lilac-dot); box-shadow: 0 0 0 4px var(--focus); }
 
 .segs.small { padding: 3px; flex: none; }
 /* "One level" is two words and was wrapping onto two lines, which made the
    segment taller than the ones beside it. */
-.segs.small .seg { padding: 5px 14px; font-size: 11.5px; white-space: nowrap; }
+.segs.small .seg { padding: 6px 16px; font-size: 12px; white-space: nowrap; }
 
 .tbtn {
-  flex: none; height: 36px; padding: 0 18px;
-  border-radius: var(--r-btn); box-shadow: inset 0 0 0 1px var(--hairline);
-  color: var(--mist); font-size: 12.5px; font-weight: 500;
+  flex: none; height: 40px; padding: 0 18px;
+  border-radius: var(--r-btn); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--text); font-size: 12.5px; font-weight: 500;
 }
-.tbtn:hover:not(:disabled) { color: var(--bone); box-shadow: inset 0 0 0 1px var(--iron); }
-.tbtn.plain { box-shadow: none; color: var(--fog); }
-.tbtn.plain:hover:not(:disabled) { box-shadow: none; }
-/* Search is the one thing on this screen to press, and the only green on it. */
-.tbtn.primary { background: var(--signal); box-shadow: none; color: #000; }
-.tbtn.primary:hover:not(:disabled) { color: #000; box-shadow: none; filter: brightness(1.08); }
+.tbtn:hover:not(:disabled) { background: var(--hover); }
+.tbtn.plain { background: transparent; box-shadow: none; color: var(--muted); }
+.tbtn.plain:hover:not(:disabled) { background: transparent; color: var(--text); }
+/* Search is the one thing on this screen to press, and the only ink on it. */
+.tbtn.primary { background: var(--primary-bg); box-shadow: var(--sh-btn); color: var(--primary-fg); font-weight: 600; }
+.tbtn.primary:hover:not(:disabled) { background: var(--primary-bg); opacity: 0.88; }
 .tbtn:disabled { opacity: 0.45; cursor: default; }
 
-.toolbar-note { padding-left: 10px; font-size: 12.5px; color: var(--fog); }
+.toolbar-note { padding-left: 4px; font-size: 13px; color: var(--muted); }

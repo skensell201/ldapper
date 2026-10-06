@@ -42,7 +42,7 @@ export function Library() {
             <Icon name="object" className="row-icon" />
             <span className="label">{f.name}</span>
             {f.modified && <span className="dot" title="edited" />}
-            <span className="tag">{f.builtIn ? f.dialect : "mine"}</span>
+            <span className={`tag ${f.builtIn ? f.dialect : "mine"}`}>{f.builtIn ? f.dialect : "mine"}</span>
           </div>
         ))}
       </>

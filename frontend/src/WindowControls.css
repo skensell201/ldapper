@@ -9,13 +9,13 @@
   width: 46px;
   display: grid;
   place-items: center;
-  color: var(--mist);
+  color: var(--muted);
   border-radius: 0;
 }
-.winctl button:hover { background: var(--raise); color: var(--bone); }
+.winctl button:hover { background: var(--hover); color: var(--text); }
 
 /* Closing is the one irreversible button in the row, and Windows marks it. */
-.winctl button.close:hover { background: #c42b1c; color: var(--bone); }
+.winctl button.close:hover { background: #c42b1c; color: #ffffff; }
 
 .winctl svg {
   width: 10px; height: 10px;

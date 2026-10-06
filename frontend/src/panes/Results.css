@@ -1,18 +1,19 @@
 .stream {
   display: flex; align-items: center; gap: 14px;
-  padding: 14px 22px; flex: none;
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0; color: var(--fog);
+  padding: 18px 24px 14px; flex: none;
+  font-size: 12px; color: var(--muted);
 }
-.stream .n { color: var(--bone); }
-.stream .note { margin-left: auto; color: var(--iris); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bar { width: 140px; height: 3px; background: var(--raise); border-radius: var(--r-pill); overflow: hidden; }
-.bar i { display: block; width: 38%; height: 100%; background: var(--lavender); border-radius: var(--r-pill); animation: slide 1.1s ease-in-out infinite; }
+.stream .n { font-family: var(--mono); color: var(--text); font-weight: 500; }
+.stream .note { margin-left: auto; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar { width: 140px; height: 4px; background: var(--seg); border-radius: var(--r-pill); overflow: hidden; }
+.bar i { display: block; width: 38%; height: 100%; background: var(--lilac-dot); border-radius: var(--r-pill); animation: slide 1.1s ease-in-out infinite; }
 @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
 
 .res-head {
-  display: grid; gap: 16px; padding: 0 22px 10px;
-  font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fog);
-  box-shadow: inset 0 -1px 0 var(--hairline);
+  display: grid; gap: 16px; padding: 10px 24px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2);
+  font-size: 12px; font-weight: 600; color: var(--faint);
   flex: none;
 }
 .res-head span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -23,12 +24,12 @@
 .res-row {
   position: absolute; top: 0; left: 0; right: 0;
   display: grid; gap: 16px; align-items: center;
-  height: 30px; padding: 0 22px;
-  box-shadow: inset 0 -1px 0 var(--hairline-soft);
-  color: var(--ash); cursor: default;
+  height: 34px; padding: 0 24px;
+  box-shadow: inset 0 -1px 0 var(--line-soft);
+  color: var(--text-2); cursor: default;
 }
-.res-row:hover { background: rgba(229, 231, 235, 0.05); color: var(--bone); }
+.res-row:hover { background: var(--hover); color: var(--text); }
 
-.cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
-.cell.first { display: flex; align-items: center; gap: 8px; color: var(--bone); }
-.res-icon { width: 13px; height: 13px; flex: none; color: var(--iris); }
+.cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; }
+.cell.first { display: flex; align-items: center; gap: 8px; color: var(--text); font-weight: 500; }
+.res-icon { width: 14px; height: 14px; flex: none; color: var(--faint); }

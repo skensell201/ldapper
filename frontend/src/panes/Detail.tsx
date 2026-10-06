@@ -3,6 +3,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useStore } from "../store";
 import { Icon } from "../Icon";
 import { rdnValue } from "../identity";
+import { decodedKind } from "../decoded";
 import "./Detail.css";
 
 /** A row of the table is one value, not one attribute: an attribute with
@@ -41,7 +42,7 @@ export function Detail() {
     getScrollElement: () => scrollRef.current,
     // A decoded value adds a second line, so rows are not all one height.
     // measureElement corrects the estimate once a row is on screen.
-    estimateSize: (i) => (rows[i]?.decoded.length ? 54 : 32),
+    estimateSize: (i) => (rows[i]?.decoded.length ? 62 : 38),
     overscan: 10,
   });
 
@@ -107,7 +108,7 @@ export function Detail() {
                   {row.decoded.length > 0 && (
                     <span className="decoded-list">
                       {row.decoded.map((d) => (
-                        <span className="decoded" key={d}>
+                        <span className={`decoded ${decodedKind(d)}`} key={d}>
                           {d}
                         </span>
                       ))}
